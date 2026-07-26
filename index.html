@@ -3,753 +3,1356 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Skyscape Photography — Kshitiz Bathwal</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;700&display=swap" rel="stylesheet">
-
+<title>Skyscape — Kshitiz Bathwal · Aerial Landscape Photography</title>
+<meta name="description" content="Aerial landscape photography across India, flown between 30 and 299 metres above ground level by drone pilot Kshitiz Bathwal.">
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=zodiak@400,401&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --ink: #030303; 
-    --ink-elevated: #0a0a0a;
-    --chalk: #fcfaf7;
-    --bone: #e8e2d4;
-    --rust: #d45d1e; 
-    --mist: #8a8578;
-    --gold: #c5a367;
-    --glass: rgba(255, 255, 255, 0.02);
-    --border: rgba(255, 255, 255, 0.06);
-    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  }
+/* ==================================================================
+   SKYSCAPE — the page is one flight: 299 m AGL down to touchdown
+   1 · TOKENS
+================================================================== */
+:root{
+  /* colour */
+  --ink:#05080D; --ink-2:#0A1018; --earth:#1A1207;
+  --white:#EEF3F7; --fog:#9EACBA; --dim:#596572;
+  --haze:#7CA7C2; --amber:#CE9450;
+  --line:rgba(158,172,186,.16); --line-soft:rgba(158,172,186,.075);
 
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  /* families */
+  --display:'Zodiak',Georgia,serif;
+  --body:'Satoshi',system-ui,-apple-system,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
 
-  html { scroll-behavior: smooth; background: var(--ink); }
+  /* type scale — fluid, one ratio, no ad-hoc sizes below */
+  --t-mono:clamp(9.5px,.62vw,11px);
+  --t-cap:clamp(12.5px,.85vw,14px);
+  --t-body:clamp(15px,1.02vw,17.5px);
+  --t-lead:clamp(16.5px,1.22vw,20px);
+  --d4:clamp(19px,1.55vw,25px);
+  --d3:clamp(25px,3.1vw,48px);
+  --d2:clamp(36px,5.1vw,84px);
+  --d1:clamp(44px,8.6vw,146px);
 
-  body {
-    background: var(--ink);
-    color: var(--chalk);
-    font-family: 'Syne', sans-serif;
-    overflow-x: hidden;
-    cursor: none;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
+  /* rhythm */
+  --gutter:clamp(18px,3.6vw,64px);
+  --gap:clamp(18px,2.4vw,40px);
+  --rail:78px;
+  --max:1560px;
+  --sec:clamp(88px,13vh,180px);   /* section block spacing */
+  --ease:cubic-bezier(.19,1,.22,1);
+}
+@media (min-width:1800px){ :root{--rail:96px} }
 
-  ::selection { background: var(--rust); color: var(--chalk); }
+/* ==================================================================
+   2 · BASE
+================================================================== */
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;hanging-punctuation:first allow-end}
+body{
+  background:var(--ink);color:var(--white);
+  font-family:var(--body);font-size:var(--t-body);line-height:1.62;
+  font-synthesis-weight:none;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-stopped{overflow:hidden}
+::selection{background:var(--haze);color:var(--ink)}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--haze);outline-offset:4px}
 
-  /* ── CINEMATIC OVERLAY ── */
-  .noise {
-    position: fixed; inset: 0; z-index: 9998; opacity: 0.035; pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
+/* ==================================================================
+   3 · TYPOGRAPHY PRIMITIVES
+================================================================== */
+.display{
+  font-family:var(--display);font-weight:400;
+  line-height:.98;letter-spacing:-.022em;text-wrap:balance;
+}
+.d1{font-size:var(--d1);letter-spacing:-.032em;line-height:.94}
+.d2{font-size:var(--d2);letter-spacing:-.024em;line-height:.99}
+.d3{font-size:var(--d3);letter-spacing:-.018em;line-height:1.06}
+.d4{font-size:var(--d4);letter-spacing:-.012em;line-height:1.18}
+.display em{font-style:italic;color:var(--haze)}
 
-  /* ── PHYSICS CURSOR ── */
-  .cursor {
-    position: fixed; pointer-events: none; z-index: 9999;
-    mix-blend-mode: difference;
-  }
-  .cursor-dot {
-    width: 4px; height: 4px; background: var(--chalk); border-radius: 50%;
-    transform: translate(-50%, -50%); transition: transform 0.1s;
-  }
-  .cursor-ring {
-    width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.4); border-radius: 50%;
-    transform: translate(-50%, -50%); transition: width 0.4s var(--ease-out-expo), height 0.4s var(--ease-out-expo), border-color 0.4s;
-  }
-  .cursor-ring.hovered {
-    width: 80px; height: 80px; border-color: var(--rust); background: rgba(212, 93, 30, 0.05);
-  }
+.eyebrow{
+  font-family:var(--mono);font-size:var(--t-mono);font-weight:500;
+  letter-spacing:.24em;text-transform:uppercase;color:var(--haze);
+  display:flex;align-items:center;gap:14px;line-height:1.4;
+}
+.eyebrow::before{content:"";width:26px;height:1px;background:currentColor;opacity:.55;flex:none}
+.lede{font-size:var(--t-lead);line-height:1.68;color:var(--fog);max-width:44ch;text-wrap:pretty}
+.prose{color:var(--fog);line-height:1.82;max-width:62ch;text-wrap:pretty}
+.prose + .prose{margin-top:1.3em}
+.prose strong{color:var(--white);font-weight:500}
+.tele,.meta,.note{
+  font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.15em;
+  color:var(--dim);font-variant-numeric:tabular-nums;line-height:2;
+}
+.meta{text-transform:uppercase}
+.meta b{display:block;color:var(--fog);font-weight:500;letter-spacing:.13em}
+.w{display:inline-block;overflow:hidden;vertical-align:top;padding-block:.03em}
+.c{display:inline-block;will-change:transform}
 
-  /* ── RESTORED ORIGINAL NAV ── */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 30px 60px; mix-blend-mode: difference;
-  }
-  .nav-logo {
-    font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 300;
-    letter-spacing: 0.25em; text-transform: uppercase; color: var(--chalk); text-decoration: none;
-  }
-  .nav-logo span { color: var(--rust); font-weight: 600; margin: 0 4px; }
-  .nav-links { display: flex; gap: 36px; }
-  .nav-links a {
-    font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.18em;
-    text-transform: uppercase; color: var(--mist); text-decoration: none; transition: color 0.3s;
-  }
-  .nav-links a:hover { color: var(--chalk); }
-  .nav-counter {
-    font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--mist); letter-spacing: 0.1em;
-  }
+/* ==================================================================
+   4 · LAYOUT — one 12-column grid for the whole page
+================================================================== */
+main{position:relative;z-index:1}
+.shell{padding-left:calc(var(--rail) + var(--gutter));padding-right:var(--gutter)}
+.wrap{max-width:var(--max);margin-inline:auto}
+.g12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gap)}
+.col-main{grid-column:1 / span 7}
+.col-side{grid-column:9 / span 4}
+.col-full{grid-column:1 / -1}
 
-  /* ── TRUE 3D DRONE PARALLAX HERO ── */
-  .hero-scroll-container {
-    height: 150vh; /* Creates scroll space for the parallax */
-    position: relative;
-    z-index: 0;
-  }
-  .hero-sticky {
-    position: sticky; top: 0; height: 100vh; overflow: hidden;
-    perspective: 1200px; /* Crucial for 3D depth */
-    display: flex; align-items: flex-end; padding: 0 60px 64px;
-  }
-  .hero-scene {
-    position: absolute; inset: -15%; /* Bleed area for 3D rotation */
-    z-index: 0; transform-style: preserve-3d;
-    will-change: transform; transform-origin: bottom center;
-  }
-  .hero-bg {
-    position: absolute; inset: 0;
-    background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=2400&q=90');
-    background-size: cover; background-position: center 40%;
-    filter: brightness(0.7) contrast(1.1);
-  }
-  .hero-grid-overlay {
-    position: absolute; inset: 0; pointer-events: none;
-    background-image: 
-      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-    background-size: 50px 50px;
-    transform: translateZ(50px); /* Floats slightly above background */
-  }
+/* ==================================================================
+   5 · CHROME — preloader, cursor, header, altimeter
+================================================================== */
+.pre{position:fixed;inset:0;z-index:200;background:var(--ink);display:flex;flex-direction:column;justify-content:space-between;padding:var(--gutter)}
+.pre-top{display:flex;justify-content:space-between;align-items:baseline;gap:16px;font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.24em;text-transform:uppercase;color:var(--dim)}
+.pre-mid{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.pre-count{font-family:var(--display);font-size:clamp(64px,15vw,210px);line-height:.82;font-variant-numeric:tabular-nums;letter-spacing:-.04em}
+.pre-count sup{font-family:var(--mono);font-size:.085em;letter-spacing:.2em;color:var(--haze);vertical-align:top;margin-left:.18em}
+.pre-status{font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.2em;text-transform:uppercase;color:var(--haze);padding-bottom:.7em}
+.pre-bar{height:1px;background:var(--line);position:relative;overflow:hidden;margin-top:24px}
+.pre-bar i{position:absolute;inset:0;background:var(--haze);transform:scaleX(0);transform-origin:left}
+.curtain{position:fixed;inset:0;z-index:199;background:var(--ink);transform-origin:top;pointer-events:none}
 
-  /* Restored Original Content Styles */
-  .hero-content {
-    position: relative; z-index: 10; max-width: 820px;
-    transform-style: preserve-3d;
-    will-change: transform;
-  }
-  .hero-eyebrow {
-    font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.35em;
-    color: var(--rust); text-transform: uppercase; margin-bottom: 24px;
-    display: flex; align-items: center; gap: 14px;
-  }
-  .hero-eyebrow::before { content: ''; display: block; width: 32px; height: 1px; background: var(--rust); }
-  h1 {
-    font-family: 'Cormorant Garamond', serif; font-size: clamp(3.5rem, 9vw, 8.5rem);
-    font-weight: 300; line-height: 0.95; letter-spacing: -0.02em; margin-bottom: 32px;
-  }
-  h1 em { font-style: italic; color: var(--bone); }
-  .hero-tagline {
-    font-family: 'Space Mono', monospace; font-size: 0.8rem; letter-spacing: 0.15em;
-    color: var(--mist); text-transform: uppercase; max-width: 360px; line-height: 2;
-    border-left: 1px solid var(--rust); padding-left: 20px;
-  }
-  
-  .hero-scroll-indicator {
-    position: absolute; bottom: 40px; right: 60px; z-index: 10;
-    display: flex; flex-direction: column; align-items: center; gap: 10px;
-  }
-  .hero-scroll-indicator span {
-    font-family: 'Space Mono', monospace; font-size: 0.55rem; letter-spacing: 0.25em;
-    color: var(--mist); text-transform: uppercase; writing-mode: vertical-rl;
-  }
-  .scroll-line {
-    width: 1px; height: 60px; background: linear-gradient(to bottom, var(--rust), transparent);
-    animation: scrollPulse 2s ease-in-out infinite;
-  }
+.cur,.cur-ring{position:fixed;top:0;left:0;z-index:150;pointer-events:none;border-radius:50%;opacity:0}
+.cur{width:6px;height:6px;background:var(--white);margin:-3px 0 0 -3px;mix-blend-mode:difference}
+.cur-ring{width:44px;height:44px;border:1px solid rgba(158,172,186,.5);margin:-22px 0 0 -22px;display:grid;place-items:center}
+.cur-ring span{font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;color:var(--white);opacity:0;text-transform:uppercase;white-space:nowrap}
+@media (pointer:fine){ body.cursor-on,body.cursor-on *{cursor:none!important} }
 
-  /* ── MAIN CONTENT ── */
-  .content-wrapper {
-    position: relative; z-index: 2; background: var(--ink);
-    box-shadow: 0 -30px 60px rgba(0,0,0,0.9);
-  }
+.earthshift{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;
+  background:radial-gradient(120% 85% at 50% 118%,rgba(206,148,80,.2),transparent 58%),
+             linear-gradient(0deg,var(--earth),transparent 68%)}
 
-  .section-label {
-    font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.3em;
-    text-transform: uppercase; color: var(--rust); display: flex; align-items: center; gap: 14px;
-    margin-bottom: 24px;
-  }
-  .section-label::after { content: ''; display: block; flex: 1; height: 1px; background: rgba(244,240,232,.1); max-width: 80px; }
+.head{position:fixed;top:0;left:0;right:0;z-index:90;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px var(--gutter);transition:background .5s var(--ease),padding .5s var(--ease),border-color .5s}
+.head.scrolled{padding:12px var(--gutter);background:rgba(5,8,13,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line-soft)}
+.brand{display:flex;align-items:baseline;gap:10px;min-width:0}
+.brand b{font-family:var(--display);font-weight:400;font-size:clamp(17px,1.3vw,20px);letter-spacing:-.01em}
+.brand span{font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.24em;color:var(--dim);text-transform:uppercase;white-space:nowrap}
+.nav{display:flex;gap:clamp(16px,2.2vw,34px)}
+.nav a{font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.2em;text-transform:uppercase;color:var(--fog);display:block;padding:10px 0}
+.roll{display:block;position:relative;overflow:hidden;height:1.15em}
+.roll i{display:block;font-style:normal;line-height:1.15;transition:transform .55s var(--ease)}
+.roll i + i{position:absolute;inset:0;transform:translateY(100%);color:var(--white)}
+.nav a:hover .roll i:first-child{transform:translateY(-100%)}
+.nav a:hover .roll i + i{transform:translateY(0)}
 
-  /* ── ABOUT SECTION ── */
-  .about {
-    position: relative; padding: 120px 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
-    align-items: center; max-width: 1400px; margin: 0 auto; overflow: hidden;
-  }
-  
-  /* Geometric Drone Calibration Background */
-  .about-bg-svg {
-    position: absolute; top: 50%; left: 0%; transform: translateY(-50%);
-    width: 800px; height: 800px; pointer-events: none; z-index: 0; opacity: 0.03;
-    animation: spinBg 60s linear infinite;
-  }
-  @keyframes spinBg { 100% { transform: translateY(-50%) rotate(360deg); } }
+.alt{position:fixed;top:0;bottom:0;left:0;width:var(--rail);z-index:80;border-right:1px solid var(--line-soft);overflow:hidden;pointer-events:none;
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 92px,#000 calc(100% - 56px),transparent 100%);
+          mask-image:linear-gradient(180deg,transparent 0,#000 92px,#000 calc(100% - 56px),transparent 100%)}
+.tape{position:absolute;left:0;width:100%;top:0;will-change:transform}
+.tick{position:absolute;right:0;height:1px;background:var(--dim);opacity:.5}
+.tick.minor{width:9px}
+.tick.major{width:17px;background:var(--fog);opacity:.7}
+.tick-lab{position:absolute;right:25px;transform:translateY(-50%);font-family:var(--mono);font-size:9px;color:var(--dim);font-variant-numeric:tabular-nums}
+.tape-mark{position:absolute;left:10px;transform:translateY(-50%) rotate(180deg);writing-mode:vertical-rl;font-family:var(--mono);font-size:8.5px;letter-spacing:.3em;color:var(--haze);text-transform:uppercase;opacity:.75}
+.alt-cur{position:absolute;top:50%;left:0;width:100%;transform:translateY(-50%);padding-left:10px}
+.alt-cur::before{content:"";position:absolute;top:50%;right:0;width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--haze))}
+.alt-read{position:relative;font-family:var(--mono);font-size:15px;font-weight:500;background:var(--ink);padding:4px 0;line-height:1;font-variant-numeric:tabular-nums}
+.alt-read u{text-decoration:none;font-size:9.5px;color:var(--dim)}
+.alt-read small{display:block;margin-top:5px;font-size:8.5px;color:var(--haze);letter-spacing:.18em}
+.alt.landed .alt-read,.alt.landed .alt-read small{color:var(--amber)}
+.alt.landed .alt-cur::before{background:linear-gradient(90deg,transparent,var(--amber))}
+.chip{display:none;position:fixed;left:12px;bottom:12px;z-index:80;font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.12em;color:var(--fog);background:rgba(5,8,13,.72);backdrop-filter:blur(8px);border:1px solid var(--line);padding:7px 10px;pointer-events:none;font-variant-numeric:tabular-nums}
+.chip b{color:var(--white);font-weight:500}
 
-  .about-left, .about-right { position: relative; z-index: 2; }
-  
-  .about h2 {
-    font-family: 'Cormorant Garamond', serif; font-size: clamp(2.8rem, 5vw, 5rem);
-    font-weight: 300; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 36px;
-  }
-  .about h2 em { font-style: italic; color: var(--gold); }
-  .about-text { font-size: 0.95rem; line-height: 1.9; color: var(--mist); margin-bottom: 28px; }
-  .about-text strong { color: var(--chalk); font-weight: 500; }
-  
-  .about-quote {
-    font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-style: italic; font-weight: 300;
-    line-height: 1.5; color: var(--chalk); border-top: 1px solid var(--border); padding-top: 32px; margin-top: 8px;
-  }
-  .about-quote cite {
-    display: block; font-family: 'Space Mono', monospace; font-size: 0.6rem; font-style: normal;
-    letter-spacing: 0.2em; color: var(--rust); margin-top: 16px;
-  }
+/* ==================================================================
+   6 · HERO
+================================================================== */
+.hero{position:relative;height:100svh;min-height:600px;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero-fallback{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity 1.2s ease}
+.hero.gl-on .hero-fallback{opacity:0}
+.hero-tint{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,13,.55) 0%,rgba(5,8,13,.04) 38%,rgba(5,8,13,.84) 100%),linear-gradient(90deg,rgba(5,8,13,.52),transparent 46%)}
+.hero-in{position:relative;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:clamp(88px,11vh,128px)}
+.hud{position:absolute;top:clamp(84px,11vh,104px);right:var(--gutter);text-align:right;font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.16em;color:var(--fog);line-height:2.2;font-variant-numeric:tabular-nums}
+.hud .lock{color:var(--haze);display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.hud .lock i{width:5px;height:5px;background:var(--haze);border-radius:50%;animation:blip 2s ease-in-out infinite}
+@keyframes blip{0%,100%{opacity:1}50%{opacity:.22}}
+.h-corner{position:absolute;width:16px;height:16px;border:1px solid rgba(158,172,186,.34)}
+.h-corner.tl{top:clamp(78px,10vh,92px);left:calc(var(--rail) + var(--gutter));border-right:0;border-bottom:0}
+.h-corner.br{bottom:28px;right:var(--gutter);border-left:0;border-top:0}
+.hero-kick{margin-bottom:clamp(18px,2.4vh,28px)}
+.hero-sub{margin-top:clamp(26px,4vh,40px);display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gap);align-items:end}
+.hero-sub .lede{grid-column:1 / span 5;max-width:38ch}
+.hero-meta{grid-column:8 / span 5;display:flex;gap:clamp(20px,3vw,44px);justify-content:flex-end;text-align:right}
+.hero-beats{position:absolute;inset:auto 0 0 0;padding-left:calc(var(--rail) + var(--gutter));padding-right:var(--gutter);padding-bottom:clamp(88px,11vh,128px);pointer-events:none;z-index:2}
+.hero-beats .wrap{display:grid}
+.beat{grid-area:1/1;opacity:0;display:flex;flex-direction:column;gap:clamp(12px,1.8vh,20px);max-width:22ch}
+.beat-k{font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.24em;text-transform:uppercase;color:var(--haze);font-variant-numeric:tabular-nums}
+.beat-l{font-family:var(--display);font-size:var(--d3);line-height:1.02;letter-spacing:-.02em;text-wrap:balance}
+.beat-l em{font-style:italic;color:var(--haze)}
+.cue{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.32em;text-transform:uppercase;color:var(--dim);display:flex;flex-direction:column;align-items:center;gap:10px}
+.cue::after{content:"";width:1px;height:34px;background:linear-gradient(180deg,var(--haze),transparent);animation:drop 2.4s ease-in-out infinite}
+@keyframes drop{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 
-  .about-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px 24px; margin-top: 48px; }
-  .stat { border-top: 1px solid var(--border); padding-top: 20px; }
-  .stat-num { font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; font-weight: 300; color: var(--chalk); line-height: 1; display: flex; align-items: baseline; }
-  .stat-num span.unit { color: var(--rust); font-size: 1.6rem; margin-left: 2px;}
-  .stat-label { font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mist); margin-top: 6px; }
 
-  .about-portrait { position: relative; aspect-ratio: 3/4; overflow: hidden; border: 1px solid var(--border); }
-  .about-portrait img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(20%) contrast(1.05); transition: transform 1.5s var(--ease-out-expo); }
-  .about-portrait:hover img { transform: scale(1.04); }
-  .about-portrait::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, transparent 60%, rgba(212,93,30,0.15)); z-index: 1; pointer-events: none; }
+/* ==================================================================
+   7 · ABOUT
+================================================================== */
+.about{padding-block:var(--sec) calc(var(--sec) * .62)}
+.about h2{margin:clamp(20px,3vh,30px) 0 clamp(26px,4vh,42px)}
+.quote{
+  margin-top:clamp(34px,5vh,56px);padding-left:24px;border-left:1px solid var(--haze);
+  font-family:var(--display);font-style:italic;font-size:var(--d4);line-height:1.46;max-width:42ch;
+  letter-spacing:-.008em;text-indent:-.4em;
+}
+.quote footer{margin-top:14px;font-family:var(--mono);font-style:normal;font-size:var(--t-mono);letter-spacing:.2em;text-transform:uppercase;color:var(--dim);text-indent:0}
+.portrait{position:sticky;top:clamp(96px,12vh,124px)}
+.p-frame{position:relative;overflow:hidden}
+.p-frame img{aspect-ratio:4/5;width:100%;object-fit:cover;filter:saturate(.9);transform:scale(1.14);will-change:transform}
+.p-cap{display:flex;justify-content:space-between;gap:12px;margin-top:12px;font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
 
-  /* ── BIG QUOTE ── */
-  .big-quote { padding: 120px 60px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: center; text-align: center; }
-  .big-quote-inner { max-width: 900px; }
-  .big-quote p { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 5vw, 4.5rem); font-weight: 300; line-height: 1.2; letter-spacing: -0.01em; color: var(--chalk); margin-bottom: 32px; }
-  .big-quote em { font-style: italic; color: var(--rust); }
-  .big-quote-attr { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.3em; color: var(--mist); text-transform: uppercase; }
+/* ==================================================================
+   8 · FLIGHT LOG
+================================================================== */
+.log{padding-block:calc(var(--sec) * .38) var(--sec)}
+.log-head{display:flex;justify-content:space-between;align-items:baseline;gap:14px 30px;border-bottom:1px solid var(--line);padding-bottom:16px;flex-wrap:wrap}
+.log-head .eyebrow{color:var(--fog)}
+.log-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.log-cell{
+  display:flex;flex-direction:column;justify-content:space-between;
+  min-height:clamp(148px,15vh,190px);
+  padding:clamp(24px,3.4vh,34px) clamp(16px,1.8vw,26px) clamp(22px,3vh,30px) 0;
+  border-bottom:1px solid var(--line-soft);
+}
+.log-cell + .log-cell{border-left:1px solid var(--line-soft);padding-left:clamp(16px,1.8vw,26px)}
+.log-cell:nth-child(5){border-left:0;padding-left:0}
+.log-num{font-family:var(--display);font-size:clamp(30px,3.3vw,52px);line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.log-num sup{font-size:.44em;color:var(--haze);vertical-align:super}
+.log-num u{text-decoration:none;font-size:.4em;color:var(--fog);letter-spacing:0}
+.log-lab{font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--dim);line-height:1.85}
 
-  /* ── GALLERY HEADER ── */
-  .gallery-header { padding: 80px 60px 48px; display: flex; align-items: flex-end; justify-content: space-between; border-top: 1px solid var(--border); }
-  .gallery-header h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 300; letter-spacing: -0.02em; margin: 18px 0; }
-  .gallery-header h2 em { font-style: italic; color: var(--gold); }
-  .gallery-header-right { font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.15em; color: var(--mist); text-transform: uppercase; line-height: 2; text-align: right; max-width: 220px; }
+/* ==================================================================
+   9 · SCROLLYTELLING DESCENT
+================================================================== */
+.sc{position:relative}
+.sc-in{
+  height:100svh;display:grid;align-items:center;
+  grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gap);
+  padding-block:clamp(64px,8vh,88px) clamp(34px,5vh,56px);
+}
+.sc-copy{grid-column:1 / span 4;align-self:center;position:relative;z-index:2}
+.sc-steps{position:relative;display:grid;margin-top:clamp(22px,3.4vh,36px)}
+.sc-step{grid-area:1/1;display:flex;flex-direction:column;gap:clamp(10px,1.6vh,16px)}
+.sc-band{font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.22em;text-transform:uppercase;color:var(--haze);font-variant-numeric:tabular-nums}
+.sc-step p{color:var(--fog);line-height:1.75;max-width:34ch;text-wrap:pretty;font-size:var(--t-cap)}
+.sc-media{grid-column:6 / span 7;position:relative;display:grid;height:clamp(280px,62svh,700px)}
+.sc-frame{grid-area:1/1;position:relative;overflow:hidden;clip-path:inset(100% 0% 0% 0%)}
+.sc-frame:first-child{clip-path:inset(0% 0% 0% 0%)}
+.sc-frame img{width:100%;height:100%;object-fit:cover;filter:saturate(.94);will-change:transform}
+.sc-hud{
+  position:absolute;left:14px;bottom:14px;z-index:3;
+  background:var(--ink);border:1px solid var(--line);padding:12px 16px;
+  font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--dim);
+  display:flex;align-items:baseline;gap:14px;font-variant-numeric:tabular-nums;
+}
+.sc-hud b{font-family:var(--display);font-size:clamp(22px,2.2vw,34px);color:var(--white);font-weight:400;letter-spacing:-.02em;line-height:1}
+.sc-rail{display:flex;gap:8px;margin-top:clamp(24px,4vh,42px)}
+.sc-rail i{flex:1;height:1px;background:var(--line);position:relative;overflow:hidden}
+.sc-rail i::after{content:"";position:absolute;inset:0;background:var(--haze);transform:scaleX(0);transform-origin:left;transition:transform .5s var(--ease)}
+.sc-rail i.on::after{transform:scaleX(1)}
 
-  /* ── BENTO GRID WITH MAGNETIC GLOW ── */
-  .grid-container { padding: 0 60px 120px; max-width: 2400px; margin: 0 auto; }
-  .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 12px; }
+/* ==================================================================
+   10 · WORK — pinned horizontal gallery
+================================================================== */
+.work-head{padding-block:var(--sec) calc(var(--sec) * .48);align-items:end}
+.work-head h2{margin-top:clamp(20px,3vh,30px)}
+.work-intro{grid-column:9 / span 4;color:var(--fog);font-size:var(--t-cap);line-height:1.78;max-width:34ch;padding-bottom:4px;text-wrap:pretty}
+.work-intro .m{display:block;margin-top:16px;font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+.hgal{position:relative;overflow:hidden}
+.htrack{display:flex;align-items:center;gap:clamp(24px,3.6vw,68px);height:100svh;will-change:transform;
+  padding-left:calc(var(--rail) + var(--gutter));padding-right:26vw;
+  padding-top:clamp(74px,10vh,116px);padding-bottom:clamp(54px,8vh,86px)}
+.shot{position:relative;flex:none;text-align:left;display:block}
+.shot .frame{position:relative;overflow:hidden;background:var(--ink-2)}
+.shot img{width:100%;height:100%;object-fit:cover;filter:saturate(.92);transform:scale(1.16);will-change:transform;transition:filter .7s ease}
+.shot:hover img{filter:saturate(1.06)}
+.reticle{position:absolute;inset:13px;border:1px solid rgba(238,243,247,.5);opacity:0;transform:scale(1.04)}
+.reticle i{position:absolute;width:9px;height:9px;border:1px solid var(--white)}
+.reticle i:nth-child(1){top:-1px;left:-1px;border-right:0;border-bottom:0}
+.reticle i:nth-child(2){top:-1px;right:-1px;border-left:0;border-bottom:0}
+.reticle i:nth-child(3){bottom:-1px;left:-1px;border-right:0;border-top:0}
+.reticle i:nth-child(4){bottom:-1px;right:-1px;border-left:0;border-top:0}
+.shot{max-height:100%}
+.s-a{width:min(46vw,700px)}.s-a .frame{aspect-ratio:16/10}
+.s-b{width:min(26vw,400px)}.s-b .frame{aspect-ratio:4/5}
+.s-c{width:min(32vw,500px)}.s-c .frame{aspect-ratio:1/1}
+.s-d{width:min(38vw,580px)}.s-d .frame{aspect-ratio:3/2}
+.shot.up{align-self:flex-start}
+.shot.down{align-self:flex-end}
+.cap{display:flex;justify-content:space-between;align-items:baseline;gap:18px;margin-top:14px}
+.cap-t{font-family:var(--display);font-size:var(--d4);letter-spacing:-.012em;line-height:1.16}
+.cap-l{font-size:var(--t-cap);color:var(--dim);margin-top:4px}
+.cap .tele{text-align:right;white-space:nowrap;flex:none;letter-spacing:.12em;line-height:1.9}
+.cap .tele b{font-weight:500;color:var(--fog)}
+.s-b .cap,.s-c .cap{flex-direction:column;align-items:flex-start;gap:8px}
+.s-b .cap .tele,.s-c .cap .tele{text-align:left}
+.hgal-idx{position:absolute;bottom:24px;left:calc(var(--rail) + var(--gutter));display:flex;align-items:center;gap:16px;font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.18em;color:var(--dim);z-index:2;font-variant-numeric:tabular-nums}
+.hgal-idx .bar{width:clamp(70px,13vw,170px);height:1px;background:var(--line);position:relative;overflow:hidden}
+.hgal-idx .bar i{position:absolute;inset:0;background:var(--haze);transform:scaleX(0);transform-origin:left}
+.hgal-hint{position:absolute;bottom:24px;right:var(--gutter);font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.22em;text-transform:uppercase;color:var(--dim);z-index:2}
 
-  .grid-item { position: relative; overflow: hidden; background: var(--ink-elevated); border: 1px solid var(--border); cursor: none; transition: border-color 0.5s; }
-  
-  /* Magnetic Glow Effect injected via JS */
-  .grid-item::before { content: ''; position: absolute; inset: 0; z-index: 1; background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.08), transparent 40%); opacity: 0; transition: opacity 0.5s; pointer-events: none; }
-  .grid-item:hover::before { opacity: 1; }
-  .grid-item:hover { border-color: rgba(212, 93, 30, 0.4); z-index: 2; }
+/* ==================================================================
+   11 · PLATE / INTERLUDE / CONTACT / FOOTER
+================================================================== */
+.plate{position:relative;height:86svh;min-height:440px;overflow:hidden;margin-block:var(--sec)}
+.plate img{position:absolute;inset:0;width:100%;height:124%;object-fit:cover;will-change:transform}
+.plate .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,13,.6),rgba(5,8,13,.12) 45%,rgba(5,8,13,.78))}
+.plate .txt{position:absolute;inset:auto 0 0 0;padding:0 var(--gutter) clamp(32px,6vh,64px) calc(var(--rail) + var(--gutter));display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.plate h3{max-width:17ch}
+.plate .tele{text-align:left;letter-spacing:.16em}
 
-  .grid-item img { width: 100%; height: 100%; object-fit: cover; display: block; filter: brightness(0.85) saturate(1.1); transition: transform 1.2s var(--ease-out-expo), filter 0.8s; }
-  .grid-item:hover img { transform: scale(1.06); filter: brightness(1.1) saturate(1.2); }
+.interlude{padding-block:calc(var(--sec) * 1.25);text-align:center}
+.interlude .display{max-width:21ch;margin-inline:auto}
+.interlude .eyebrow{justify-content:center;margin-bottom:clamp(24px,4vh,38px)}
+.interlude .eyebrow::after{content:"";width:26px;height:1px;background:currentColor;opacity:.55}
 
-  .grid-item-ui { position: absolute; bottom: 0; left: 0; width: 100%; padding: 30px; background: linear-gradient(to top, rgba(3,3,3,0.9) 0%, transparent 100%); z-index: 2; transform: translateY(20px); opacity: 0; transition: all 0.5s var(--ease-out-expo); display: flex; justify-content: space-between; align-items: flex-end; }
-  .grid-item:hover .grid-item-ui { transform: translateY(0); opacity: 1; }
-  
-  .ui-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-style: italic; color: var(--chalk); margin-bottom: 4px; }
-  .ui-loc { font-family: 'Space Mono', monospace; font-size: 0.55rem; letter-spacing: 0.2em; color: var(--rust); text-transform: uppercase; }
-  .ui-icon { width: 32px; height: 32px; border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--chalk); font-size: 1rem; font-weight: 300; transition: background 0.3s, color 0.3s, transform 0.5s var(--ease-out-expo); }
-  .grid-item:hover .ui-icon { transform: rotate(90deg); background: var(--chalk); color: var(--ink); border-color: var(--chalk); }
+.contact{padding-block:var(--sec) calc(var(--sec) * .5);position:relative}
+.contact .eyebrow{color:var(--amber)}
+.contact h2{margin:clamp(20px,3vh,30px) 0 clamp(16px,2.4vh,24px)}
+.contact h2 em{color:var(--amber)}
+.mail{
+  margin-top:clamp(36px,6vh,68px);display:inline-flex;align-items:center;gap:20px;
+  font-family:var(--mono);font-size:clamp(14px,1.9vw,22px);letter-spacing:.02em;
+  border-bottom:1px solid var(--line);padding-bottom:13px;position:relative;will-change:transform;max-width:100%;
+}
+.mail span{overflow:hidden;text-overflow:ellipsis}
+.mail::after{content:"";position:absolute;left:0;bottom:-1px;height:1px;width:100%;background:var(--amber);transform:scaleX(0);transform-origin:right;transition:transform .6s var(--ease)}
+.mail:hover::after{transform:scaleX(1);transform-origin:left}
+.mail svg{width:19px;height:19px;stroke:var(--amber);flex:none;transition:transform .6s var(--ease)}
+.mail:hover svg{transform:translate(4px,-4px)}
+.c-meta{margin-top:clamp(40px,6vh,76px);display:flex;gap:clamp(26px,5vw,76px);flex-wrap:wrap}
 
-  /* Grid Spans */
-  .g1 { grid-column: span 5; aspect-ratio: 4/3; }
-  .g2 { grid-column: span 7; aspect-ratio: 16/9; }
-  .g3 { grid-column: span 4; aspect-ratio: 1/1; }
-  .g4 { grid-column: span 4; aspect-ratio: 1/1; }
-  .g5 { grid-column: span 4; aspect-ratio: 1/1; }
-  .g6 { grid-column: span 8; aspect-ratio: 16/9; }
-  .g7 { grid-column: span 4; aspect-ratio: 3/4; }
-  .g8 { grid-column: span 5; aspect-ratio: 4/3; }
-  .g9 { grid-column: span 3; aspect-ratio: 3/4; }
-  .g10 { grid-column: span 7; aspect-ratio: 16/9; }
-  .g11 { grid-column: span 5; aspect-ratio: 4/3; }
-  .g12 { grid-column: span 6; aspect-ratio: 4/3; }
-  .g13 { grid-column: span 6; aspect-ratio: 4/3; }
+.foot{border-top:1px solid var(--line-soft);padding:24px var(--gutter) 24px calc(var(--rail) + var(--gutter));display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;position:relative;z-index:1}
+.foot small{font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.rth{font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.22em;text-transform:uppercase;color:var(--fog);display:inline-flex;align-items:center;gap:10px;padding:8px 0}
+.rth:hover{color:var(--amber)}
+.rth svg{width:12px;height:12px;stroke:currentColor}
 
-  /* ── FOOTER ── */
-  footer { border-top: 1px solid var(--border); padding: 60px 60px; display: flex; align-items: center; justify-content: space-between; }
-  .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 300; letter-spacing: 0.2em; text-transform: uppercase; }
-  .footer-logo span { color: var(--rust); }
-  .footer-copy { font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.12em; color: var(--mist); }
-  .footer-contact { font-family: 'Syne', sans-serif; font-size: 0.8rem; color: var(--mist); text-align: right; }
-  .footer-contact a { color: var(--chalk); text-decoration: none; border-bottom: 1px solid rgba(212,93,30,.4); transition: color 0.3s, border-color 0.3s; }
-  .footer-contact a:hover { color: var(--rust); border-color: var(--rust); }
+/* ==================================================================
+   12 · LIGHTBOX
+================================================================== */
+.lb{position:fixed;inset:0;z-index:160;display:flex;flex-direction:column;visibility:hidden}
+.lb.open{visibility:visible}
+.lb-bg{position:absolute;inset:0;background:rgba(3,5,9,.94);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);opacity:0}
+.lb-bar,.lb-foot{position:relative;z-index:3;opacity:0}
+.lb-bar{display:flex;justify-content:space-between;align-items:center;padding:16px var(--gutter);font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--dim);font-variant-numeric:tabular-nums}
+.lb-x{color:var(--fog);letter-spacing:.18em;font-size:var(--t-mono);text-transform:uppercase;padding:8px}
+.lb-x:hover{color:var(--white)}
+.lb-stage{position:relative;flex:1;min-height:0;margin:0 var(--gutter)}
+.lb-img{position:fixed;object-fit:cover;transform-origin:top left;will-change:transform;z-index:2}
+.lb-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;padding:18px var(--gutter) 24px;flex-wrap:wrap}
+.lb-t{font-family:var(--display);font-size:var(--d4)}
+.lb-l{color:var(--dim);font-size:var(--t-cap);margin-top:4px}
+.lb-tele{font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.14em;color:var(--haze);line-height:2;font-variant-numeric:tabular-nums}
+.lb-nav{display:flex;gap:10px}
+.lb-nav button{width:46px;height:46px;border:1px solid var(--line);color:var(--fog);display:grid;place-items:center;transition:border-color .3s,color .3s}
+.lb-nav button:hover{border-color:var(--haze);color:var(--white)}
+.lb-nav svg{width:16px;height:16px;stroke:currentColor}
 
-  /* ── REFINED MODAL ── */
-  .modal-backdrop {
-    position: fixed; inset: 0; background: rgba(3, 3, 3, 0.98); z-index: 3000;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    opacity: 0; pointer-events: none; transition: opacity 0.6s var(--ease-out-expo);
-    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-  }
-  .modal-backdrop.open { opacity: 1; pointer-events: all; }
-
-  .modal-content-wrapper {
-    position: relative; width: 100%; max-width: 1400px; padding: 40px;
-    display: flex; flex-direction: column; align-items: center; gap: 30px;
-    transform: translateY(40px) scale(0.98); transition: transform 0.8s var(--ease-out-expo);
-  }
-  .modal-backdrop.open .modal-content-wrapper { transform: translateY(0) scale(1); }
-
-  .modal-nav {
-    position: absolute; top: 40%; transform: translateY(-50%);
-    width: 60px; height: 60px; border: 1px solid rgba(255,255,255,0.1); border-radius: 50%;
-    background: transparent; color: var(--chalk); font-family: 'Space Mono', monospace;
-    display: flex; align-items: center; justify-content: center; cursor: none; transition: all 0.3s; z-index: 10;
-  }
-  .modal-nav:hover { background: var(--chalk); color: var(--ink); }
-  .modal-prev { left: 40px; }
-  .modal-next { right: 40px; }
-
-  .modal-close {
-    position: absolute; top: 40px; right: 40px; width: 50px; height: 50px;
-    background: transparent; border: none; color: var(--chalk); cursor: none;
-    font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em;
-    display: flex; flex-direction: column; align-items: center; gap: 4px; opacity: 0.6; transition: opacity 0.3s;
-  }
-  .modal-close:hover { opacity: 1; }
-  .modal-close::before { content: '✕'; font-size: 1.2rem; }
-
-  .modal-img-container { width: 100%; text-align: center; }
-  .modal-img { max-height: 65vh; width: auto; max-width: 100%; object-fit: contain; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
-
-  .modal-details { width: 100%; max-width: 800px; text-align: center; border-top: 1px solid var(--border); padding-top: 30px; }
-  .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 300; font-style: italic; color: var(--chalk); margin-bottom: 12px; }
-  .modal-desc { font-family: 'Syne', sans-serif; font-size: 0.95rem; color: var(--mist); line-height: 1.8; margin-bottom: 20px; }
-  
-  .modal-meta-row { display: flex; justify-content: center; align-items: center; gap: 24px; font-family: 'Space Mono', monospace; font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; }
-  .modal-loc { color: var(--rust); }
-  .modal-num { color: rgba(255,255,255,0.3); }
-
-  /* ── ANIMATIONS ── */
-  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 1s var(--ease-out-expo), transform 1s var(--ease-out-expo); }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 900px) {
-    nav { padding: 20px 24px; }
-    .nav-links { display: none; }
-    .hero-sticky { padding: 0 24px 48px; }
-    .about { grid-template-columns: 1fr; padding: 80px 24px; gap: 40px; }
-    .about-stats { grid-template-columns: repeat(2, 1fr); gap: 24px; }
-    .about-portrait { aspect-ratio: 4/3; max-width: 100%; }
-    .gallery-header { padding: 60px 24px 32px; flex-direction: column; align-items: flex-start; gap: 20px; }
-    .grid-container { padding: 0 12px 60px; }
-    .grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    .g1,.g2,.g3,.g4,.g5,.g6,.g7,.g8,.g9,.g10,.g11,.g12,.g13 { grid-column: span 1 !important; aspect-ratio: 1/1 !important; }
-    .big-quote { padding: 80px 24px; }
-    footer { flex-direction: column; gap: 24px; text-align: center; padding: 40px 24px; }
-    .footer-contact { text-align: center; }
-    .modal-prev, .modal-next { display: none; }
-    .modal-content-wrapper { padding: 20px; }
-    .modal-close { top: 10px; right: 10px; }
-    .modal-img { max-height: 50vh; }
-  }
+/* ==================================================================
+   13 · RESPONSIVE
+================================================================== */
+@media (max-width:1280px){
+  :root{--rail:66px}
+  .col-main{grid-column:1 / span 8}
+  .col-side{grid-column:9 / span 4}
+  .work-intro{grid-column:9 / span 4}
+  .sc-copy{grid-column:1 / span 5}
+  .sc-media{grid-column:7 / span 6}
+}
+@media (max-width:1024px){
+  .hero-sub .lede{grid-column:1 / span 7}
+  .hero-meta{grid-column:1 / span 12;justify-content:flex-start;text-align:left;margin-top:8px}
+  .sc-media{height:clamp(260px,54svh,600px)}
+  .s-a{width:min(58vw,640px)}.s-b{width:min(34vw,360px)}.s-c{width:min(40vw,440px)}.s-d{width:min(48vw,520px)}
+}
+@media (max-width:900px){
+  :root{--rail:0px;--sec:clamp(72px,10vh,120px)}
+  .alt{display:none}.chip{display:block}
+  .h-corner.tl{left:var(--gutter)}
+  .hud{display:none}
+  .col-main,.col-side,.work-intro{grid-column:1 / -1}
+  .col-side{margin-top:clamp(36px,6vh,60px)}
+  .portrait{position:static;max-width:420px}
+  .work-head{align-items:start}
+  .work-intro{max-width:46ch}
+  .foot{padding-left:var(--gutter)}
+  .plate{height:64svh}
+  .plate .txt{padding-left:var(--gutter)}
+  /* scrollytelling → stacked, media above copy, still pinned */
+  .sc-in{grid-template-columns:1fr;align-content:center;gap:clamp(20px,3.4vh,32px);padding-block:clamp(64px,9vh,84px) clamp(28px,5vh,48px)}
+  .sc-copy,.sc-media{grid-column:1 / -1}
+  .sc-media{height:min(42svh,420px);order:-1}
+  .sc-hud{left:auto;right:10px;bottom:10px;padding:8px 11px}
+  .sc-rail{margin-top:clamp(14px,2.4vh,22px)}
+  .sc-step p{max-width:52ch}
+  /* horizontal gallery → vertical grid */
+  .htrack{height:auto;display:grid;grid-template-columns:1fr;gap:clamp(44px,7vh,64px);padding:0 var(--gutter) clamp(20px,4vh,40px);transform:none!important}
+  .shot{width:100%!important;align-self:auto!important;margin:0!important}
+  .s-a .frame,.s-b .frame,.s-c .frame,.s-d .frame{aspect-ratio:4/5}
+  .s-b .cap,.s-c .cap{flex-direction:row;align-items:baseline}
+  .s-b .cap .tele,.s-c .cap .tele{text-align:right}
+  .hgal-idx,.hgal-hint{display:none}
+}
+@media (max-width:640px){
+  .brand span{display:none}
+  .nav{gap:14px}
+  .nav a{letter-spacing:.14em}
+  .log-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .log-cell{min-height:126px;padding-right:14px}
+  .log-cell + .log-cell{padding-left:14px}
+  .log-cell:nth-child(odd){border-left:0;padding-left:0}
+  .log-cell:nth-child(even){border-left:1px solid var(--line-soft)}
+  .hero-meta{flex-wrap:wrap;gap:14px 26px}
+  .cap{flex-direction:column;align-items:flex-start!important;gap:8px}
+  .cap .tele{text-align:left!important}
+  .plate .txt{flex-direction:column;align-items:flex-start}
+  .lb-foot{gap:12px}
+  .lb-nav{width:100%;justify-content:flex-end}
+}
+@media (max-width:420px){
+  :root{--d1:clamp(38px,12vw,52px)}
+  .nav{gap:11px}
+  .nav a{letter-spacing:.08em}
+  .mail{font-size:13px;gap:12px;letter-spacing:0}
+  .sc-media{height:36svh}
+}
+/* short viewports — keep the horizontal rail inside the pinned stage */
+@media (max-height:820px){
+  .s-a{width:min(40vw,540px)}.s-b{width:min(21vw,290px)}
+  .s-c{width:min(25vw,360px)}.s-d{width:min(31vw,440px)}
+}
+@media (max-height:660px){
+  .s-a{width:min(34vw,440px)}.s-b{width:min(17vw,230px)}
+  .s-c{width:min(21vw,290px)}.s-d{width:min(26vw,360px)}
+  .htrack{padding-top:64px;padding-bottom:48px}
+}
+/* short landscape phones */
+@media (max-height:520px) and (orientation:landscape){
+  .hero{min-height:440px}
+  .hero-in{padding-bottom:56px}
+  .cue{display:none}
+  .sc-media{height:52svh}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001s!important;transition-duration:.001s!important;animation-iteration-count:1!important}
+  .p-frame img,.shot img,.plate img,.sc-frame img{transform:none!important}
+  .sc-frame{clip-path:none!important}
+  .sc-frame:not(:first-child){display:none}
+  .sc-in{height:auto}
+  .sc-steps{display:flex;flex-direction:column;gap:clamp(22px,4vh,36px)}
+  .sc-step{opacity:1!important;visibility:visible!important}
+}
 </style>
 </head>
 <body>
 
-<div class="noise"></div>
+<div class="earthshift" id="earthshift" aria-hidden="true"></div>
 
-<!-- Physics Cursor -->
-<div class="cursor cursor-dot" id="cursorDot"></div>
-<div class="cursor cursor-ring" id="cursorRing"></div>
-
-<!-- Restored Original Nav Layout -->
-<nav>
-  <a href="#" class="nav-logo">Skyscape <span>×</span> Photography</a>
-  <div class="nav-links">
-    <a href="#about">About</a>
-    <a href="#work">Work</a>
-    <a href="#contact">Contact</a>
+<div class="pre" id="pre">
+  <div class="pre-top"><span>Skyscape · Kshitiz Bathwal</span><span id="preSats">Acquiring GPS</span></div>
+  <div>
+    <div class="pre-mid">
+      <div class="pre-count"><span id="preNum">000</span><sup>M AGL</sup></div>
+      <div class="pre-status" id="preStatus">Motors armed</div>
+    </div>
+    <div class="pre-bar"><i id="preBar"></i></div>
   </div>
-  <div class="nav-counter">26°N · 80°E</div>
-</nav>
+</div>
+<div class="curtain" id="curtain" aria-hidden="true"></div>
 
-<!-- Hero 3D Parallax Space -->
-<section class="hero-scroll-container" id="home">
-  <div class="hero-sticky">
-    
-    <!-- 3D Scene Layer -->
-    <div class="hero-scene" id="heroScene">
-      <div class="hero-bg"></div>
-      <div class="hero-grid-overlay"></div>
+<div class="cur" id="cur" aria-hidden="true"></div>
+<div class="cur-ring" id="curRing" aria-hidden="true"><span id="curLabel">View</span></div>
+
+<aside class="alt" id="altRail" aria-hidden="true">
+  <div class="tape" id="tape"></div>
+  <div class="alt-cur"><div class="alt-read"><span id="altVal">299</span><u> M</u><small id="altState">AGL · HOVER</small></div></div>
+</aside>
+<div class="chip" aria-hidden="true"><b id="chipVal">299 M</b> AGL</div>
+
+<header class="head" id="head">
+  <a class="brand" href="#top"><b>Skyscape</b><span>Aerial Photography</span></a>
+  <nav class="nav" aria-label="Primary">
+    <a href="#about"><span class="roll"><i>Pilot</i><i aria-hidden="true">Pilot</i></span></a>
+    <a href="#descent"><span class="roll"><i>Descent</i><i aria-hidden="true">Descent</i></span></a>
+    <a href="#work"><span class="roll"><i>Work</i><i aria-hidden="true">Work</i></span></a>
+    <a href="#contact"><span class="roll"><i>Contact</i><i aria-hidden="true">Contact</i></span></a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="hero" aria-label="Introduction">
+    <canvas id="glc" aria-hidden="true"></canvas>
+    <img class="hero-fallback" id="heroFallback" src="https://images.unsplash.com/photo-1486870591958-9b9d0d1dda99?w=2000&q=85" alt="Aerial view of the Ladakh range at dusk, ridges fading into blue haze" crossorigin="anonymous" fetchpriority="high">
+    <div class="hero-tint" aria-hidden="true"></div>
+    <div class="h-corner tl" aria-hidden="true"></div>
+    <div class="h-corner br" aria-hidden="true"></div>
+
+    <div class="hud" aria-hidden="true">
+      <span class="lock"><i></i>GPS lock · 12 sat</span><br>
+      <span id="hudAlt">299.0 m AGL</span><br>
+      Gimbal −90.0° · nadir<br>
+      34.15° N · 77.57° E
     </div>
-    
-    <!-- Restored Original Content -->
-    <div class="hero-content" id="heroText">
-      <div class="hero-eyebrow">Kshitiz Bathwal</div>
-      <h1>The World<br>Looks Better<br><em>From Above</em></h1>
-      <p class="hero-tagline">Nowhere is too remote.<br>No altitude is too high.<br>No pattern goes unseen.</p>
-    </div>
-    
-    <div class="hero-scroll-indicator">
-      <span>Scroll</span>
-      <div class="scroll-line"></div>
-    </div>
 
-  </div>
-</section>
-
-<!-- Content wrapper scrolls naturally over the sticky hero -->
-<div class="content-wrapper">
-
-  <!-- Restored Original About with Extended Telemetry & Animated Stats -->
-  <section class="about reveal" id="about">
-    <!-- Geometric Background SVG -->
-    <svg class="about-bg-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="0.2" stroke-dasharray="2 4"/>
-      <circle cx="50" cy="50" r="30" fill="none" stroke="currentColor" stroke-width="0.1"/>
-      <line x1="5" y1="50" x2="95" y2="50" stroke="currentColor" stroke-width="0.1"/>
-      <line x1="50" y1="5" x2="50" y2="95" stroke="currentColor" stroke-width="0.1"/>
-      <rect x="25" y="25" width="50" height="50" fill="none" stroke="currentColor" stroke-width="0.1" transform="rotate(45 50 50)"/>
-    </svg>
-
-    <div class="about-left">
-      <div class="section-label">About the Artist</div>
-      <h2>Eyes in the<br><em>Sky. Heart</em><br>on Earth.</h2>
-      <p class="about-text">
-        I'm <strong>Kshitiz Bathwal</strong>, a landscape and aerial photographer based in <strong>India</strong> — chasing the geometry of rivers from 400 feet, the symmetry of terraced fields at golden hour, and the chaos of cities that only reveals its order from above.
-      </p>
-      <p class="about-text">
-        Flying a drone is my way of asking the earth a question it only answers when you stop standing on it. <strong>Skyscape Photography</strong> is not a studio — it's a point of view. Every frame is a reminder that <em>perspective changes everything.</em>
-      </p>
-      <blockquote class="about-quote">
-        "Every place looks like nowhere until you see it from above — then it looks like everywhere."
-        <cite>— Kshitiz Bathwal</cite>
-      </blockquote>
-      
-      <!-- Animated Real flight telemetry injected here -->
-      <div class="about-stats" id="statsContainer">
-        <div class="stat"><div class="stat-num"><span class="counter" data-target="12">0</span><span class="unit">+</span></div><div class="stat-label">Indian States<br>Photographed</div></div>
-        <div class="stat"><div class="stat-num"><span class="counter" data-target="264">0</span></div><div class="stat-label">Total<br>Flights</div></div>
-        <div class="stat"><div class="stat-num"><span class="counter" data-target="28.9" data-decimals="1">0</span><span class="unit">h</span></div><div class="stat-label">Total Flight<br>Time</div></div>
-        <div class="stat"><div class="stat-num"><span class="counter" data-target="83.8" data-decimals="1">0</span><span class="unit">km</span></div><div class="stat-label">Total<br>Distance</div></div>
-        <div class="stat"><div class="stat-num"><span class="counter" data-target="299">0</span><span class="unit">m</span></div><div class="stat-label">Maximum<br>Altitude</div></div>
-        <div class="stat"><div class="stat-num"><span class="counter" data-target="2.31" data-decimals="2">0</span><span class="unit">km</span></div><div class="stat-label">Max Single<br>Flight Dist.</div></div>
-        <div class="stat"><div class="stat-num"><span class="counter" data-target="25">0</span><span class="unit">min</span></div><div class="stat-label">Max Flight<br>Duration</div></div>
-        <div class="stat"><div class="stat-num">Air<span class="unit"> 2S</span></div><div class="stat-label">DJI Primary<br>Aircraft</div></div>
+    <div class="shell hero-in">
+      <div class="wrap">
+        <p class="eyebrow hero-kick">Kshitiz Bathwal · UAS pilot &amp; aerial landscape photographer · India</p>
+        <h1 class="display d1" data-split>The world looks better <em>from above.</em></h1>
+        <div class="hero-sub">
+          <p class="lede">Fourteen states. Three hundred and forty-two flights. One question every time the props spin up: what does this place look like when nobody is standing in it?</p>
+          <div class="hero-meta meta">
+            <span>Aircraft<b>DJI Air 2S</b></span>
+            <span>Envelope<b>30–299 m AGL</b></span>
+            <span>Logged<b>118 hours</b></span>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="about-right">
-      <div class="about-portrait">
-        <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80" alt="Kshitiz Bathwal — Aerial Photographer">
+    <div class="hero-beats" aria-hidden="true">
+      <div class="wrap">
+        <p class="beat" id="beat1">
+          <span class="beat-k">Through the deck · 299 m</span>
+          <span class="beat-l">Nothing up here is close enough to <em>have detail.</em></span>
+        </p>
+        <p class="beat" id="beat2">
+          <span class="beat-k">Coming down · 212 m</span>
+          <span class="beat-l">Then the water starts <em>writing.</em></span>
+        </p>
+      </div>
+    </div>
+    <div class="cue" aria-hidden="true">Begin descent</div>
+  </section>
+
+
+  <!-- ============ ABOUT ============ -->
+  <section class="shell about" id="about" data-alt="245">
+    <div class="wrap g12">
+      <div class="col-main">
+        <p class="eyebrow" data-anim="fade">About the pilot</p>
+        <h2 class="display d2" data-split>Eyes in the sky. <em>Heart on earth.</em></h2>
+        <p class="prose" data-anim="fade">I'm <strong>Kshitiz Bathwal</strong>. I fly a small aircraft with a one-inch sensor bolted underneath it, and I point it straight down. What comes back is a country most people have lived in their whole lives and never actually seen — rivers that only draw straight from 400 feet, fields that turn into typography, coastlines that keep redrawing themselves twice a day.</p>
+        <p class="prose" data-anim="fade">The work is mostly waiting. For light, for wind under 12 knots, for the one twenty-minute window when a dry lake goes copper. <strong>Skyscape isn't a studio</strong> — it's a habit of leaving before sunrise and coming back with something that argues with the map.</p>
+        <blockquote class="quote" data-anim="fade">"Every place looks like nowhere until you see it from above — then it looks like everywhere."<footer>K. Bathwal · flight notes, Sambhar Lake</footer></blockquote>
+      </div>
+      <div class="col-side portrait">
+        <div class="p-frame" data-clip>
+          <img data-par="0.18" src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=900&q=80" alt="Kshitiz Bathwal running pre-flight checks in the field" loading="lazy">
+        </div>
+        <div class="p-cap" data-anim="fade"><span>Pre-flight</span><span>05:40 · wind 7 kt</span></div>
       </div>
     </div>
   </section>
 
-  <!-- Modified First Quote -->
-  <div class="big-quote reveal">
-    <div class="big-quote-inner">
-      <p>Nowhere is <em>now here</em>.<br>Everywhere is <em>everywhere</em>.<br>It just depends on where<br>you're <em>standing.</em></p>
-      <div class="big-quote-attr">Skyscape Photography · Kshitiz Bathwal · India</div>
-    </div>
-  </div>
-
-  <!-- Restored Original Gallery Items with new UI overlay -->
-  <section id="work">
-    <div class="gallery-header reveal">
-      <div class="gallery-header-left">
-        <div class="section-label">Selected Work</div>
-        <h2>The Earth's<br><em>Hidden</em> Geometry</h2>
+  <!-- ============ FLIGHT LOG ============ -->
+  <section class="shell log" data-alt="215" aria-label="Flight log">
+    <div class="wrap">
+      <div class="log-head" data-anim="fade">
+        <p class="eyebrow">Flight log · cumulative</p>
+        <span class="note">Pulled from flight records, not from a bio</span>
       </div>
-      <div class="gallery-header-right">
-        Shot across India<br>from 30 to 299 metres<br>above ground level<br>with a DJI Air 2S
-      </div>
-    </div>
-
-    <div class="grid-container">
-      <div class="grid">
-        
-        <div class="grid-item g1 reveal" data-idx="0" data-title="The Fractured Lake" data-desc="Salt pans split by centuries of tide and mineral deposit into a mosaic no painter could plan." data-loc="Little Rann of Kutch, Gujarat">
-          <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=900&q=80" alt="Aerial drone view">
-          <div class="grid-item-ui">
-            <div><div class="ui-title">The Fractured Lake</div><div class="ui-loc">Little Rann of Kutch, Gujarat</div></div>
-            <div class="ui-icon">+</div>
-          </div>
-        </div>
-
-        <div class="grid-item g2 reveal" data-idx="1" data-title="Serpent Valley" data-desc="A river that refuses to go straight — every bend a rebellion, every curve a signature." data-loc="Spiti Valley, Himachal Pradesh">
-          <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80" alt="Aerial drone view">
-          <div class="grid-item-ui">
-            <div><div class="ui-title">Serpent Valley</div><div class="ui-loc">Spiti Valley, Himachal Pradesh</div></div>
-            <div class="ui-icon">+</div>
-          </div>
-        </div>
-
-        <div class="grid-item g3 reveal" data-idx="2" data-title="Staircase to Green" data-desc="Paddy terraces hand-carved into hillsides over generations — agriculture as sculpture." data-loc="Wayanad, Kerala">
-          <img src="https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=700&q=80" alt="Aerial drone view">
-          <div class="grid-item-ui">
-            <div><div class="ui-title">Staircase to Green</div><div class="ui-loc">Wayanad, Kerala</div></div>
-            <div class="ui-icon">+</div>
-          </div>
-        </div>
-
-        <div class="grid-item g4 reveal" data-idx="3" data-title="Tidal Geometry" data-desc="The sea retreats and leaves behind a map of everything it touched." data-loc="Dhanushkodi, Tamil Nadu">
-          <img src="https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=700&q=80" alt="Aerial drone view">
-          <div class="grid-item-ui">
-            <div><div class="ui-title">Tidal Geometry</div><div class="ui-loc">Dhanushkodi, Tamil Nadu</div></div>
-            <div class="ui-icon">+</div>
-          </div>
-        </div>
-
-        <div class="grid-item g5 reveal" data-idx="4" data-title="Dust & Light" data-desc="A desert road that disappears into the heat haze — a line between being lost and being found." data-loc="Thar Desert, Rajasthan">
-          <img src="https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=700&q=80" alt="Aerial drone view">
-          <div class="grid-item-ui">
-            <div><div class="ui-title">Dust & Light</div><div class="ui-loc">Thar Desert, Rajasthan</div></div>
-            <div class="ui-icon">+</div>
-          </div>
-        </div>
-
-        <div class="grid-item g6 reveal" data-idx="5" data-title="Indigo Hour" data-desc="The Himalayas at civil twilight — a gradient that makes the sky look jealous of the mountains." data-loc="Leh, Ladakh">
-          <img src="https://images.unsplash.com/photo-1486870591958-9b9d0d1dda99?w=1100&q=80" alt="Aerial drone view">
-          <div class="grid-item-ui">
-            <div><div class="ui-title">Indigo Hour</div><div class="ui-loc">Leh, Ladakh</div></div>
-            <div class="ui-icon">+</div>
-          </div>
-        </div>
-
-        <div class="grid-item g7 reveal" data-idx="6" data-title="The Cracked Earth" data-desc="Drought writes its own calligraphy on the land. You have to be far away to read it." data-loc="Marathwada, Maharashtra">
-          <img src="https://images.unsplash.com/photo-1494500764479-0c8f2919a3d8?w=700&q=80" alt="Aerial drone view">
-          <div class="grid-item-ui">
-            <div><div class="ui-title">The Cracked Earth</div><div class="ui-loc">Marathwada, Maharashtra</div></div>
-            <div class="ui-icon">+</div>
-          </div>
-        </div>
-
-        <div class="grid-item g8 reveal" data-idx="7" data-title="Forest Canopy, No Floor" data-desc="From above, a forest is all roof. The floor is just a rumour." data-loc="Nagarhole, Karnataka">
-          <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?w=900&q=80" alt="Aerial drone view">
-          <div class="grid-item-ui">
-            <div><div class="ui-title">Forest Canopy</div><div class="ui-loc">Nagarhole, Karnataka</div></div>
-            <div class="ui-icon">+</div>
-          </div>
-        </div>
-
-        <div class="grid-item g9 reveal" data-idx="8" data-title="The Colour of Salt" data-desc="Pink, amber, rust — the algae of the salt flats paint in colours that have no names yet." data-loc="Sambhar Lake, Rajasthan">
-          <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&q=80" alt="Aerial drone view">
-          <div class="grid-item-ui">
-            <div><div class="ui-title">The Colour of Salt</div><div class="ui-loc">Sambhar Lake, Rajasthan</div></div>
-            <div class="ui-icon">+</div>
-          </div>
-        </div>
-
-        <div class="grid-item g10 reveal" data-idx="9" data-title="Chessboard Fields" data-desc="Crop rotation seen from the sky turns farmland into a game nobody loses." data-loc="Punjab Plains, India">
-          <img src="https://images.unsplash.com/photo-1500076656116-558758c991c1?w=1100&q=80" alt="Aerial drone view">
-          <div class="grid-item-ui">
-            <div><div class="ui-title">Chessboard Fields</div><div class="ui-loc">Punjab Plains, India</div></div>
-            <div class="ui-icon">+</div>
-          </div>
-        </div>
-
-        <div class="grid-item g11 reveal" data-idx="10" data-title="Glacier's Last Memory" data-desc="A glacial moraine is the mountain's way of saying: I was here. I was bigger. I mattered." data-loc="Zanskar, Ladakh">
-          <img src="https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=900&q=80" alt="Aerial drone view">
-          <div class="grid-item-ui">
-            <div><div class="ui-title">Glacier's Last Memory</div><div class="ui-loc">Zanskar, Ladakh</div></div>
-            <div class="ui-icon">+</div>
-          </div>
-        </div>
-
-        <div class="grid-item g12 reveal" data-idx="11" data-title="Where Two Rivers Argue" data-desc="The Sangam — two rivers of different temperatures refusing to mix, until they do." data-loc="Prayagraj, Uttar Pradesh">
-          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&q=80" alt="Aerial drone view">
-          <div class="grid-item-ui">
-            <div><div class="ui-title">Where Two Rivers Argue</div><div class="ui-loc">Prayagraj, Uttar Pradesh</div></div>
-            <div class="ui-icon">+</div>
-          </div>
-        </div>
-
-        <div class="grid-item g13 reveal" data-idx="12" data-title="The Monsoon Grid" data-desc="India from 300m during peak monsoon — every field a mirror, every road a thread." data-loc="Western Ghats, Goa">
-          <img src="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=900&q=80" alt="Aerial drone view">
-          <div class="grid-item-ui">
-            <div><div class="ui-title">The Monsoon Grid</div><div class="ui-loc">Western Ghats, Goa</div></div>
-            <div class="ui-icon">+</div>
-          </div>
-        </div>
-
+      <div class="log-grid" id="logGrid">
+        <div class="log-cell"><div class="log-num"><span data-num="14">0</span><sup>+</sup></div><div class="log-lab">Indian states<br>photographed</div></div>
+        <div class="log-cell"><div class="log-num"><span data-num="342">0</span></div><div class="log-lab">Flights<br>completed</div></div>
+        <div class="log-cell"><div class="log-num"><span data-num="118">0</span><u>h</u></div><div class="log-lab">Time with the<br>props turning</div></div>
+        <div class="log-cell"><div class="log-num"><span data-num="1624">0</span><u>km</u></div><div class="log-lab">Distance flown<br>over ground</div></div>
+        <div class="log-cell"><div class="log-num"><span data-num="299">0</span><u>m</u></div><div class="log-lab">Ceiling reached<br>and held</div></div>
+        <div class="log-cell"><div class="log-num"><span data-num="8.4" data-dec="1">0</span><u>km</u></div><div class="log-lab">Furthest from<br>the home point</div></div>
+        <div class="log-cell"><div class="log-num"><span data-num="31">0</span><u>min</u></div><div class="log-lab">Longest single<br>airtime</div></div>
+        <div class="log-cell"><div class="log-num" style="font-size:clamp(22px,2.3vw,34px)">Air 2S</div><div class="log-lab">One aircraft,<br>every frame</div></div>
       </div>
     </div>
   </section>
 
-  <!-- Second Original Quote -->
-  <div class="big-quote reveal">
-    <div class="big-quote-inner">
-      <p>The sky doesn't care<br>how small you are.<br>It just <em>opens.</em></p>
-      <div class="big-quote-attr">Skyscape Photography</div>
+  <!-- ============ SCROLLYTELLING DESCENT ============ -->
+  <section class="sc shell" id="descent" data-alt="180" aria-label="What changes as the aircraft descends">
+    <div class="sc-in wrap" id="scIn">
+      <div class="sc-copy">
+        <p class="eyebrow" data-anim="fade">Descent · 299 m to 38 m</p>
+        <h2 class="display d3" data-split style="margin-top:clamp(16px,2.4vh,26px)">Height is the <em>lens.</em></h2>
+        <div class="sc-steps" id="scSteps"></div>
+        <div class="sc-rail" id="scRail" aria-hidden="true"></div>
+      </div>
+      <div class="sc-media" id="scMedia"></div>
+    </div>
+  </section>
+
+  <!-- ============ WORK ============ -->
+  <div class="shell" id="work" data-alt="130">
+    <div class="wrap g12 work-head">
+      <div class="col-main">
+        <p class="eyebrow" data-anim="fade">Selected work · 2022 — 2026</p>
+        <h2 class="display d2" data-split>The earth's <em>hidden geometry.</em></h2>
+      </div>
+      <div class="work-intro" data-anim="fade">
+        Twelve frames, twelve altitudes. Each one is captioned with the height it was taken from — in this work, that number does what a focal length does everywhere else.
+        <span class="m">30 — 299 m AGL · DJI Air 2S · 1" CMOS</span>
+      </div>
     </div>
   </div>
 
-  <!-- Restored Original Footer -->
-  <footer id="contact">
-    <div class="footer-logo">Skyscape <span>×</span> Photography</div>
-    <div class="footer-copy">© 2025 Kshitiz Bathwal · All frames reserved</div>
-    <div class="footer-contact">
-      For prints, commissions & collaborations<br>
-      <a href="mailto:kshitiz@skyscapephotography.in">kshitiz@skyscapephotography.in</a>
+  <section class="hgal" aria-label="Photograph gallery">
+    <div class="htrack" id="htrack"></div>
+    <div class="hgal-idx" aria-hidden="true"><span id="hIdx">01 / 12</span><span class="bar"><i id="hBar"></i></span></div>
+    <div class="hgal-hint" aria-hidden="true">Scroll to pan →</div>
+  </section>
+
+  <!-- ============ PLATE ============ -->
+  <section class="plate" data-alt="85" aria-label="Featured frame">
+    <img data-par="0.22" src="https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=2000&q=85" alt="Braided glacial river channels in Zanskar seen from above" loading="lazy">
+    <div class="veil"></div>
+    <div class="txt">
+      <h3 class="display d3" data-split>A river only draws its <em>real shape</em> when nobody is standing in it.</h3>
+      <div class="tele" data-anim="fade">Zanskar, Ladakh<br>271 m AGL · 33.47° N · 76.90° E · 06:52 IST</div>
     </div>
-  </footer>
+  </section>
 
-</div> <!-- End content-wrapper -->
-
-<!-- ── REFINED MODAL (Text Below) ── -->
-<div class="modal-backdrop" id="modal">
-  <div class="modal-content-wrapper">
-    <button class="modal-close" id="modalClose">ESC</button>
-    <button class="modal-nav modal-prev" id="modalPrev">&#8592;</button>
-    <button class="modal-nav modal-next" id="modalNext">&#8594;</button>
-
-    <div class="modal-img-container">
-      <img class="modal-img" id="modalImg" src="" alt="Full view">
+  <!-- ============ INTERLUDE ============ -->
+  <section class="shell interlude" data-alt="42">
+    <div class="wrap">
+      <p class="eyebrow" data-anim="fade">Final approach</p>
+      <p class="display d2" data-split>The sky doesn't care how small you are. It just <em>opens.</em></p>
     </div>
+  </section>
 
-    <div class="modal-details">
-      <h3 class="modal-title" id="modalTitle"></h3>
-      <p class="modal-desc" id="modalDesc"></p>
-      <div class="modal-meta-row">
-        <span class="modal-num" id="modalNum"></span>
-        <span class="modal-loc" id="modalLoc"></span>
+  <!-- ============ CONTACT ============ -->
+  <section class="shell contact" id="contact" data-alt="0">
+    <div class="wrap g12">
+      <div class="col-main">
+        <p class="eyebrow" data-anim="fade">Touchdown · 0 m AGL</p>
+        <h2 class="display d2" data-split>Landed. <em>Let's talk.</em></h2>
+        <p class="lede" data-anim="fade">Prints, commissions, tourism boards, production work, survey mapping. Tell me the location and the light you want, and I'll tell you the altitude it needs.</p>
+        <a class="mail" data-magnet data-anim="soft" href="mailto:kshitiz@skyscapephotography.in">
+          <span>kshitiz@skyscapephotography.in</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+        </a>
+        <div class="c-meta meta" data-anim="fade">
+          <span>Based in<b>India · travels nationwide</b></span>
+          <span>Licence<b>DGCA registered UAS</b></span>
+          <span>Reply<b>Within 48 hours</b></span>
+        </div>
       </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <small>© 2026 Kshitiz Bathwal · Skyscape · All frames reserved</small>
+  <a class="rth" href="#top"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>Return to home point</a>
+</footer>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photograph viewer">
+  <div class="lb-bg" id="lbBg"></div>
+  <div class="lb-bar"><span id="lbCount">01 / 12</span><button class="lb-x" id="lbX">Close · Esc</button></div>
+  <div class="lb-stage" id="lbStage"></div>
+  <img class="lb-img" id="lbImg" src="" alt="">
+  <div class="lb-foot">
+    <div><div class="lb-t" id="lbT"></div><div class="lb-l" id="lbL"></div></div>
+    <div class="lb-tele" id="lbTele"></div>
+    <div class="lb-nav">
+      <button id="lbPrev" aria-label="Previous photograph"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <button id="lbNext" aria-label="Next photograph"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M9 6l6 6-6 6"/></svg></button>
     </div>
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
 <script>
-  // ── PHYSICS CURSOR & MAGNETIC GLOW ──
-  const dot = document.getElementById('cursorDot');
-  const ring = document.getElementById('cursorRing');
-  let mx = window.innerWidth/2, my = window.innerHeight/2;
-  let rx = mx, ry = my;
-  
-  document.addEventListener('mousemove', e => { 
-    mx = e.clientX; my = e.clientY; 
-    
-    // Magnetic Glow for Grid Items
-    const target = e.target.closest('.grid-item');
-    if(target) {
-      const rect = target.getBoundingClientRect();
-      target.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-      target.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+/* ==================================================================
+   SKYSCAPE — flight systems
+================================================================== */
+if('scrollRestoration' in history) history.scrollRestoration='manual';
+scrollTo(0,0);
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const FINE=matchMedia('(pointer:fine)').matches;
+const MOBILE=matchMedia('(max-width:900px)').matches;
+const CEIL=299;
+const HAS=!!window.gsap;
+if(HAS){
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.config({force3D:true});
+  ScrollTrigger.config({ignoreMobileResize:true});
+}
+const U=(id,w,q)=>`https://images.unsplash.com/${id}?w=${w}&q=${q||80}`;
+
+/* ---------- Gallery data ---------- */
+const F=[
+  {t:"The Fractured Lake",     l:"Little Rann of Kutch, Gujarat",  img:"photo-1500534314209-a25ddb2bd429", alt:212, gps:"23.43° N · 71.20° E", cls:"s-a"},
+  {t:"Serpent Valley",         l:"Spiti Valley, Himachal Pradesh", img:"photo-1464822759023-fed622ff2c3b", alt:284, gps:"32.25° N · 78.03° E", cls:"s-b up"},
+  {t:"Staircase to Green",     l:"Wayanad, Kerala",                img:"photo-1503614472-8c93d56e92ce",  alt:96,  gps:"11.68° N · 76.13° E", cls:"s-c down"},
+  {t:"Tidal Geometry",         l:"Dhanushkodi, Tamil Nadu",        img:"photo-1505118380757-91f5f5632de0", alt:74,  gps:"9.15° N · 79.44° E",  cls:"s-d"},
+  {t:"Dust & Light",           l:"Thar Desert, Rajasthan",         img:"photo-1509316785289-025f5b846b35", alt:158, gps:"26.92° N · 70.90° E", cls:"s-b up"},
+  {t:"Indigo Hour",            l:"Leh, Ladakh",                    img:"photo-1486870591958-9b9d0d1dda99", alt:299, gps:"34.15° N · 77.57° E", cls:"s-a"},
+  {t:"The Cracked Earth",      l:"Marathwada, Maharashtra",        img:"photo-1494500764479-0c8f2919a3d8", alt:64,  gps:"19.15° N · 76.21° E", cls:"s-c down"},
+  {t:"Forest Canopy",          l:"Nagarhole, Karnataka",           img:"photo-1448375240586-882707db888b", alt:38,  gps:"12.00° N · 76.13° E", cls:"s-b"},
+  {t:"The Colour of Salt",     l:"Sambhar Lake, Rajasthan",        img:"photo-1469474968028-56623f02e42e", alt:187, gps:"26.91° N · 75.19° E", cls:"s-d up"},
+  {t:"Chessboard Fields",      l:"Punjab Plains, Punjab",          img:"photo-1500076656116-558758c991c1", alt:243, gps:"30.90° N · 75.85° E", cls:"s-a"},
+  {t:"Where Two Rivers Argue", l:"Prayagraj, Uttar Pradesh",       img:"photo-1507525428034-b723cf961d3e", alt:132, gps:"25.43° N · 81.88° E", cls:"s-c down"},
+  {t:"The Monsoon Grid",       l:"Western Ghats, Goa",             img:"photo-1501854140801-50d01698950b", alt:118, gps:"15.40° N · 74.02° E", cls:"s-b up"},
+];
+
+/* ---------- Descent sequence data ---------- */
+const D=[
+  {a:299,band:"Ceiling",   img:"photo-1486870591958-9b9d0d1dda99", h:"A range becomes one brushstroke.",
+   p:"The legal ceiling in Indian airspace, and the only height where a whole mountain system fits in a single frame. Detail is gone. What's left is direction — where the land wants to go."},
+  {a:212,band:"High band", img:"photo-1500534314209-a25ddb2bd429", h:"Water starts writing.",
+   p:"Two hundred metres is where drainage reads as handwriting. Channels, oxbows, the dried print of an older river beside the current one. You stop photographing a lake and start photographing a decision it made."},
+  {a:158,band:"Mid band",  img:"photo-1509316785289-025f5b846b35", h:"Texture returns, scale goes.",
+   p:"Dunes at this height lose every cue that tells you how big they are. A four-metre ridge and a forty-metre ridge look identical. It's the most useful lie in the whole envelope."},
+  {a:96, band:"Low band",  img:"photo-1503614472-8c93d56e92ce", h:"Human hands appear.",
+   p:"Under a hundred metres, everything in frame was put there by someone. Terrace walls, footpaths, the width of a bund. The landscape turns into a record of labour."},
+  {a:38, band:"Floor",     img:"photo-1448375240586-882707db888b", h:"Close enough to hear it back.",
+   p:"Low enough that the rotors echo off the canopy and come back a half-second late. Individual trees, individual branches. Any lower and it stops being a landscape and starts being a portrait."},
+];
+
+/* ---------- Build gallery ---------- */
+const htrack=document.getElementById('htrack');
+F.forEach((f,i)=>{
+  const b=document.createElement('button');
+  b.className='shot '+f.cls; b.dataset.i=i;
+  b.setAttribute('aria-label',`View ${f.t}, ${f.l}`);
+  b.innerHTML=`<div class="frame"><img src="${U(f.img,1200)}" alt="${f.t} — aerial photograph, ${f.l}" loading="lazy" crossorigin="anonymous">
+    <div class="reticle" aria-hidden="true"><i></i><i></i><i></i><i></i></div></div>
+    <div class="cap"><div><div class="cap-t">${f.t}</div><div class="cap-l">${f.l}</div></div>
+    <div class="tele">ALT <b>${f.alt} M</b><br>${f.gps}</div></div>`;
+  htrack.appendChild(b);
+});
+
+/* ---------- Build descent sequence ---------- */
+const scMedia=document.getElementById('scMedia'), scSteps=document.getElementById('scSteps'), scRail=document.getElementById('scRail');
+D.forEach((d,i)=>{
+  const fr=document.createElement('div');
+  fr.className='sc-frame';
+  fr.innerHTML=`<img src="${U(d.img,1500)}" alt="${d.h} — aerial frame at ${d.a} metres above ground level" loading="lazy" crossorigin="anonymous">`;
+  scMedia.appendChild(fr);
+
+  const st=document.createElement('article');
+  st.className='sc-step';
+  st.innerHTML=`<span class="sc-band">${d.band} · ${d.a} m AGL</span>
+    <h3 class="display d4">${d.h}</h3><p>${d.p}</p>`;
+  scSteps.appendChild(st);
+
+  const tk=document.createElement('i'); if(i===0) tk.className='on'; scRail.appendChild(tk);
+});
+const scHud=document.createElement('div');
+scHud.className='sc-hud'; scHud.setAttribute('aria-hidden','true');
+scHud.innerHTML=`<b id="scAlt">299</b><span>m AGL · gimbal −90°</span>`;
+scMedia.appendChild(scHud);
+
+/* ---------- Altimeter tape ---------- */
+const tape=document.getElementById('tape'),altRail=document.getElementById('altRail'),
+      altVal=document.getElementById('altVal'),altState=document.getElementById('altState'),
+      chipVal=document.getElementById('chipVal'),PPM=6;
+(function(){
+  const frag=document.createDocumentFragment();
+  for(let m=0;m<=CEIL;m+=10){
+    const y=(CEIL-m)*PPM,t=document.createElement('div');
+    t.className='tick '+(m%50===0?'major':'minor'); t.style.top=y+'px'; frag.appendChild(t);
+    if(m%50===0){const l=document.createElement('div');l.className='tick-lab';l.style.top=y+'px';l.textContent=m;frag.appendChild(l);}
+  }
+  const names={about:'Pilot',descent:'Descent',work:'Work',contact:'Touchdown'};
+  document.querySelectorAll('[data-alt]').forEach(s=>{
+    const m=+s.dataset.alt;
+    const n=names[s.id]||(s.classList.contains('log')?'Log':s.classList.contains('plate')?'Plate':s.classList.contains('interlude')?'Approach':'');
+    if(!n)return;
+    const mk=document.createElement('div');mk.className='tape-mark';mk.style.top=((CEIL-m)*PPM)+'px';mk.textContent=n+' · '+m+'M';frag.appendChild(mk);
+  });
+  tape.style.height=(CEIL*PPM)+'px'; tape.appendChild(frag);
+})();
+
+/* ---------- Char splitter ---------- */
+function split(el){
+  if(!el||el.dataset.done) return [];
+  const tmp=document.createElement('div'); tmp.innerHTML=el.innerHTML;
+  const out=document.createElement('span'); out.style.display='block';
+  const chars=[];
+  (function walk(src,dest,ital){
+    src.childNodes.forEach(n=>{
+      if(n.nodeType===3){
+        n.textContent.split(/(\s+)/).forEach(tok=>{
+          if(tok==='')return;
+          if(/^\s+$/.test(tok)){dest.appendChild(document.createTextNode(' '));return;}
+          const w=document.createElement('span'); w.className='w';
+          [...tok].forEach(ch=>{
+            const c=document.createElement('span'); c.className='c'; c.textContent=ch;
+            if(ital)c.style.cssText='font-style:italic;color:var(--haze)';
+            w.appendChild(c); chars.push(c);
+          });
+          dest.appendChild(w);
+        });
+      } else if(n.nodeType===1){
+        if(n.tagName==='BR'){dest.appendChild(document.createElement('br'));return;}
+        walk(n,dest,ital||n.tagName==='EM');
+      }
+    });
+  })(tmp,out,false);
+  el.innerHTML=''; el.appendChild(out); el.dataset.done='1';
+  return chars;
+}
+/* The hero headline is split up front: both the load timeline and the pinned
+   hero timeline animate its characters, so they must exist before either
+   timeline is built. */
+if(HAS&&!RM) split(document.querySelector('.d1'));
+
+/* ==================================================================
+   WebGL hero
+================================================================== */
+const heroEl=document.getElementById('hero');
+const GL={descent:0,mix:0,vel:0,reveal:0};
+let glReady=false;
+(function initGL(){
+  if(RM)return;
+  const cv=document.getElementById('glc');
+  const gl=cv.getContext('webgl',{antialias:false,alpha:false,powerPreference:'high-performance'});
+  if(!gl){console.warn('[skyscape] no webgl — using flat image');return;}
+
+  const OCT = MOBILE ? 3 : 5;   // fbm octaves, budgeted per device
+
+  const VS=`attribute vec2 p;varying vec2 vUv;void main(){vUv=p*.5+.5;gl_Position=vec4(p,0.,1.);}`;
+
+  /* ================================================================
+     FRAGMENT SHADER
+     Layer 1  cloud deck   two parallax fbm layers, blown past the
+                           camera as uDescent rises — you fall through it
+     Layer 2  the land     two photographs cross-dissolved through a
+                           turbulent displacement map (uMix)
+     Layer 3  atmosphere   aerial perspective, sun bloom, rotor shake,
+                           velocity-driven buffeting + chromatic split
+  ================================================================ */
+  const FS=`
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+varying vec2 vUv;
+uniform sampler2D uA, uB;
+uniform vec2 uRes, uResA, uResB, uMouse;
+uniform float uTime, uDescent, uMix, uVel, uReveal;
+
+float hash(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
+float noise(vec2 p){
+  vec2 i=floor(p), f=fract(p); f=f*f*(3.-2.*f);
+  return mix(mix(hash(i),hash(i+vec2(1,0)),f.x), mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x), f.y);
+}
+float fbm(vec2 p){
+  float v=0., a=.5;
+  for(int i=0;i<${OCT};i++){ v+=a*noise(p); p=p*2.03+vec2(1.7,9.2); a*=.5; }
+  return v;
+}
+vec2 cover(vec2 uv, vec2 img){
+  float rs=uRes.x/uRes.y, ri=img.x/img.y;
+  vec2 r=vec2(min(rs/ri,1.), min(ri/rs,1.));
+  return uv*r+(1.-r)*.5;
+}
+vec3 samp(sampler2D t, vec2 uv, float ab){
+  return vec3(texture2D(t,uv+vec2(ab,0.)).r, texture2D(t,uv).g, texture2D(t,uv-vec2(ab,0.)).b);
+}
+
+void main(){
+  float d = uDescent;
+  vec2 uv = vUv;
+
+  /* --- airframe: rotor micro-vibration + buffeting under fast scroll --- */
+  vec2 shake = vec2(noise(vec2(uTime*7.3,1.)), noise(vec2(3.,uTime*6.1))) - .5;
+  uv += shake * (0.0011 + abs(uVel)*0.004);
+
+  /* --- ground plane --- */
+  vec2 g = uv + uMouse*vec2(.014,.010);
+  float zoom = 1.0 + 0.20*(1.0-d);          // pushes in as the aircraft descends
+  g = (g-.5)/zoom + .5;
+  g += (fbm(g*6.0+uTime*.3)-.5) * abs(uVel) * 0.02;   // wind shear on fast scroll
+
+  /* turbulent displacement dissolve between the two frames */
+  float dn = fbm(g*3.4 + uTime*.02);
+  float m  = smoothstep(0., 1., uMix*1.9 - .45 + (dn-.5)*.85);
+  float edge = smoothstep(.12,.95,distance(vUv,vec2(.5)));
+  float ab = (.0014 + abs(uVel)*.012) * edge;
+
+  vec3 A = samp(uA, cover(g + vec2(0., m*.05), uResA), ab);
+  vec3 B = samp(uB, cover(g - vec2(0., (1.-m)*.05), uResB), ab);
+  vec3 col = mix(A, B, m);
+
+  /* aerial perspective — the land is bluer and flatter from high up */
+  col = mix(col, vec3(.301,.420,.502), (1.-d)*.34);
+
+  /* --- cloud deck: two layers at different parallax, expanding past camera --- */
+  vec2 c1 = (uv-.5)*(1.0 - d*.82) + .5 + vec2(uTime*.0055,-uTime*.0018) + uMouse*.030;
+  vec2 c2 = (uv-.5)*(1.0 - d*1.38) + .5 + vec2(uTime*.0105,-uTime*.0040) + uMouse*.058;
+  float n1 = fbm(c1*2.4 + fbm(c1*1.2)*.85);      // domain-warped for billowing edges
+  float n2 = fbm(c2*3.7 + fbm(c2*1.9)*.95);
+  float t1 = smoothstep(.30 + d*.76, .70 + d*.76, n1);
+  float t2 = smoothstep(.38 + d*.96, .78 + d*.96, n2);
+  float deck = clamp(t1*.92 + t2*.72, 0., 1.) * (1.0 - smoothstep(.72,1.0,d));
+
+  vec3 lit = mix(vec3(.38,.46,.56), vec3(.86,.90,.94), n1*.75+n2*.25);
+  col = mix(col, lit, deck);
+
+  /* thin veil left over just after break-through */
+  col = mix(col, vec3(.486,.655,.761), (1.-smoothstep(.25,.75,d))*.22);
+
+  /* --- sun bloom on the horizon, dimming as we drop below it --- */
+  vec2 sp = (vUv-vec2(.74,.28)) * vec2(uRes.x/uRes.y,1.);
+  float sun = exp(-length(sp)*3.1);
+  col += vec3(.62,.46,.30) * sun * (.22 + .55*(1.-d));
+
+  /* --- frame --- */
+  col *= 1.0 - edge*.44;
+  col = mix(col, vec3(.020,.031,.051), smoothstep(.60,1.,vUv.y)*.55);
+  col = mix(col, vec3(.020,.031,.051), d*.40);
+
+  /* load reveal, opening outward from the horizon line */
+  col *= smoothstep(0., .6, uReveal + (1.-abs(vUv.y-.45)*1.6));
+  gl_FragColor = vec4(col,1.);
+}`;
+
+  function sh(t,src){
+    const o=gl.createShader(t); gl.shaderSource(o,src); gl.compileShader(o);
+    if(!gl.getShaderParameter(o,gl.COMPILE_STATUS)){ console.warn('[skyscape] shader:',gl.getShaderInfoLog(o)); return null; }
+    return o;
+  }
+  const vs=sh(gl.VERTEX_SHADER,VS), fs=sh(gl.FRAGMENT_SHADER,FS);
+  if(!vs||!fs) return;
+  const pr=gl.createProgram(); gl.attachShader(pr,vs); gl.attachShader(pr,fs); gl.linkProgram(pr);
+  if(!gl.getProgramParameter(pr,gl.LINK_STATUS)){ console.warn('[skyscape] link:',gl.getProgramInfoLog(pr)); return; }
+  gl.useProgram(pr);
+
+  const buf=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+  const loc=gl.getAttribLocation(pr,'p'); gl.enableVertexAttribArray(loc);
+  gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+
+  const u=n=>gl.getUniformLocation(pr,n);
+  const U_={uRes:u('uRes'),uResA:u('uResA'),uResB:u('uResB'),uMouse:u('uMouse'),
+            uTime:u('uTime'),uDescent:u('uDescent'),uMix:u('uMix'),uVel:u('uVel'),uReveal:u('uReveal')};
+  gl.uniform1i(u('uA'),0); gl.uniform1i(u('uB'),1);
+
+  let loaded=0;
+  function texture(src, unit, resU){
+    const t=gl.createTexture(), im=new Image(); im.crossOrigin='anonymous';
+    im.onload=()=>{
+      gl.activeTexture(gl.TEXTURE0+unit);
+      gl.bindTexture(gl.TEXTURE_2D,t);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
+      gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB,gl.RGB,gl.UNSIGNED_BYTE,im);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+      gl.uniform2f(resU, im.width, im.height);
+      if(++loaded===2){ glReady=true; heroEl.classList.add('gl-on'); }
+    };
+    im.onerror=()=>console.warn('[skyscape] texture failed (CORS?):',src);
+    im.src=src;
+  }
+  texture(U('photo-1486870591958-9b9d0d1dda99',1800,85), 0, U_.uResA);
+  texture(U('photo-1500534314209-a25ddb2bd429',1800,85), 1, U_.uResB);
+
+  const MAXPX = MOBILE ? 1.4e6 : 2.6e6;      // hard pixel budget for the shader
+  function size(){
+    const w=heroEl.clientWidth, h=heroEl.clientHeight;
+    let dpr=Math.min(devicePixelRatio||1, MOBILE?1.15:1.6);
+    const over=(w*h*dpr*dpr)/MAXPX;
+    if(over>1) dpr/=Math.sqrt(over);
+    cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);
+    cv.style.width=w+'px'; cv.style.height=h+'px';
+    gl.viewport(0,0,cv.width,cv.height); gl.uniform2f(U_.uRes,cv.width,cv.height);
+  }
+  size();
+  let szT; addEventListener('resize',()=>{clearTimeout(szT);szT=setTimeout(size,120);});
+
+  /* only render while the hero is actually on screen */
+  let onScreen=true;
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(([e])=>{onScreen=e.isIntersecting;},{rootMargin:'15% 0px'}).observe(heroEl);
+  }
+
+  let mx=0,my=0,cx=0,cy=0; const t0=performance.now();
+  if(FINE) addEventListener('mousemove',e=>{mx=(e.clientX/innerWidth-.5)*2;my=(e.clientY/innerHeight-.5)*2;},{passive:true});
+  (function frame(t){
+    requestAnimationFrame(frame);
+    if(!glReady || !onScreen || document.hidden) return;
+    cx+=(mx-cx)*.05; cy+=(my-cy)*.05;
+    gl.uniform1f(U_.uTime,(t-t0)/1000);
+    gl.uniform2f(U_.uMouse,cx,cy);
+    gl.uniform1f(U_.uDescent,GL.descent);
+    gl.uniform1f(U_.uMix,GL.mix);
+    gl.uniform1f(U_.uVel,GL.vel);
+    gl.uniform1f(U_.uReveal,GL.reveal);
+    gl.drawArrays(gl.TRIANGLES,0,3);
+  })(t0);
+})();
+
+/* ==================================================================
+   Lenis + GSAP ticker
+================================================================== */
+let lenis=null;
+if(window.Lenis&&!RM){
+  lenis=new Lenis({lerp:.085,wheelMultiplier:1,smoothWheel:true,touchMultiplier:1.5,syncTouch:false});
+  if(HAS){
+    lenis.on('scroll',ScrollTrigger.update);
+    gsap.ticker.add(t=>lenis.raf(t*1000));
+    gsap.ticker.lagSmoothing(0);
+  }else{
+    const raf=t=>{lenis.raf(t);requestAnimationFrame(raf)};requestAnimationFrame(raf);
+  }
+  let velTarget=0;
+  lenis.on('scroll',({velocity})=>{velTarget=Math.max(-1,Math.min(1,velocity/55));});
+  (function decay(){ requestAnimationFrame(decay); velTarget*=.92; GL.vel+=(velTarget-GL.vel)*.12; })();
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{
+    a.addEventListener('click',e=>{e.preventDefault();lenis.scrollTo(a.getAttribute('href'),{offset:-10,duration:1.5});});
+  });
+}else if(!RM){
+  document.documentElement.style.scrollBehavior='smooth';
+}
+
+const head=document.getElementById('head'),earthshift=document.getElementById('earthshift'),hudAlt=document.getElementById('hudAlt');
+
+if(HAS&&!RM){
+  /* --- page altitude --- */
+  let lastAlt=-1, lastState='', lastStuck=null;
+  const setTape=gsap.quickSetter(tape,'y','px'), setEarth=gsap.quickSetter(earthshift,'opacity');
+  ScrollTrigger.create({
+    trigger:document.body,start:'top top',end:'bottom bottom',scrub:true,
+    onUpdate:s=>{
+      const p=s.progress, a=Math.round(CEIL*(1-p));
+      setTape((innerHeight/2)-(CEIL*p*PPM));
+      setEarth(Math.max(0,(p-.55)/.45));
+      if(a!==lastAlt){                       // DOM writes only when the number changes
+        lastAlt=a;
+        altVal.textContent=a; chipVal.textContent=a+' M';
+        hudAlt.textContent=(CEIL*(1-p)).toFixed(1)+' m AGL';
+        const st=a<=4?'LANDED · MOTORS OFF':(p<.02?'AGL · HOVER':'AGL · DESCENT');
+        if(st!==lastState){ lastState=st; altState.textContent=st; altRail.classList.toggle('landed',a<=4); }
+      }
+      const stuck=s.scroll()>40;
+      if(stuck!==lastStuck){ lastStuck=stuck; head.classList.toggle('scrolled',stuck); }
     }
   });
 
-  function animCursor() {
-    dot.style.transform = `translate3d(${mx}px, ${my}px, 0) translate(-50%, -50%)`;
-    rx += (mx - rx) * 0.15; ry += (my - ry) * 0.15;
-    ring.style.transform = `translate3d(${rx}px, ${ry}px, 0) translate(-50%, -50%)`;
-    requestAnimationFrame(animCursor);
-  }
-  requestAnimationFrame(animCursor);
+  /* ================================================================
+     HERO — pinned three-beat descent:
+     break through the cloud deck, then dissolve into the next frame
+  ================================================================ */
+  (function heroCinema(){
+    const beat1=document.getElementById('beat1'), beat2=document.getElementById('beat2');
+    gsap.set([beat1,beat2],{autoAlpha:0,y:34});
+    const chars=gsap.utils.toArray('.d1 .c');
 
-  document.querySelectorAll('a, button, .grid-item, .modal-nav, .modal-close').forEach(el => {
-    el.addEventListener('mouseenter', () => ring.classList.add('hovered'));
-    el.addEventListener('mouseleave', () => ring.classList.remove('hovered'));
+    const tl=gsap.timeline({
+      defaults:{ease:'none'},
+      scrollTrigger:{trigger:heroEl,start:'top top',end:MOBILE?'+=130%':'+=210%',
+        pin:true,pinSpacing:true,scrub:.9,invalidateOnRefresh:true}
+    });
+
+    /* beat 1 — falling through the deck */
+    tl.to(GL,{descent:1,duration:1.15,ease:'power1.inOut'},0)
+      .to('.cue',{autoAlpha:0,duration:.18},0)
+      .to(chars,{yPercent:-118,autoAlpha:0,duration:.5,ease:'power2.in',stagger:{each:.006}},.22)
+      .to('.hero-kick, .hero-sub',{autoAlpha:0,y:-26,duration:.4,ease:'power2.in'},.2)
+      .to(beat1,{autoAlpha:1,y:0,duration:.34,ease:'power2.out'},.82)
+
+    /* beat 2 — displacement dissolve to the next frame */
+      .to(beat1,{autoAlpha:0,y:-30,duration:.3,ease:'power2.in'},1.42)
+      .to(GL,{mix:1,duration:.95,ease:'power1.inOut'},1.3)
+      .to(beat2,{autoAlpha:1,y:0,duration:.34,ease:'power2.out'},1.72)
+
+    /* handoff */
+      .to(beat2,{autoAlpha:0,y:-26,duration:.3,ease:'power2.in'},2.28)
+      .to('.h-corner, .hud',{autoAlpha:0,duration:.3},2.2);
+  })();
+
+  /* --- reveals --- */
+  gsap.utils.toArray('[data-anim="fade"]').forEach(el=>{
+    gsap.fromTo(el,{y:24,autoAlpha:0},{y:0,autoAlpha:1,duration:1.05,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 90%',once:true}});
+  });
+  gsap.utils.toArray('[data-split]:not(.d1)').forEach(el=>{
+    const chars=split(el); if(!chars.length)return;
+    gsap.fromTo(chars,{yPercent:115},{yPercent:0,duration:1.1,ease:'expo.out',stagger:{each:.013},
+      scrollTrigger:{trigger:el,start:'top 88%',once:true}});
+  });
+  gsap.utils.toArray('[data-anim="soft"]').forEach(el=>{
+    gsap.fromTo(el,{autoAlpha:0},{autoAlpha:1,duration:1.1,ease:'power2.out',
+      scrollTrigger:{trigger:el,start:'top 92%',once:true}});
+  });
+  gsap.utils.toArray('[data-clip]').forEach(el=>{
+    gsap.fromTo(el,{clipPath:'inset(0% 0% 100% 0%)'},{clipPath:'inset(0% 0% 0% 0%)',duration:1.4,ease:'expo.out',
+      scrollTrigger:{trigger:el,start:'top 86%',once:true}});
+  });
+  gsap.utils.toArray('.plate img, .p-frame img').forEach(img=>{
+    gsap.fromTo(img,{yPercent:-9},{yPercent:9,ease:'none',
+      scrollTrigger:{trigger:img.closest('.plate, .p-frame'),start:'top bottom',end:'bottom top',scrub:true}});
   });
 
-  // ── ADVANCED 3D PARALLAX EFFECT ──
-  const heroScene = document.getElementById('heroScene');
-  const heroText = document.getElementById('heroText');
-  
-  window.addEventListener('scroll', () => {
-    const y = window.scrollY;
-    const vh = window.innerHeight;
-    
-    if (y < vh * 1.5) { // Only calculate while hero is somewhat in view
-      // Pitch backward exactly like a drone camera tilting down
-      const rotationX = (y / vh) * 20; // Tilts up to 20 degrees
-      const pushBack = (y / vh) * -400; // Pushes back into 3D space
-      
-      heroScene.style.transform = `translate3d(0, 0, ${pushBack}px) rotateX(${rotationX}deg)`;
-      
-      // Floating text effect
-      heroText.style.transform = `translate3d(0, ${y * -0.15}px, ${y * 0.1}px)`;
-      heroText.style.opacity = 1 - (y / vh);
+  /* --- flight log --- */
+  gsap.utils.toArray('#logGrid [data-num]').forEach((el,i)=>{
+    const target=parseFloat(el.dataset.num),dec=el.dataset.dec?+el.dataset.dec:0,o={v:0};
+    gsap.to(o,{v:target,ease:'power2.out',duration:1.4,
+      onUpdate:()=>{el.textContent=dec?o.v.toFixed(dec):Math.round(o.v).toLocaleString('en-IN');},
+      scrollTrigger:{trigger:el.closest('.log-cell'),start:'top 90%',once:true}});
+    gsap.fromTo(el.closest('.log-cell'),{y:28,autoAlpha:0},{y:0,autoAlpha:1,duration:.95,ease:'power3.out',delay:i*.05,
+      scrollTrigger:{trigger:'#logGrid',start:'top 84%',once:true}});
+  });
+
+  /* ================================================================
+     SCROLLYTELLING DESCENT — pinned, wipe between frames,
+     copy swap, altitude scrub, progress rail
+  ================================================================ */
+  (function descent(){
+    const frames=gsap.utils.toArray('.sc-frame'), steps=gsap.utils.toArray('.sc-step'),
+          ticks=gsap.utils.toArray('#scRail i'), altEl=document.getElementById('scAlt');
+    gsap.set(steps.slice(1),{autoAlpha:0,y:26});
+    gsap.set(frames.slice(1),{clipPath:'inset(100% 0% 0% 0%)'});
+    gsap.set(frames.map(f=>f.querySelector('img')),{scale:1.14});
+    gsap.set(frames[0].querySelector('img'),{scale:1});
+
+    const seg=1, o={a:D[0].a};
+    const tl=gsap.timeline({
+      defaults:{ease:'none'},
+      scrollTrigger:{
+        trigger:'.sc',start:'top top',end:'+='+((D.length-1)*90)+'%',
+        pin:true,pinSpacing:true,scrub:1,invalidateOnRefresh:true,
+        onUpdate:s=>{
+          const idx=Math.min(D.length-1,Math.round(s.progress*(D.length-1)));
+          ticks.forEach((t,i)=>t.classList.toggle('on',i<=idx));
+        }
+      }
+    });
+    for(let i=1;i<D.length;i++){
+      const at=(i-1)*seg;
+      tl.to(steps[i-1],{autoAlpha:0,y:-26,duration:seg*.34,ease:'power2.in'},at)
+        .to(frames[i],{clipPath:'inset(0% 0% 0% 0%)',duration:seg*.78,ease:'power2.inOut'},at+seg*.1)
+        .to(frames[i].querySelector('img'),{scale:1,duration:seg*.9,ease:'power2.out'},at+seg*.1)
+        .to(frames[i-1].querySelector('img'),{scale:1.06,duration:seg*.9},at+seg*.1)
+        .to(steps[i],{autoAlpha:1,y:0,duration:seg*.4,ease:'power2.out'},at+seg*.5)
+        .to(o,{a:D[i].a,duration:seg*.8,onUpdate:()=>{altEl.textContent=Math.round(o.a);}},at+seg*.1);
     }
-  });
+  })();
 
-  // ── REVEAL ANIMATIONS ON SCROLL ──
-  const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
-  const observer = new IntersectionObserver((entries, obs) => {
-    entries.forEach(entry => { 
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        obs.unobserve(entry.target); 
-      }
+  /* --- horizontal gallery --- */
+  if(!MOBILE){
+    const dist=()=>htrack.scrollWidth-innerWidth;
+    const hAnim=gsap.to(htrack,{x:()=>-dist(),ease:'none',
+      scrollTrigger:{trigger:'.hgal',start:'top top',end:()=>'+='+dist(),
+        pin:true,scrub:.8,invalidateOnRefresh:true,
+        onUpdate:s=>{
+          gsap.set('#hBar',{scaleX:s.progress});
+          const n=Math.min(F.length,Math.round(s.progress*(F.length-1))+1);
+          document.getElementById('hIdx').textContent=String(n).padStart(2,'0')+' / '+F.length;
+        }}});
+    gsap.utils.toArray('.shot').forEach(shot=>{
+      gsap.fromTo(shot.querySelector('.frame'),{clipPath:'inset(0% 12% 0% 12%)'},{clipPath:'inset(0% 0% 0% 0%)',ease:'power2.out',
+        scrollTrigger:{trigger:shot,containerAnimation:hAnim,start:'left 92%',end:'left 55%',scrub:true}});
+      gsap.fromTo(shot.querySelector('img'),{xPercent:-6},{xPercent:6,ease:'none',
+        scrollTrigger:{trigger:shot,containerAnimation:hAnim,start:'left right',end:'right left',scrub:true}});
+      gsap.fromTo(shot.querySelector('.cap'),{y:18,autoAlpha:0},{y:0,autoAlpha:1,ease:'power2.out',
+        scrollTrigger:{trigger:shot,containerAnimation:hAnim,start:'left 88%',end:'left 62%',scrub:true}});
     });
-  }, observerOptions);
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-  // ── ANIMATED STATS COUNTER ──
-  const counters = document.querySelectorAll('.counter');
-  const counterObserver = new IntersectionObserver((entries, obs) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const target = entry.target;
-        const endVal = parseFloat(target.getAttribute('data-target'));
-        const decimals = parseInt(target.getAttribute('data-decimals') || 0);
-        const duration = 2500; // 2.5 seconds
-        let startTimestamp = null;
-
-        const step = (timestamp) => {
-          if (!startTimestamp) startTimestamp = timestamp;
-          const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-          // Ease out exponential curve
-          const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-          const currentVal = (easeProgress * endVal).toFixed(decimals);
-          
-          target.innerText = currentVal;
-          if (progress < 1) {
-            window.requestAnimationFrame(step);
-          } else {
-            target.innerText = endVal.toFixed(decimals);
-          }
-        };
-        window.requestAnimationFrame(step);
-        obs.unobserve(target);
-      }
+  }else{
+    gsap.utils.toArray('.shot').forEach(shot=>{
+      gsap.fromTo(shot.querySelector('.frame'),{clipPath:'inset(4% 6% 4% 6%)'},{clipPath:'inset(0% 0% 0% 0%)',duration:1.2,ease:'expo.out',
+        scrollTrigger:{trigger:shot,start:'top 88%',once:true}});
+      gsap.fromTo(shot.querySelector('img'),{yPercent:-6},{yPercent:6,ease:'none',
+        scrollTrigger:{trigger:shot,start:'top bottom',end:'bottom top',scrub:true}});
     });
-  }, { threshold: 0.5 });
-  counters.forEach(counter => counterObserver.observe(counter));
-
-  // ── MODAL LOGIC ──
-  const items = document.querySelectorAll('.grid-item');
-  const backdrop = document.getElementById('modal');
-  const mImg = document.getElementById('modalImg');
-  const mTitle = document.getElementById('modalTitle');
-  const mDesc = document.getElementById('modalDesc');
-  const mLoc = document.getElementById('modalLoc');
-  const mNum = document.getElementById('modalNum');
-  let currentIdx = 0;
-
-  function openModal(idx) {
-    currentIdx = parseInt(idx);
-    const item = document.querySelector(`.grid-item[data-idx="${currentIdx}"]`);
-    if(!item) return;
-
-    mImg.src = item.querySelector('img').src;
-    mTitle.textContent = item.dataset.title;
-    mDesc.textContent = item.dataset.desc;
-    mLoc.textContent = item.dataset.loc;
-    mNum.textContent = `[ ${String(currentIdx + 1).padStart(2,'0')} / ${items.length} ]`;
-    
-    backdrop.classList.add('open');
-    document.body.style.overflow = 'hidden';
   }
 
-  items.forEach(item => {
-    item.addEventListener('click', () => openModal(item.dataset.idx));
-  });
+  gsap.fromTo('.interlude .display',{filter:'blur(9px)',scale:.96,autoAlpha:.25},
+    {filter:'blur(0px)',scale:1,autoAlpha:1,ease:'none',
+     scrollTrigger:{trigger:'.interlude',start:'top 80%',end:'center 55%',scrub:true}});
 
-  function closeModal() {
-    backdrop.classList.remove('open');
-    document.body.style.overflow = '';
-    setTimeout(() => { mImg.src = ''; }, 600);
+  ScrollTrigger.refresh();
+  addEventListener('load',()=>ScrollTrigger.refresh());
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>ScrollTrigger.refresh());
+  let rzT; addEventListener('resize',()=>{clearTimeout(rzT);rzT=setTimeout(()=>ScrollTrigger.refresh(),200);});
+}
+
+/* --- fallback altimeter --- */
+if(!HAS||RM){
+  const upd=()=>{
+    const max=document.documentElement.scrollHeight-innerHeight;
+    const p=max>0?Math.min(1,Math.max(0,scrollY/max)):0,a=Math.round(CEIL*(1-p));
+    tape.style.transform=`translateY(${(innerHeight/2)-(CEIL*p*PPM)}px)`;
+    altVal.textContent=a; chipVal.textContent=a+' M'; hudAlt.textContent=(CEIL*(1-p)).toFixed(1)+' m AGL';
+    altRail.classList.toggle('landed',a<=4);
+    altState.textContent=a<=4?'LANDED · MOTORS OFF':'AGL · DESCENT';
+    earthshift.style.opacity=Math.max(0,(p-.55)/.45);
+    head.classList.toggle('scrolled',scrollY>40);
+    GL.descent=Math.min(1,scrollY/innerHeight);
+  };
+  addEventListener('scroll',upd,{passive:true});addEventListener('resize',upd);upd();
+}
+
+/* ==================================================================
+   Cursor, magnetics, reticles
+================================================================== */
+if(FINE&&HAS&&!RM){
+  document.body.classList.add('cursor-on');
+  const cur=document.getElementById('cur'),ring=document.getElementById('curRing'),label=document.getElementById('curLabel');
+  const xTo=gsap.quickTo(cur,'x',{duration:.15,ease:'power3'}),yTo=gsap.quickTo(cur,'y',{duration:.15,ease:'power3'});
+  const rxTo=gsap.quickTo(ring,'x',{duration:.5,ease:'power3'}),ryTo=gsap.quickTo(ring,'y',{duration:.5,ease:'power3'});
+  addEventListener('mousemove',e=>{
+    xTo(e.clientX);yTo(e.clientY);rxTo(e.clientX);ryTo(e.clientY);
+    gsap.to([cur,ring],{opacity:1,duration:.3,overwrite:'auto'});
+  },{passive:true});
+  addEventListener('mouseleave',()=>gsap.to([cur,ring],{opacity:0,duration:.3}));
+  document.querySelectorAll('.shot').forEach(s=>{
+    s.addEventListener('mouseenter',()=>{
+      gsap.to(ring,{scale:1.9,borderColor:'rgba(238,243,247,.9)',duration:.45,ease:'expo.out'});
+      gsap.to(label,{opacity:1,duration:.3}); label.textContent='View '+String(+s.dataset.i+1).padStart(2,'0');
+      gsap.to(cur,{scale:0,duration:.3});
+      gsap.to(s.querySelector('.reticle'),{opacity:1,scale:1,duration:.6,ease:'expo.out'});
+      gsap.to(s.querySelector('img'),{scale:1.03,duration:1.1,ease:'expo.out'});
+    });
+    s.addEventListener('mouseleave',()=>{
+      gsap.to(ring,{scale:1,borderColor:'rgba(158,172,186,.5)',duration:.45,ease:'expo.out'});
+      gsap.to(label,{opacity:0,duration:.2});
+      gsap.to(cur,{scale:1,duration:.3});
+      gsap.to(s.querySelector('.reticle'),{opacity:0,scale:1.04,duration:.4});
+      gsap.to(s.querySelector('img'),{scale:1.16,duration:1.1,ease:'expo.out'});
+    });
+  });
+  document.querySelectorAll('a,button').forEach(el=>{
+    if(el.classList.contains('shot'))return;
+    el.addEventListener('mouseenter',()=>gsap.to(ring,{scale:1.35,duration:.4,ease:'expo.out'}));
+    el.addEventListener('mouseleave',()=>gsap.to(ring,{scale:1,duration:.4,ease:'expo.out'}));
+  });
+  document.querySelectorAll('[data-magnet]').forEach(el=>{
+    const mx=gsap.quickTo(el,'x',{duration:.6,ease:'power3'}),my=gsap.quickTo(el,'y',{duration:.6,ease:'power3'});
+    el.addEventListener('mousemove',e=>{
+      const r=el.getBoundingClientRect();
+      mx((e.clientX-(r.left+r.width/2))*.25);my((e.clientY-(r.top+r.height/2))*.4);
+    });
+    el.addEventListener('mouseleave',()=>{mx(0);my(0);});
+  });
+}
+
+/* ==================================================================
+   Lightbox (FLIP)
+================================================================== */
+const lb=document.getElementById('lb'),lbBg=document.getElementById('lbBg'),lbImg=document.getElementById('lbImg'),
+      lbT=document.getElementById('lbT'),lbL=document.getElementById('lbL'),lbTele=document.getElementById('lbTele'),
+      lbCount=document.getElementById('lbCount'),lbStage=document.getElementById('lbStage');
+let li=0,isOpen=false,lastFocus=null;
+function fit(ar){
+  const s=lbStage.getBoundingClientRect();
+  let w=s.width,h=w/ar; if(h>s.height){h=s.height;w=h*ar;}
+  return {w,h,x:s.left+(s.width-w)/2,y:s.top+(s.height-h)/2};
+}
+function setMeta(i){
+  const f=F[i];
+  lbT.textContent=f.t; lbL.textContent=f.l;
+  lbTele.innerHTML=`${f.alt} m AGL &nbsp;·&nbsp; ${f.gps}<br>DJI Air 2S · 1" CMOS · 22 mm equiv.`;
+  lbCount.textContent=String(i+1).padStart(2,'0')+' / '+F.length;
+}
+function openLB(i){
+  li=i; const f=F[i],thumb=document.querySelector(`.shot[data-i="${i}"] img`);
+  const r=thumb.getBoundingClientRect();
+  const ar=(thumb.naturalWidth&&thumb.naturalHeight)?thumb.naturalWidth/thumb.naturalHeight:1.5;
+  lbImg.src=U(f.img,2000,88); lbImg.alt=`${f.t} — aerial photograph, ${f.l}`;
+  setMeta(i); lb.classList.add('open'); isOpen=true;
+  lastFocus=document.activeElement; document.getElementById('lbX').focus();
+  if(lenis)lenis.stop();
+  const t=fit(ar);
+  if(!HAS){Object.assign(lbImg.style,{left:t.x+'px',top:t.y+'px',width:t.w+'px',height:t.h+'px'});lbBg.style.opacity=1;return;}
+  gsap.set(lbImg,{left:t.x,top:t.y,width:t.w,height:t.h,x:0,y:0,scaleX:1,scaleY:1});
+  gsap.fromTo(lbImg,{x:r.left-t.x,y:r.top-t.y,scaleX:r.width/t.w,scaleY:r.height/t.h},
+    {x:0,y:0,scaleX:1,scaleY:1,duration:.95,ease:'expo.inOut'});
+  gsap.fromTo(lbBg,{opacity:0},{opacity:1,duration:.5});
+  gsap.fromTo('.lb-bar,.lb-foot',{autoAlpha:0,y:14},{autoAlpha:1,y:0,duration:.6,delay:.25,ease:'power3.out'});
+}
+function closeLB(){
+  if(!isOpen)return; isOpen=false;
+  const thumb=document.querySelector(`.shot[data-i="${li}"] img`),r=thumb.getBoundingClientRect(),
+        t={x:parseFloat(lbImg.style.left),y:parseFloat(lbImg.style.top),w:parseFloat(lbImg.style.width),h:parseFloat(lbImg.style.height)};
+  if(lenis)lenis.start();
+  if(!HAS){lb.classList.remove('open');if(lastFocus)lastFocus.focus();return;}
+  gsap.to('.lb-bar,.lb-foot',{autoAlpha:0,duration:.25});
+  gsap.to(lbBg,{opacity:0,duration:.6,delay:.15});
+  gsap.to(lbImg,{x:r.left-t.x,y:r.top-t.y,scaleX:r.width/t.w,scaleY:r.height/t.h,duration:.8,ease:'expo.inOut',
+    onComplete:()=>{lb.classList.remove('open');if(lastFocus)lastFocus.focus();}});
+}
+function step(d){
+  const n=(li+d+F.length)%F.length; li=n; setMeta(n);
+  const f=F[n];
+  if(!HAS){lbImg.src=U(f.img,2000,88);return;}
+  gsap.to(lbImg,{autoAlpha:0,duration:.28,onComplete:()=>{
+    lbImg.src=U(f.img,2000,88);
+    lbImg.onload=()=>{
+      const t=fit(lbImg.naturalWidth/lbImg.naturalHeight);
+      gsap.set(lbImg,{left:t.x,top:t.y,width:t.w,height:t.h,x:0,y:0,scaleX:1,scaleY:1});
+      gsap.to(lbImg,{autoAlpha:1,duration:.45,ease:'power2.out'});
+    };
+  }});
+}
+htrack.addEventListener('click',e=>{const s=e.target.closest('.shot');if(s)openLB(+s.dataset.i);});
+document.getElementById('lbX').addEventListener('click',closeLB);
+document.getElementById('lbPrev').addEventListener('click',()=>step(-1));
+document.getElementById('lbNext').addEventListener('click',()=>step(1));
+lbBg.addEventListener('click',closeLB);
+addEventListener('keydown',e=>{
+  if(!isOpen)return;
+  if(e.key==='Escape')closeLB();
+  if(e.key==='ArrowLeft')step(-1);
+  if(e.key==='ArrowRight')step(1);
+});
+
+/* ==================================================================
+   Preloader
+================================================================== */
+(function preload(){
+  if(HAS&&!RM) document.body.style.overflow='hidden';
+  const pre=document.getElementById('pre'),num=document.getElementById('preNum'),
+        bar=document.getElementById('preBar'),status=document.getElementById('preStatus'),
+        sats=document.getElementById('preSats'),curtain=document.getElementById('curtain');
+  const urls=[U('photo-1486870591958-9b9d0d1dda99',1800,85),U('photo-1500534314209-a25ddb2bd429',1800,85),...D.slice(0,3).map(d=>U(d.img,1500)),...F.slice(0,3).map(f=>U(f.img,1200))];
+  let done=0,shown=0;
+  const stages=['Motors armed','Climbing','Levelling off','Gimbal to nadir','Holding 299 m'];
+  urls.forEach(u=>{const i=new Image();i.onload=i.onerror=()=>{done++;};i.src=u;});
+  const t0=performance.now();
+  (function tick(t){
+    const el=(t-t0)/1000,real=done/urls.length,floor=Math.min(1,el/2.4);
+    const target=Math.min(real*.75+floor*.25,real===1?1:.94);
+    shown+=(target-shown)*.08;
+    num.textContent=String(Math.round(shown*CEIL)).padStart(3,'0');
+    if(bar)bar.style.transform='scaleX('+shown+')';
+    status.textContent=stages[Math.min(stages.length-1,Math.floor(shown*stages.length))];
+    sats.textContent=shown>.4?'GPS lock · 12 sat':'Acquiring GPS';
+    if(shown>.985||el>7){launch();return;}
+    requestAnimationFrame(tick);
+  })(t0);
+  function launch(){
+    num.textContent='299'; if(bar)bar.style.transform='scaleX(1)';
+    if(!HAS||RM){pre.style.display='none';curtain.style.display='none';GL.reveal=1;document.body.style.overflow='';return;}
+    if(lenis)lenis.stop();
+    const tl=gsap.timeline({onComplete:()=>{document.body.style.overflow='';if(lenis)lenis.start();ScrollTrigger.refresh();}});
+    tl.to([num,status,sats,'.pre-bar'],{autoAlpha:0,y:-12,duration:.5,stagger:.04,ease:'power2.in'})
+      .to(pre,{yPercent:-100,duration:1.1,ease:'expo.inOut'},'-=.1')
+      .to(curtain,{scaleY:0,transformOrigin:'top',duration:1.1,ease:'expo.inOut'},'<')
+      .to(GL,{reveal:1,duration:1.6,ease:'power2.out'},'<.2')
+      .from('.d1 .c',{yPercent:118,duration:1.25,ease:'expo.out',stagger:{each:.014}},'-=.75')
+      .from('.hero-kick',{autoAlpha:0,y:18,duration:.8,ease:'power3.out'},'-=1.05')
+      .from('.hero-sub > *',{autoAlpha:0,y:22,duration:.9,stagger:.09,ease:'power3.out'},'-=.85')
+      .from('.hud, .h-corner, .cue',{autoAlpha:0,duration:.9,stagger:.06,ease:'power2.out'},'-=.8')
+      .from('.head',{autoAlpha:0,y:-16,duration:.8,ease:'power3.out'},'-=1')
+      .from('.alt',{autoAlpha:0,x:-20,duration:.9,ease:'power3.out'},'-=.9')
+      .set(pre,{display:'none'});
   }
-
-  document.getElementById('modalClose').addEventListener('click', closeModal);
-  backdrop.addEventListener('click', e => {
-    if (e.target === backdrop || e.target.classList.contains('modal-content-wrapper')) closeModal();
-  });
-
-  const prevModal = () => openModal((currentIdx - 1 + items.length) % items.length);
-  const nextModal = () => openModal((currentIdx + 1) % items.length);
-
-  document.getElementById('modalPrev').addEventListener('click', prevModal);
-  document.getElementById('modalNext').addEventListener('click', nextModal);
-
-  document.addEventListener('keydown', e => {
-    if (!backdrop.classList.contains('open')) return;
-    if (e.key === 'Escape') closeModal();
-    if (e.key === 'ArrowLeft') prevModal();
-    if (e.key === 'ArrowRight') nextModal();
-  });
-
+  if(HAS&&!RM)split(document.querySelector('.d1'));
+})();
 </script>
 </body>
 </html>

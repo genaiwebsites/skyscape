@@ -255,7 +255,7 @@ main{position:relative;z-index:1}
 
 
 /* ==================================================================
-   7 · ABOUT
+   7 · ABOUT & PORTRAIT
 ================================================================== */
 .about{padding-block:var(--sec) calc(var(--sec) * .62)}
 .about h2{margin:clamp(20px,3vh,30px) 0 clamp(26px,4vh,42px)}
@@ -265,10 +265,49 @@ main{position:relative;z-index:1}
   letter-spacing:-.008em;text-indent:-.4em;
 }
 .quote footer{margin-top:14px;font-family:var(--mono);font-style:normal;font-size:var(--t-mono);letter-spacing:.2em;text-transform:uppercase;color:var(--dim);text-indent:0}
+
 .portrait{position:sticky;top:clamp(96px,12vh,124px)}
-.p-frame{position:relative;overflow:hidden}
-.p-frame img{aspect-ratio:4/5;width:100%;object-fit:cover;filter:saturate(.9);transform:scale(1.14);will-change:transform}
-.p-cap{display:flex;justify-content:space-between;gap:12px;margin-top:12px;font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.p-frame{
+  position:relative;overflow:hidden;border-radius:6px;
+  border:1px solid rgba(124,167,194,.22);
+  box-shadow:0 20px 50px rgba(5,8,13,.85), 0 0 30px rgba(124,167,194,.06);
+  transition:border-color .5s var(--ease), box-shadow .5s var(--ease);
+}
+.p-frame:hover{
+  border-color:rgba(124,167,194,.5);
+  box-shadow:0 24px 60px rgba(5,8,13,.92), 0 0 40px rgba(124,167,194,.16);
+}
+.p-frame img{
+  aspect-ratio:4/5;width:100%;object-fit:cover;object-position:center 20%;
+  filter:saturate(.92) contrast(1.04);
+  transform:scale(1.02);
+  transition:transform .8s var(--ease), filter .8s var(--ease);
+  will-change:transform;
+}
+.p-frame:hover img{
+  transform:scale(1.06);
+  filter:saturate(1.0) contrast(1.08);
+}
+.p-veil{
+  position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to top, rgba(10,16,24,.85) 0%, transparent 40%);
+}
+.p-badge{
+  position:absolute;top:12px;left:12px;z-index:2;pointer-events:none;
+  font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--white);background:rgba(10,16,24,.75);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid rgba(124,167,194,.3);padding:4px 8px;border-radius:3px;
+}
+.p-frame .reticle{opacity:.35;transition:opacity .5s var(--ease), scale .5s var(--ease)}
+.p-frame:hover .reticle{opacity:1;scale:1.02}
+
+.p-cap{
+  display:flex;justify-content:space-between;gap:12px;margin-top:14px;
+  font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.18em;
+  text-transform:uppercase;color:var(--dim);
+  transition:color .4s var(--ease);
+}
+.portrait:hover .p-cap{color:var(--fog)}
 
 /* ==================================================================
    8 · FLIGHT LOG

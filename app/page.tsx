@@ -235,10 +235,17 @@ export default function Home() {
                   alt="Kshitiz Bathwal — Aerial Landscape Photographer"
                   loading="lazy"
                 />
+                <div className="p-veil" aria-hidden="true" />
+                <div className="p-badge" aria-hidden="true">
+                  <span>PILOT · 34.15° N 77.57° E</span>
+                </div>
+                <div className="reticle" aria-hidden="true">
+                  <i /><i /><i /><i />
+                </div>
               </div>
               <div className="p-cap" data-anim="fade">
-                <span>Pre-flight</span>
-                <span>05:40 · wind 7 kt</span>
+                <span>Pre-flight checks</span>
+                <span>05:40 · Wind 7 kt</span>
               </div>
             </div>
           </div>

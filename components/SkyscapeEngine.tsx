@@ -1294,7 +1294,11 @@ void main(){
       const tl = gsap.timeline({
         onComplete: () => {
           document.body.style.overflow = '';
-          if (lenis) lenis.start();
+          window.scrollTo(0, 0);
+          if (lenis) {
+            lenis.scrollTo(0, { immediate: true });
+            lenis.start();
+          }
           ScrollTrigger.refresh();
         },
       });

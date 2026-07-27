@@ -218,6 +218,7 @@ export default function Home() {
             fetchPriority="high"
           />
           <div className="hero-tint" aria-hidden="true" />
+          <div id="vantaClouds" className="hero-vanta-clouds" aria-hidden="true" />
           <div className="h-corner tl" aria-hidden="true" data-depth="-0.15" />
           <div className="h-corner br" aria-hidden="true" data-depth="-0.15" />
 

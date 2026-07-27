@@ -535,7 +535,11 @@ void main(){
       const beat2 = document.getElementById('beat2');
 
       if (beat1 && beat2) {
+        if ('scrollRestoration' in history) {
+          history.scrollRestoration = 'manual';
+        }
         gsap.set([beat1, beat2], { autoAlpha: 0, y: 24 });
+        if (heroMainGroup) gsap.set(heroMainGroup, { autoAlpha: 1, y: 0 });
 
         const heroTl = gsap.timeline({
           defaults: { ease: 'none' },

@@ -539,7 +539,7 @@ void main(){
           history.scrollRestoration = 'manual';
         }
         gsap.set([beat1, beat2], { autoAlpha: 0, y: 24 });
-        if (heroMainGroup) gsap.set(heroMainGroup, { autoAlpha: 1, y: 0 });
+        gsap.set(['#heroMainGroup', '.hud', '.h-corner', '.cue'], { autoAlpha: 1, y: 0 });
 
         const heroTl = gsap.timeline({
           defaults: { ease: 'none' },
@@ -1317,21 +1317,7 @@ void main(){
           '<'
         )
         .to(GL, { reveal: 1, duration: 1.6, ease: 'power2.out' }, '<.2')
-        .from(
-          document.getElementById('heroMainGroup') || '.hero-main-group',
-          {
-            autoAlpha: 0,
-            y: 28,
-            duration: 1.1,
-            ease: 'power3.out',
-          },
-          '-=.75'
-        )
-        .from(
-          '.hud, .h-corner, .cue',
-          { autoAlpha: 0, duration: 0.9, stagger: 0.06, ease: 'power2.out' },
-          '-=.8'
-        )
+        .set(['#heroMainGroup', '.hud', '.h-corner', '.cue'], { autoAlpha: 1, y: 0, clearProps: 'all' })
         .set(pre, { display: 'none' });
     }
 

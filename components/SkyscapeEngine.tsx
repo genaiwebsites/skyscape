@@ -27,6 +27,8 @@ export default function SkyscapeEngine() {
     gsap.config({ force3D: true });
     ScrollTrigger.config({ ignoreMobileResize: true });
 
+    let onParallaxMove: ((e: MouseEvent) => void) | null = null;
+
     // 3. Build Altimeter tape ticks & position immediately (zero delay)
     const tape = document.getElementById('tape');
     let setTape: any = null;
@@ -128,7 +130,14 @@ export default function SkyscapeEngine() {
       return chars;
     }
 
-    if (!RM) split(document.querySelector<HTMLElement>('.d1'));
+    const d1El = document.querySelector<HTMLElement>('.d1');
+    if (d1El) {
+      if (!RM) {
+        split(d1El);
+      } else {
+        d1El.dataset.done = '1';
+      }
+    }
 
     // 5. Original WebGL Shader (Exact match to index.html)
     const heroEl = document.getElementById('hero') as HTMLElement;
@@ -181,48 +190,80 @@ void main(){
   float d = uDescent;
   vec2 uv = vUv;
 
-  vec2 shake = vec2(noise(vec2(uTime*7.3,1.)), noise(vec2(3.,uTime*6.1))) - .5;
-  uv += shake * (0.0011 + abs(uVel)*0.004);
+  // Ultra-subtle flight camera micro-vibration
+  vec2 shake = vec2(noise(vec2(uTime*4.2, 1.0)), noise(vec2(2.5, uTime*3.8))) - 0.5;
+  uv += shake * (0.0006 + abs(uVel)*0.002);
 
-  vec2 g = uv + uMouse*vec2(.014,.010);
-  float zoom = 1.0 + 0.20*(1.0-d);
-  g = (g-.5)/zoom + .5;
-  g += (fbm(g*6.0+uTime*.3)-.5) * abs(uVel) * 0.02;
+  // Butter-smooth flight altitude zoom + mid-transition camera lens acceleration
+  float mixLensBoost = sin(uMix * 3.14159) * 0.12;
+  float zoom = 1.0 + 0.32 * (1.0 - d) + mixLensBoost;
+  vec2 g = (uv - 0.5) / zoom + 0.5;
+  g += uMouse * vec2(0.016, 0.012) * (1.0 + d * 0.4);
 
-  float dn = fbm(g*3.4 + uTime*.02);
-  float m  = smoothstep(0., 1., uMix*1.9 - .45 + (dn-.5)*.85);
-  float edge = smoothstep(.12,.95,distance(vUv,vec2(.5)));
-  float ab = (.0014 + abs(uVel)*.012) * edge;
+  // Organic fluid mist & ocean heat-wave distortion
+  float mist = fbm(g * 2.6 + vec2(uTime * 0.015, -uTime * 0.012));
+  g += (vec2(mist) - 0.5) * (0.003 + abs(uVel) * 0.008);
 
-  vec3 A = samp(uA, cover(g + vec2(0., m*.05), uResA), ab);
-  vec3 B = samp(uB, cover(g - vec2(0., (1.-m)*.05), uResB), ab);
+  // Domain-warped organic liquid transition noise
+  float transitionNoise = fbm(g * 3.2 + vec2(uTime * 0.018, -uTime * 0.01) + fbm(g * 1.8) * 0.75);
+  float m = smoothstep(0.0, 1.0, uMix * 1.28 - 0.14 + (transitionNoise - 0.5) * 0.45);
+  float edge = smoothstep(0.35, 1.0, distance(vUv, vec2(0.5)));
+  float ab = (0.001 + abs(uVel) * 0.008) * edge;
+
+  // Vertical optical flow parallax shift between textures A & B during transition
+  vec2 offsetA = vec2(0.0, m * 0.038);
+  vec2 offsetB = vec2(0.0, -(1.0 - m) * 0.038);
+
+  vec3 A = samp(uA, cover(g + offsetA, uResA), ab);
+  vec3 B = samp(uB, cover(g + offsetB, uResB), ab);
   vec3 col = mix(A, B, m);
 
-  col = mix(col, vec3(.301,.420,.502), (1.-d)*.34);
+  // ── PHOTOREALISTIC DENSE VOLUMETRIC HIGH-ALTITUDE CLOUD & FOG DECK ──
+  // Parallax cloud expansion as aircraft descends through cloud ceiling
+  vec2 cUv1 = (uv - 0.5) * (1.10 + d * 0.70) + 0.5 + vec2(uTime * 0.009, -uTime * 0.004) + uMouse * 0.030;
+  vec2 cUv2 = (uv - 0.5) * (1.40 + d * 0.95) + 0.5 + vec2(-uTime * 0.014, uTime * 0.006) + uMouse * 0.050;
+  vec2 cUv3 = (uv - 0.5) * (0.85 + d * 0.50) + 0.5 + vec2(uTime * 0.005, uTime * 0.003) - uMouse * 0.020;
 
-  vec2 c1 = (uv-.5)*(1.0 - d*.82) + .5 + vec2(uTime*.0055,-uTime*.0018) + uMouse*.030;
-  vec2 c2 = (uv-.5)*(1.0 - d*1.38) + .5 + vec2(uTime*.0105,-uTime*.0040) + uMouse*.058;
-  float n1 = fbm(c1*2.4 + fbm(c1*1.2)*.85);
-  float n2 = fbm(c2*3.7 + fbm(c2*1.9)*.95);
-  float t1 = smoothstep(.30 + d*.76, .70 + d*.76, n1);
-  float t2 = smoothstep(.38 + d*.96, .78 + d*.96, n2);
-  float deck = clamp(t1*.92 + t2*.72, 0., 1.) * (1.0 - smoothstep(.72,1.0,d));
+  // Domain warp for organic cloud tendrils and thick cumulus banks
+  float warp1 = fbm(cUv1 * 2.0 + fbm(cUv1 * 1.2) * 0.75);
+  float warp2 = fbm(cUv2 * 2.8 + fbm(cUv2 * 1.6) * 0.85);
+  float warp3 = fbm(cUv3 * 1.5 + fbm(cUv3 * 0.9) * 0.55);
 
-  vec3 lit = mix(vec3(.38,.46,.56), vec3(.86,.90,.94), n1*.75+n2*.25);
-  col = mix(col, lit, deck);
+  // Feathered continuous cloud density thresholds (82% dense by default on initial page load)
+  float cloudDensity1 = smoothstep(0.26, 0.66, warp1) * 0.55;
+  float cloudDensity2 = smoothstep(0.30, 0.70, warp2) * 0.45;
+  float cloudDensity3 = smoothstep(0.20, 0.60, warp3) * 0.35;
+  
+  float baseCloud = clamp(cloudDensity1 + cloudDensity2 + cloudDensity3, 0.0, 0.82);
 
-  col = mix(col, vec3(.486,.655,.761), (1.-smoothstep(.25,.75,d))*.22);
+  // DESCENT CLEARANCE DISSOLVE: As user scrolls down (d increases 0 -> 0.65), 
+  // clouds part apart & fade to 0.0 opacity so the landscape photo becomes 100% clear!
+  float cloudClearance = smoothstep(0.02, 0.65, d);
+  float totalCloud = baseCloud * (1.0 - cloudClearance);
 
-  vec2 sp = (vUv-vec2(.74,.28)) * vec2(uRes.x/uRes.y,1.);
-  float sun = exp(-length(sp)*3.1);
-  col += vec3(.62,.46,.30) * sun * (.22 + .55*(1.-d));
+  // Sunlit cloud scattering colors: golden highlights on rim, soft slate-cyan in shadows
+  vec2 sunPos = (vUv - vec2(0.72, 0.24)) * vec2(uRes.x / uRes.y, 1.0);
+  float sunDist = length(sunPos);
+  float sunRim = exp(-sunDist * 2.0);
 
-  col *= 1.0 - edge*.44;
-  col = mix(col, vec3(.020,.031,.051), smoothstep(.60,1.,vUv.y)*.55);
-  col = mix(col, vec3(.020,.031,.051), d*.40);
+  vec3 cloudShadow = vec3(0.35, 0.44, 0.56);
+  vec3 cloudLight  = vec3(0.92, 0.95, 0.98);
+  vec3 cloudSunRim = vec3(1.0, 0.94, 0.82);
 
-  col *= smoothstep(0., .6, uReveal + (1.-abs(vUv.y-.45)*1.6));
-  gl_FragColor = vec4(col,1.);
+  vec3 cloudColor = mix(cloudShadow, cloudLight, warp1 * 0.6 + warp2 * 0.4);
+  cloudColor = mix(cloudColor, cloudSunRim, sunRim * 0.70);
+
+  // Volumetric blend over photo (rich on load, dissolves to 0% on scroll down)
+  col = mix(col, cloudColor, totalCloud);
+
+  // Soft atmospheric sunlight ray bloom
+  float sun = exp(-sunDist * 2.8);
+  col += vec3(0.20, 0.16, 0.10) * sun * 0.40;
+
+  // Subtle vignette for border framing
+  col *= 1.0 - edge * 0.16;
+  col *= smoothstep(0.0, 0.4, uReveal + (1.0 - abs(vUv.y - 0.5) * 1.5));
+  gl_FragColor = vec4(col, 1.0);
 }`;
 
           function sh(t: number, src: string) {
@@ -305,7 +346,7 @@ void main(){
                 im.src = src;
               }
               texture(
-                U('photo-1486870591958-9b9d0d1dda99', 1800, 85),
+                '/mauritius-coastal-drone-photography-skyscape.jpg',
                 0,
                 U_.uResA
               );
@@ -435,6 +476,8 @@ void main(){
 
     const setEarth = earthshift ? gsap.quickSetter(earthshift, 'opacity') : null;
 
+    const altDrone = document.getElementById('altDrone');
+
     const updateAltitude = (p: number) => {
       const a = Math.round(CEIL * (1 - p));
       if (setTape) setTape(window.innerHeight / 2 - CEIL * p * PPM);
@@ -442,6 +485,7 @@ void main(){
       if (altVal) altVal.textContent = String(a);
       if (chipVal) chipVal.textContent = a + ' M';
       if (hudAlt) hudAlt.textContent = (CEIL * (1 - p)).toFixed(1) + ' m AGL';
+
       const st =
         a <= 4
           ? 'LANDED · MOTORS OFF'
@@ -452,6 +496,37 @@ void main(){
       if (altRail) altRail.classList.toggle('landed', a <= 4);
       if (head) head.classList.toggle('scrolled', window.scrollY > 40);
     };
+
+    // Altimeter Drone Scroll Pitch Reaction
+    let droneTimer: ReturnType<typeof setTimeout> | null = null;
+    let lastY = window.scrollY;
+
+    const onScrollDronePitch = () => {
+      if (!altDrone) return;
+      const curY = window.scrollY;
+      const diff = curY - lastY;
+      lastY = curY;
+      const speed = Math.abs(diff);
+
+      if (speed > 1.2) {
+        if (diff > 0) {
+          altDrone.classList.add('descending');
+          altDrone.classList.remove('ascending');
+        } else {
+          altDrone.classList.add('ascending');
+          altDrone.classList.remove('descending');
+        }
+      }
+
+      if (droneTimer) clearTimeout(droneTimer);
+      droneTimer = setTimeout(() => {
+        if (altDrone) {
+          altDrone.classList.remove('descending', 'ascending');
+        }
+      }, 140);
+    };
+
+    window.addEventListener('scroll', onScrollDronePitch, { passive: true });
 
     // Immediate initial altitude positioning on load
     updateAltitude(0);
@@ -478,10 +553,10 @@ void main(){
             if (hudAlt) hudAlt.textContent = (CEIL * (1 - p)).toFixed(1) + ' m AGL';
             const st =
               a <= 4
-                ? 'LANDED · MOTORS OFF'
+                ? 'LANDED'
                 : p < 0.02
-                ? 'AGL · HOVER'
-                : 'AGL · DESCENT';
+                ? 'HOVER'
+                : 'DESCENT';
             if (st !== lastState) {
               lastState = st;
               if (altState) altState.textContent = st;
@@ -497,21 +572,22 @@ void main(){
       });
 
       /* Hero Cinema */
-      const beat1 = document.getElementById('beat1')!;
-      const beat2 = document.getElementById('beat2')!;
+      const heroMainGroup = document.getElementById('heroMainGroup');
+      const beat1 = document.getElementById('beat1');
+      const beat2 = document.getElementById('beat2');
+
       if (beat1 && beat2) {
-        gsap.set([beat1, beat2], { autoAlpha: 0, y: 34 });
-        const chars = gsap.utils.toArray<HTMLElement>('.d1 .c');
+        gsap.set([beat1, beat2], { autoAlpha: 0, y: 24 });
 
         const heroTl = gsap.timeline({
           defaults: { ease: 'none' },
           scrollTrigger: {
             trigger: heroEl,
             start: 'top top',
-            end: MOBILE ? '+=130%' : '+=210%',
+            end: MOBILE ? '+=140%' : '+=210%',
             pin: true,
             pinSpacing: true,
-            scrub: 0.9,
+            scrub: 0.8,
             invalidateOnRefresh: true,
           },
         });
@@ -520,20 +596,9 @@ void main(){
           .to(GL, { descent: 1, duration: 1.15, ease: 'power1.inOut' }, 0)
           .to('.cue', { autoAlpha: 0, duration: 0.18 }, 0)
           .to(
-            chars,
-            {
-              yPercent: -118,
-              autoAlpha: 0,
-              duration: 0.5,
-              ease: 'power2.in',
-              stagger: { each: 0.006 },
-            },
-            0.22
-          )
-          .to(
-            '.hero-kick, .hero-sub',
-            { autoAlpha: 0, y: -26, duration: 0.4, ease: 'power2.in' },
-            0.2
+            heroMainGroup || '.hero-in',
+            { autoAlpha: 0, y: -30, duration: 0.45, ease: 'power2.inOut' },
+            0.32
           )
           .to(beat1, { autoAlpha: 1, y: 0, duration: 0.34, ease: 'power2.out' }, 0.82)
           .to(beat1, { autoAlpha: 0, y: -30, duration: 0.3, ease: 'power2.in' }, 1.42)
@@ -557,6 +622,47 @@ void main(){
           }
         );
       });
+
+      /* Parallax.js Pointer Gyro Engine */
+      if (FINE) {
+        const parallaxNodes = Array.from(
+          document.querySelectorAll<HTMLElement>('[data-depth]')
+        );
+
+        if (parallaxNodes.length > 0) {
+          const setters = parallaxNodes.map((el) => {
+            const depthX = parseFloat(
+              el.dataset.depthX || el.dataset.depth || '0.1'
+            );
+            const depthY = parseFloat(
+              el.dataset.depthY || el.dataset.depth || '0.1'
+            );
+            const maxPx = parseFloat(el.dataset.maxPx || '24');
+
+            return {
+              depthX,
+              depthY,
+              maxPx,
+              setX: gsap.quickTo(el, 'x', { duration: 0.7, ease: 'power2.out' }),
+              setY: gsap.quickTo(el, 'y', { duration: 0.7, ease: 'power2.out' }),
+            };
+          });
+
+          onParallaxMove = (e: MouseEvent) => {
+            const px = (e.clientX / window.innerWidth - 0.5) * 2;
+            const py = (e.clientY / window.innerHeight - 0.5) * 2;
+
+            setters.forEach(({ depthX, depthY, maxPx, setX, setY }) => {
+              setX(px * depthX * maxPx);
+              setY(py * depthY * maxPx);
+            });
+          };
+
+          window.addEventListener('mousemove', onParallaxMove, {
+            passive: true,
+          });
+        }
+      }
 
       gsap.utils.toArray<HTMLElement>('[data-split]:not(.d1)').forEach((el) => {
         const c = split(el);
@@ -678,11 +784,14 @@ void main(){
       if (frames.length && steps.length) {
         gsap.set(steps.slice(1), { autoAlpha: 0, y: 26 });
         gsap.set(frames.slice(1), { clipPath: 'inset(100% 0% 0% 0%)' });
-        gsap.set(
-          frames.map((f) => f.querySelector('img')),
-          { scale: 1.14 }
-        );
-        gsap.set(frames[0].querySelector('img'), { scale: 1 });
+        const validImgs = frames.map((f) => f.querySelector('img')).filter(Boolean);
+        if (validImgs.length) {
+          gsap.set(validImgs, { scale: 1.14 });
+        }
+        const firstImg = frames[0]?.querySelector('img');
+        if (firstImg) {
+          gsap.set(firstImg, { scale: 1 });
+        }
 
         const seg = 1;
         const altO = { a: D[0].a };
@@ -787,100 +896,121 @@ void main(){
           });
 
           gsap.utils.toArray<HTMLElement>('.shot').forEach((shot) => {
-            gsap.fromTo(
-              shot.querySelector('.frame')!,
-              { clipPath: 'inset(0% 12% 0% 12%)' },
-              {
-                clipPath: 'inset(0% 0% 0% 0%)',
-                ease: 'power2.out',
-                scrollTrigger: {
-                  trigger: shot,
-                  containerAnimation: hAnim,
-                  start: 'left 92%',
-                  end: 'left 55%',
-                  scrub: true,
-                },
-              }
-            );
-            gsap.fromTo(
-              shot.querySelector('img')!,
-              { xPercent: -6 },
-              {
-                xPercent: 6,
-                ease: 'none',
-                scrollTrigger: {
-                  trigger: shot,
-                  containerAnimation: hAnim,
-                  start: 'left right',
-                  end: 'right left',
-                  scrub: true,
-                },
-              }
-            );
-            gsap.fromTo(
-              shot.querySelector('.cap')!,
-              { y: 18, autoAlpha: 0 },
-              {
-                y: 0,
-                autoAlpha: 1,
-                ease: 'power2.out',
-                scrollTrigger: {
-                  trigger: shot,
-                  containerAnimation: hAnim,
-                  start: 'left 88%',
-                  end: 'left 62%',
-                  scrub: true,
-                },
-              }
-            );
+            const frameEl = shot.querySelector('.frame');
+            const imgEl = shot.querySelector('img');
+            const capEl = shot.querySelector('.cap');
+
+            if (frameEl) {
+              gsap.fromTo(
+                frameEl,
+                { clipPath: 'inset(0% 12% 0% 12%)' },
+                {
+                  clipPath: 'inset(0% 0% 0% 0%)',
+                  ease: 'power2.out',
+                  scrollTrigger: {
+                    trigger: shot,
+                    containerAnimation: hAnim,
+                    start: 'left 92%',
+                    end: 'left 55%',
+                    scrub: true,
+                  },
+                }
+              );
+            }
+            if (imgEl) {
+              gsap.fromTo(
+                imgEl,
+                { xPercent: -6 },
+                {
+                  xPercent: 6,
+                  ease: 'none',
+                  scrollTrigger: {
+                    trigger: shot,
+                    containerAnimation: hAnim,
+                    start: 'left right',
+                    end: 'right left',
+                    scrub: true,
+                  },
+                }
+              );
+            }
+            if (capEl) {
+              gsap.fromTo(
+                capEl,
+                { y: 18, autoAlpha: 0 },
+                {
+                  y: 0,
+                  autoAlpha: 1,
+                  ease: 'power2.out',
+                  scrollTrigger: {
+                    trigger: shot,
+                    containerAnimation: hAnim,
+                    start: 'left 88%',
+                    end: 'left 62%',
+                    scrub: true,
+                  },
+                }
+              );
+            }
           });
         } else {
           gsap.utils.toArray<HTMLElement>('.shot').forEach((shot) => {
-            gsap.fromTo(
-              shot.querySelector('.frame')!,
-              { clipPath: 'inset(4% 6% 4% 6%)' },
-              {
-                clipPath: 'inset(0% 0% 0% 0%)',
-                duration: 1.2,
-                ease: 'expo.out',
-                scrollTrigger: { trigger: shot, start: 'top 88%', once: true },
-              }
-            );
-            gsap.fromTo(
-              shot.querySelector('img')!,
-              { yPercent: -6 },
-              {
-                yPercent: 6,
-                ease: 'none',
-                scrollTrigger: {
-                  trigger: shot,
-                  start: 'top bottom',
-                  end: 'bottom top',
-                  scrub: true,
-                },
-              }
-            );
+            const frameEl = shot.querySelector('.frame');
+            const imgEl = shot.querySelector('img');
+
+            if (frameEl) {
+              gsap.fromTo(
+                frameEl,
+                { clipPath: 'inset(4% 6% 4% 6%)' },
+                {
+                  clipPath: 'inset(0% 0% 0% 0%)',
+                  duration: 1.2,
+                  ease: 'expo.out',
+                  scrollTrigger: { trigger: shot, start: 'top 88%', once: true },
+                }
+              );
+            }
+            if (imgEl) {
+              gsap.fromTo(
+                imgEl,
+                { yPercent: -6 },
+                {
+                  yPercent: 6,
+                  ease: 'none',
+                  scrollTrigger: {
+                    trigger: shot,
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: true,
+                  },
+                }
+              );
+            }
           });
         }
       }
 
       /* Interlude focus blur */
-      gsap.fromTo(
-        '.interlude .display',
-        { filter: 'blur(9px)', scale: 0.96, autoAlpha: 0.25 },
-        {
-          filter: 'blur(0px)',
-          scale: 1,
-          autoAlpha: 1,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: '.interlude',
-            start: 'top 80%',
-            end: 'center 55%',
-            scrub: true,
-          },
-        }
-      );
+      const interludeEl = document.querySelector<HTMLElement>('.interlude');
+      const interludeDisplay = document.querySelector<HTMLElement>('.interlude .display');
+      if (interludeEl && interludeDisplay) {
+        gsap.fromTo(
+          interludeDisplay,
+          { filter: 'blur(9px)', scale: 0.96, autoAlpha: 0.25 },
+          {
+            filter: 'blur(0px)',
+            scale: 1,
+            autoAlpha: 1,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: interludeEl,
+              start: 'top 80%',
+              end: 'center 55%',
+              scrub: true,
+            },
+          }
+        );
+      }
 
       ScrollTrigger.refresh();
       window.addEventListener('load', () => ScrollTrigger.refresh());
@@ -1002,7 +1132,7 @@ void main(){
             ? thumb.naturalWidth / thumb.naturalHeight
             : 1.5;
         lbImg.src = U(f.img, 2000, 88);
-        lbImg.alt = `${f.t} — aerial photograph, ${f.l}`;
+        lbImg.alt = `${f.t} | aerial photograph, ${f.l}`;
         setMeta(i);
         lb!.classList.add('open');
         isOpen = true;
@@ -1257,6 +1387,8 @@ void main(){
 
     return () => {
       stopGL();
+      window.removeEventListener('scroll', onScrollDronePitch);
+      if (onParallaxMove) window.removeEventListener('mousemove', onParallaxMove);
       if (lenis) lenis.destroy();
       ScrollTrigger.getAll().forEach((t) => t.kill());
     };

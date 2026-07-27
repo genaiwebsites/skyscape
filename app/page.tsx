@@ -19,8 +19,15 @@ export default function Home() {
         <div className="pre-top">
           <div className="pre-brand">
             <span className="beacon" />
-            <b>Skyscape</b>
-            <span className="sub">UAS Flight Systems</span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/skyscape-aerial-photography-logo-white.png"
+              alt="Skyscape Photography Logo"
+              className="pre-logo"
+              width={28}
+              height={28}
+            />
+            <span className="pre-brand-text">SKYSCAPE PHOTOGRAPHY</span>
           </div>
           <div className="pre-tele-status">
             <span id="preSats">Acquiring GPS Lock</span>
@@ -90,19 +97,51 @@ export default function Home() {
         {/* Bottom Telemetry Counter & Launch Status */}
         <div className="pre-bottom">
           <div className="pre-mid">
-            <div className="pre-count">
-              <span id="preNum">000</span><sup>M AGL</sup>
+            {/* Left Altimeter Unit */}
+            <div className="pre-alt-unit">
+              <div className="pre-alt-label">ALTITUDE · CEILING 299M</div>
+              <div className="pre-count">
+                <span id="preNum">000</span><sup>M AGL</sup>
+              </div>
             </div>
+
+            {/* Center Flight Metrics HUD */}
+            <div className="pre-center-tele">
+              <div className="pre-coords">28.6139° N · 77.2090° E · INDIA</div>
+              <div className="pre-metrics-grid">
+                <div className="pre-metric-item">
+                  <small>SYSTEM</small>
+                  <b>NOMINAL</b>
+                </div>
+                <div className="pre-metric-item">
+                  <small>BATTERY</small>
+                  <b>98% · 24.2V</b>
+                </div>
+                <div className="pre-metric-item">
+                  <small>LINK</small>
+                  <b>5.8GHz · 100%</b>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Status & Systems Console */}
             <div className="pre-status-box">
-              <div className="pre-status" id="preStatus">Motors Armed</div>
+              <div className="pre-status-badge">
+                <span className="status-pulse" />
+                <span className="pre-status" id="preStatus">Motors Armed</span>
+              </div>
               <div className="pre-tele-pills">
                 <span>BARO OK</span>
                 <span>IMU READY</span>
-                <span>299M CEILING</span>
+                <span>GNSS LOCK</span>
               </div>
             </div>
           </div>
-          <div className="pre-bar"><i id="preBar" /></div>
+
+          {/* Integrated Loading Bar */}
+          <div className="pre-bar-wrap">
+            <div className="pre-bar"><i id="preBar" /></div>
+          </div>
         </div>
       </div>
       <div className="curtain" id="curtain" aria-hidden="true" />
@@ -111,9 +150,21 @@ export default function Home() {
       <aside className="alt" id="altRail" aria-hidden="true">
         <div className="tape" id="tape" />
         <div className="alt-cur">
+          <div className="alt-drone" id="altDrone" role="button" tabIndex={-1} title="UAS Quadcopter Indicator">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/drone-hud-icon.png"
+              alt="UAS Quadcopter"
+              className="alt-drone-img"
+              id="altDroneImg"
+            />
+            <span className="alt-drone-beacon" />
+          </div>
           <div className="alt-read">
-            <span id="altVal">299</span><u> M</u>
-            <small id="altState">AGL · HOVER</small>
+            <div className="alt-num-row">
+              <span id="altVal">299</span><u>M</u>
+            </div>
+            <small id="altState">HOVER</small>
           </div>
         </div>
       </aside>
@@ -123,9 +174,16 @@ export default function Home() {
 
       {/* ── Header ── */}
       <header className="head" id="head">
-        <a className="brand" href="#top">
-          <b>Skyscape</b>
-          <span>Aerial Photography</span>
+        <a className="brand" href="#top" aria-label="Skyscape Photography Home">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/skyscape-aerial-photography-logo-white.png"
+            alt="Skyscape Photography Logo"
+            className="nav-logo"
+            width={34}
+            height={34}
+          />
+          <span className="brand-text">SKYSCAPE PHOTOGRAPHY</span>
         </a>
         <nav className="nav" aria-label="Primary">
           <a href="#about">
@@ -155,16 +213,15 @@ export default function Home() {
           <img
             className="hero-fallback"
             id="heroFallback"
-            src="https://images.unsplash.com/photo-1486870591958-9b9d0d1dda99?w=2000&q=85"
-            alt="Aerial view of the Ladakh range at dusk, ridges fading into blue haze"
-            crossOrigin="anonymous"
+            src="/mauritius-coastal-drone-photography-skyscape.jpg"
+            alt="Aerial view of Macondé Peak hairpin ridge and turquoise lagoon in Mauritius"
             fetchPriority="high"
           />
           <div className="hero-tint" aria-hidden="true" />
-          <div className="h-corner tl" aria-hidden="true" />
-          <div className="h-corner br" aria-hidden="true" />
+          <div className="h-corner tl" aria-hidden="true" data-depth="-0.15" />
+          <div className="h-corner br" aria-hidden="true" data-depth="-0.15" />
 
-          <div className="hud" aria-hidden="true">
+          <div className="hud" aria-hidden="true" data-depth="0.15">
             <span className="lock"><i />GPS lock · 12 sat</span><br />
             <span id="hudAlt">299.0 m AGL</span><br />
             Gimbal −90.0° · nadir<br />
@@ -173,34 +230,36 @@ export default function Home() {
 
           <div className="shell hero-in">
             <div className="wrap">
-              <p className="eyebrow hero-kick">
-                Kshitiz Bathwal · Aerial Landscape Photography · India
-              </p>
-              <h1 className="display d1" data-split>
-                The earth from <em>299 metres.</em>
-              </h1>
-              <div className="hero-sub">
-                <p className="lede">
-                  14 states, 342 logged flights, 118 airtime hours. Documenting India&apos;s terrain, river systems, and coastal geometry from above.
+              <div className="hero-main-group" id="heroMainGroup" data-depth="0.04">
+                <p className="eyebrow hero-kick">
+                  Macondé Viewpoint · 168 M AGL · Flight Record 08
                 </p>
-                <div className="hero-meta meta">
-                  <span>Aircraft<b>DJI Air 2S</b></span>
-                  <span>Envelope<b>30–299 m AGL</b></span>
-                  <span>Logged<b>118 hours</b></span>
+                <h1 className="display d1" data-split>
+                  Where Volcanic Ridge Meets <em>Sapphire Lagoon.</em>
+                </h1>
+                <div className="hero-sub">
+                  <p className="lede">
+                    Captured from 168 metres above Macondé Viewpoint in Baie du Cap, Mauritius: where winding coastal roads trace the razor-thin geometry of ancient land and emerald ocean.
+                  </p>
+                  <div className="hero-meta meta">
+                    <span>Location<b>Macondé Viewpoint, Mauritius</b></span>
+                    <span>Elevation<b>168 m AGL</b></span>
+                    <span>Aircraft<b>DJI Air 2S</b></span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="hero-beats" aria-hidden="true">
+          <div className="hero-beats" id="heroBeats" aria-hidden="true">
             <div className="wrap">
               <p className="beat" id="beat1">
                 <span className="beat-k">Maximum ceiling · 299 m</span>
-                <span className="beat-l">Full mountain structures <em>fit in frame.</em></span>
+                <span className="beat-l">Mountain ranges resolve into <em>pure geometry.</em></span>
               </p>
               <p className="beat" id="beat2">
                 <span className="beat-k">Mid descent · 212 m</span>
-                <span className="beat-l">Drainage networks <em>become legible.</em></span>
+                <span className="beat-l">River veins carve through <em>ancient valleys.</em></span>
               </p>
             </div>
           </div>
@@ -216,10 +275,10 @@ export default function Home() {
                 High altitude. <em>Precise intent.</em>
               </h2>
               <p className="prose" data-anim="fade">
-                I&apos;m <strong>Kshitiz Bathwal</strong>, a landscape and aerial photographer based in <strong>India</strong> — chasing the geometry of rivers from 400 feet, the symmetry of terraced fields at golden hour, and the quiet order of terrain that only reveals itself from above. Flying a 1-inch sensor between 30 and 299 metres AGL, I document landscape structures across 14 Indian states.
+                I&apos;m <strong>Kshitiz Bathwal</strong>, a landscape and aerial photographer based in <strong>India</strong>: chasing the geometry of rivers from 400 feet, the symmetry of terraced fields at golden hour, and the quiet order of terrain that only reveals itself from above. Flying a 1-inch sensor between 30 and 299 metres AGL, I document landscape structures across 14 Indian states.
               </p>
               <p className="prose" data-anim="fade">
-                Flying a drone is my way of asking the earth a question it only answers when you step off the ground. <strong>Skyscape Photography</strong> is not a studio — it&apos;s a singular point of view backed by flight discipline: clearing DGCA permits, monitoring wind vectors under 12 knots, and catching low-angle sunlight when long shadows expose natural architecture.
+                Flying a drone is my way of asking the earth a question it only answers when you step off the ground. <strong>Skyscape Photography</strong> is not a studio: it&apos;s a singular point of view backed by flight discipline: clearing DGCA permits, monitoring wind vectors under 12 knots, and catching low-angle sunlight when long shadows expose natural architecture.
               </p>
               <blockquote className="quote" data-anim="fade">
                 &ldquo;Every frame is a reminder that perspective changes everything.&rdquo;
@@ -232,7 +291,7 @@ export default function Home() {
                 <img
                   data-par="0.18"
                   src="/images/pilot.jpg"
-                  alt="Kshitiz Bathwal — Aerial Landscape Photographer"
+                  alt="Kshitiz Bathwal | Aerial Landscape Photographer"
                   loading="lazy"
                 />
                 <div className="p-veil" aria-hidden="true" />
@@ -337,10 +396,10 @@ export default function Home() {
                 <div className="sc-frame" key={i}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={U(d.img, 1500)}
-                    alt={`${d.h} — aerial frame at ${d.a} metres above ground level`}
+                    src={d.img.startsWith('/') ? d.img : U(d.img, 1500)}
+                    alt={`${d.h} | aerial frame at ${d.a} metres above ground level`}
                     loading="lazy"
-                    crossOrigin="anonymous"
+                    crossOrigin={d.img.startsWith('/') ? undefined : 'anonymous'}
                   />
                 </div>
               ))}
@@ -356,14 +415,14 @@ export default function Home() {
         <div className="shell" id="work" data-alt="130">
           <div className="wrap g12 work-head">
             <div className="col-main">
-              <p className="eyebrow" data-anim="fade">Selected work · 2022 — 2026</p>
+              <p className="eyebrow" data-anim="fade">Selected work · 2022 - 2026</p>
               <h2 className="display d2" data-split>
                 Terrain &amp; <em>coastal geometry.</em>
               </h2>
             </div>
             <div className="work-intro" data-anim="fade">
               Twelve frames captured at varying altitudes. Each photograph is documented with precise flight altitude and GPS telemetry.
-              <span className="m">30 — 299 m AGL · DJI Air 2S · 1&quot; CMOS</span>
+              <span className="m">30 - 299 m AGL · DJI Air 2S · 1&quot; CMOS</span>
             </div>
           </div>
         </div>
@@ -381,7 +440,7 @@ export default function Home() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={U(f.img, 1200)}
-                    alt={`${f.t} — aerial photograph, ${f.l}`}
+                    alt={`${f.t} | aerial photograph, ${f.l}`}
                     loading="lazy"
                     crossOrigin="anonymous"
                   />
@@ -466,7 +525,18 @@ export default function Home() {
 
       {/* ── FOOTER ── */}
       <footer className="foot">
-        <small>© 2026 Kshitiz Bathwal · Skyscape Photography · All rights reserved</small>
+        <div className="foot-brand">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/skyscape-aerial-photography-logo-white.png"
+            alt="Skyscape Photography Logo"
+            className="foot-logo"
+            width={26}
+            height={26}
+          />
+          <span className="foot-brand-text">SKYSCAPE PHOTOGRAPHY</span>
+        </div>
+        <small>© 2026 Kshitiz Bathwal · All rights reserved</small>
         <a className="rth" href="#top">
           <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.8" aria-hidden="true">
             <path d="M12 19V5M5 12l7-7 7 7" />

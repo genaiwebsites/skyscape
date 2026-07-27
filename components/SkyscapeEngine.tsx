@@ -194,71 +194,29 @@ void main(){
   vec2 shake = vec2(noise(vec2(uTime*4.2, 1.0)), noise(vec2(2.5, uTime*3.8))) - 0.5;
   uv += shake * (0.0006 + abs(uVel)*0.002);
 
-  // Butter-smooth flight altitude zoom + mid-transition camera lens acceleration
-  float mixLensBoost = sin(uMix * 3.14159) * 0.12;
-  float zoom = 1.0 + 0.32 * (1.0 - d) + mixLensBoost;
+  // Smooth flight altitude camera zoom
+  float zoom = 1.0 + 0.16 * (1.0 - d);
   vec2 g = (uv - 0.5) / zoom + 0.5;
   g += uMouse * vec2(0.016, 0.012) * (1.0 + d * 0.4);
 
-  // Organic fluid mist & ocean heat-wave distortion
+  // Silky smooth ocean heat-wave distortion
   float mist = fbm(g * 2.6 + vec2(uTime * 0.015, -uTime * 0.012));
-  g += (vec2(mist) - 0.5) * (0.003 + abs(uVel) * 0.008);
+  g += (vec2(mist) - 0.5) * (0.002 + abs(uVel) * 0.005);
 
-  // Domain-warped organic liquid transition noise
-  float transitionNoise = fbm(g * 3.2 + vec2(uTime * 0.018, -uTime * 0.01) + fbm(g * 1.8) * 0.75);
-  float m = smoothstep(0.0, 1.0, uMix * 1.28 - 0.14 + (transitionNoise - 0.5) * 0.45);
+  float dn = fbm(g * 2.2 + uTime * 0.01);
+  float m  = smoothstep(0.0, 1.0, uMix * 1.4 - 0.2 + (dn - 0.5) * 0.3);
   float edge = smoothstep(0.35, 1.0, distance(vUv, vec2(0.5)));
-  float ab = (0.001 + abs(uVel) * 0.008) * edge;
+  float ab = (0.0008 + abs(uVel) * 0.006) * edge;
 
-  // Vertical optical flow parallax shift between textures A & B during transition
-  vec2 offsetA = vec2(0.0, m * 0.038);
-  vec2 offsetB = vec2(0.0, -(1.0 - m) * 0.038);
-
-  vec3 A = samp(uA, cover(g + offsetA, uResA), ab);
-  vec3 B = samp(uB, cover(g + offsetB, uResB), ab);
+  // Sample photo texture A & B with crisp clarity
+  vec3 A = samp(uA, cover(g + vec2(0.0, m * 0.02), uResA), ab);
+  vec3 B = samp(uB, cover(g - vec2(0.0, (1.0 - m) * 0.02), uResB), ab);
   vec3 col = mix(A, B, m);
 
-  // ── PHOTOREALISTIC DENSE VOLUMETRIC HIGH-ALTITUDE CLOUD & FOG DECK ──
-  // Parallax cloud expansion as aircraft descends through cloud ceiling
-  vec2 cUv1 = (uv - 0.5) * (1.10 + d * 0.70) + 0.5 + vec2(uTime * 0.009, -uTime * 0.004) + uMouse * 0.030;
-  vec2 cUv2 = (uv - 0.5) * (1.40 + d * 0.95) + 0.5 + vec2(-uTime * 0.014, uTime * 0.006) + uMouse * 0.050;
-  vec2 cUv3 = (uv - 0.5) * (0.85 + d * 0.50) + 0.5 + vec2(uTime * 0.005, uTime * 0.003) - uMouse * 0.020;
-
-  // Domain warp for organic cloud tendrils and thick cumulus banks
-  float warp1 = fbm(cUv1 * 2.0 + fbm(cUv1 * 1.2) * 0.75);
-  float warp2 = fbm(cUv2 * 2.8 + fbm(cUv2 * 1.6) * 0.85);
-  float warp3 = fbm(cUv3 * 1.5 + fbm(cUv3 * 0.9) * 0.55);
-
-  // Feathered continuous cloud density thresholds (82% dense by default on initial page load)
-  float cloudDensity1 = smoothstep(0.26, 0.66, warp1) * 0.55;
-  float cloudDensity2 = smoothstep(0.30, 0.70, warp2) * 0.45;
-  float cloudDensity3 = smoothstep(0.20, 0.60, warp3) * 0.35;
-  
-  float baseCloud = clamp(cloudDensity1 + cloudDensity2 + cloudDensity3, 0.0, 0.82);
-
-  // DESCENT CLEARANCE DISSOLVE: As user scrolls down (d increases 0 -> 0.65), 
-  // clouds part apart & fade to 0.0 opacity so the landscape photo becomes 100% clear!
-  float cloudClearance = smoothstep(0.02, 0.65, d);
-  float totalCloud = baseCloud * (1.0 - cloudClearance);
-
-  // Sunlit cloud scattering colors: golden highlights on rim, soft slate-cyan in shadows
+  // Soft natural golden sunlight bloom
   vec2 sunPos = (vUv - vec2(0.72, 0.24)) * vec2(uRes.x / uRes.y, 1.0);
-  float sunDist = length(sunPos);
-  float sunRim = exp(-sunDist * 2.0);
-
-  vec3 cloudShadow = vec3(0.35, 0.44, 0.56);
-  vec3 cloudLight  = vec3(0.92, 0.95, 0.98);
-  vec3 cloudSunRim = vec3(1.0, 0.94, 0.82);
-
-  vec3 cloudColor = mix(cloudShadow, cloudLight, warp1 * 0.6 + warp2 * 0.4);
-  cloudColor = mix(cloudColor, cloudSunRim, sunRim * 0.70);
-
-  // Volumetric blend over photo (rich on load, dissolves to 0% on scroll down)
-  col = mix(col, cloudColor, totalCloud);
-
-  // Soft atmospheric sunlight ray bloom
-  float sun = exp(-sunDist * 2.8);
-  col += vec3(0.20, 0.16, 0.10) * sun * 0.40;
+  float sun = exp(-length(sunPos) * 2.8);
+  col += vec3(0.18, 0.14, 0.08) * sun * 0.35;
 
   // Subtle vignette for border framing
   col *= 1.0 - edge * 0.16;

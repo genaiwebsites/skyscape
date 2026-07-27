@@ -131,7 +131,7 @@ export default function SkyscapeEngine() {
     }
 
     const d1El = document.querySelector<HTMLElement>('.d1');
-    if (d1El) {
+    if (d1El && !d1El.dataset.done) {
       if (!RM) {
         split(d1El);
       } else {
@@ -1314,30 +1314,14 @@ void main(){
         )
         .to(GL, { reveal: 1, duration: 1.6, ease: 'power2.out' }, '<.2')
         .from(
-          '.d1 .c',
-          {
-            yPercent: 118,
-            duration: 1.25,
-            ease: 'expo.out',
-            stagger: { each: 0.014 },
-          },
-          '-=.75'
-        )
-        .from(
-          '.hero-kick',
-          { autoAlpha: 0, y: 18, duration: 0.8, ease: 'power3.out' },
-          '-=1.05'
-        )
-        .from(
-          '.hero-sub > *',
+          document.getElementById('heroMainGroup') || '.hero-main-group',
           {
             autoAlpha: 0,
-            y: 22,
-            duration: 0.9,
-            stagger: 0.09,
+            y: 28,
+            duration: 1.1,
             ease: 'power3.out',
           },
-          '-=.85'
+          '-=.75'
         )
         .from(
           '.hud, .h-corner, .cue',

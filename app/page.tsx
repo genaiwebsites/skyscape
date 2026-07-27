@@ -232,10 +232,10 @@ export default function Home() {
             <div className="wrap">
               <div className="hero-main-group" id="heroMainGroup" data-depth="0.04">
                 <p className="eyebrow hero-kick">
-                  Macondé Viewpoint · 168 M AGL · Flight Record 08
+                  Macondé Viewpoint, Mauritius
                 </p>
                 <h1 className="display d1" data-split>
-                  Where Volcanic Ridge Meets <em>Sapphire Lagoon.</em>
+                  Where Volcanic Ridge<br />Meets <em>Sapphire Lagoon.</em>
                 </h1>
                 <div className="hero-sub">
                   <p className="lede">

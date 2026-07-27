@@ -231,9 +231,6 @@ export default function Home() {
           <div className="shell hero-in">
             <div className="wrap">
               <div className="hero-main-group" id="heroMainGroup" data-depth="0.04">
-                <p className="eyebrow hero-kick">
-                  Macondé Viewpoint, Mauritius
-                </p>
                 <h1 className="display d1" data-split>
                   Where Volcanic Ridge<br />Meets <em>Sapphire Lagoon.</em>
                 </h1>

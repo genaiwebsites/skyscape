@@ -15,8 +15,8 @@
   --mono:var(--font-ibm-plex-mono),ui-monospace,monospace;
 
   /* type scale — fluid, refined ratio */
-  --t-mono:clamp(9.5px,.62vw,11px);
-  --t-cap:clamp(12.5px,.85vw,14px);
+  --t-mono:clamp(12px,.85vw,13.5px);
+  --t-cap:clamp(13.5px,.95vw,15px);
   --t-body:clamp(15px,1.02vw,17.5px);
   --t-lead:clamp(16.5px,1.22vw,20px);
   --d4:clamp(19px,1.55vw,25px);
@@ -339,11 +339,11 @@ main{position:relative;z-index:1}
 }
 .brand-text{
   font-family:var(--mono);
-  font-size:11px;
-  font-weight:500;
-  letter-spacing:.28em;
+  font-size:13.5px;
+  font-weight:600;
+  letter-spacing:.22em;
   text-transform:uppercase;
-  color:rgba(238,243,247,0.72);
+  color:rgba(238,243,247,0.85);
   white-space:nowrap;
   transition:color .3s ease, text-shadow .3s ease;
 }
@@ -351,8 +351,8 @@ main{position:relative;z-index:1}
   color:#FFFFFF;
   text-shadow:0 0 12px rgba(124,167,194,0.5);
 }
-.nav{display:flex;gap:clamp(16px,2.2vw,34px)}
-.nav a{font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.2em;text-transform:uppercase;color:var(--fog);display:block;padding:10px 0}
+.nav{display:flex;gap:clamp(18px,2.4vw,38px)}
+.nav a{font-family:var(--mono);font-size:12.5px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--fog);display:block;padding:10px 0}
 .roll{display:block;position:relative;overflow:hidden;height:1.15em}
 .roll i{display:block;font-style:normal;line-height:1.15;transition:transform .55s var(--ease)}
 .roll i + i{position:absolute;inset:0;transform:translateY(100%);color:var(--white)}

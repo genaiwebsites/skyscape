@@ -241,6 +241,31 @@ void main(){
   g = clamp(g, vec2(0.001), vec2(0.999));
 
   float m = clamp(uMix, 0.0, 4.0);
+
+  // Hydro-dynamic oceanic surge refraction for Image E (Angel's Billabong Precipice)
+  float surgeMix = smoothstep(2.8, 4.0, m);
+  if (surgeMix > 0.01) {
+    // Sample texture E to isolate ocean water and wave foam from solid rock cliff
+    vec3 eRaw = texture2D(uE, cover(g, uResE)).rgb;
+    float lum = dot(eRaw, vec3(0.299, 0.587, 0.114));
+
+    // Blue/cyan water saturation (water has higher blue & green than red)
+    float blueWater = smoothstep(0.01, 0.06, eRaw.b - eRaw.r) * smoothstep(-0.02, 0.05, eRaw.g - eRaw.r);
+
+    // Cool white foam (high luminance with low warm color delta)
+    float coolFoam = smoothstep(0.64, 0.88, lum) * (1.0 - smoothstep(0.06, 0.20, eRaw.r - eRaw.b));
+
+    // Suppress warm brown/tan rock tones (where red component exceeds blue)
+    float rockFactor = smoothstep(0.01, 0.08, eRaw.r - eRaw.b);
+
+    float waterMask = clamp((blueWater + coolFoam * 0.85) * (1.0 - rockFactor * 0.95), 0.0, 1.0);
+
+    float waveX = sin(g.y * 24.0 + uTime * 1.8) * cos(g.x * 18.0 + uTime * 1.4);
+    float waveY = cos(g.y * 20.0 - uTime * 1.5) * sin(g.x * 22.0 + uTime * 1.2);
+    g += vec2(waveX, waveY) * 0.0038 * surgeMix * waterMask;
+    g = clamp(g, vec2(0.001), vec2(0.999));
+  }
+
   float edge = smoothstep(0.35, 1.0, distance(vUv, vec2(0.5)));
   float ab = (0.0006 + abs(uVel) * 0.004) * edge;
 
@@ -664,14 +689,31 @@ void main(){
         }
 
         if (beat4) {
-          // Beat 4 (88 m AGL): Angel's Billabong Tidal Pool
+          // Beat 4 (88 m AGL): Angel's Billabong Tidal Pool Precipice
           heroTl
             .to(GL, { mix: 4.0, duration: 0.85, ease: 'power1.inOut' }, 2.65)
+            .to('#glc', { scale: 1.08, duration: 0.9, ease: 'power2.inOut' }, 2.7)
             .to(beat4, { autoAlpha: 1, y: 0, duration: 0.34, ease: 'power2.out' }, 2.8)
             .to(beat4, { autoAlpha: 0, y: -26, duration: 0.3, ease: 'power2.in' }, 3.35);
         }
 
         heroTl.to('.h-corner, .hud', { autoAlpha: 0, duration: 0.3 }, 3.3);
+
+        // Smooth Parallax Glide & 3D Depth Zoom of Hero WebGL Canvas into About section while retaining active liquid shader effects
+        const glc = document.getElementById('glc');
+        if (glc) {
+          gsap.to(glc, {
+            yPercent: 24,
+            scale: 1.12,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '#about',
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 0.4,
+            },
+          });
+        }
       }
 
       /* Reveals */

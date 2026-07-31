@@ -47,10 +47,26 @@ export default function HeaderNav() {
           </a>
         </nav>
 
-        {/* Ambient Audio Soundtrack Controller & Mobile Hamburger */}
+        {/* Ambient Audio Soundtrack Controller, Instagram & Mobile Hamburger */}
         <div className="header-actions">
           <AmbientSoundtrack />
-          
+
+          <a
+            href="https://www.instagram.com/skyscape_photography/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="insta-link-btn"
+            aria-label="Skyscape Photography Instagram Profile"
+            title="Follow @skyscape_photography on Instagram"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+            </svg>
+            <span className="insta-tooltip">INSTAGRAM</span>
+          </a>
+
           <button
             className={`mobile-menu-btn ${isOpen ? 'active' : ''}`}
             type="button"
@@ -103,6 +119,20 @@ export default function HeaderNav() {
           </nav>
 
           <div className="mobile-menu-meta">
+            <a
+              href="https://www.instagram.com/skyscape_photography/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mobile-insta-link"
+              onClick={closeMenu}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+              </svg>
+              <span>@skyscape_photography</span>
+            </a>
             <div className="meta-brand">SKYSCAPE PHOTOGRAPHY</div>
             <small>4K HDR CINEMATOGRAPHY · DGCA CERTIFIED</small>
           </div>

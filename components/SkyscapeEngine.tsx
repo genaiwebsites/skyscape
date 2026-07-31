@@ -9,8 +9,7 @@ import { F } from '@/data/gallery';
 const CEIL = 299;
 const PPM = 6;
 
-const U = (id: string, w: number, q = 80) =>
-  `https://images.unsplash.com/${id}?w=${w}&q=${q}`;
+const U = (path: string) => path;
 
 export default function SkyscapeEngine() {
   useEffect(() => {
@@ -139,32 +138,60 @@ export default function SkyscapeEngine() {
       }
     }
 
-    // 5. Original WebGL Shader (Exact match to index.html)
-    const heroEl = document.getElementById('hero') as HTMLElement;
+    // 5. Original WebGL Shader
     const GL = { descent: 0, mix: 0, vel: 0, reveal: 1 };
+
+    // Interactive Alt Drone Icon Click Handler
+    const altDrone = document.getElementById('altDrone');
+    const altDroneImg = document.getElementById('altDroneImg');
+
+    if (altDrone && altDroneImg) {
+      altDrone.addEventListener('click', () => {
+        gsap.to(altDroneImg, {
+          rotate: '+=360',
+          scale: 1.25,
+          duration: 0.6,
+          ease: 'back.out(1.7)',
+          onComplete: () => {
+            gsap.to(altDroneImg, { scale: 1, duration: 0.3 });
+          },
+        });
+      });
+    }
+
+    // 4. WebGL Engine
+    const cv = document.getElementById('glc') as HTMLCanvasElement | null;
+    const heroEl = document.getElementById('hero');
     let glReady = false;
     let stopGL = () => {};
 
-    if (!RM && heroEl) {
-      const cv = document.getElementById('glc') as HTMLCanvasElement;
-      if (cv) {
-        const gl = cv.getContext('webgl', {
-          antialias: false,
-          alpha: true,
-          powerPreference: 'high-performance',
-        });
-        if (gl) {
-          const OCT = MOBILE ? 3 : 5;
-          const VS = `attribute vec2 p;varying vec2 vUv;void main(){vUv=p*.5+.5;gl_Position=vec4(p,0.,1.);}`;
-          const FS = `
+    if (cv && heroEl) {
+      const gl = cv.getContext('webgl', {
+        alpha: true,
+        antialias: false,
+        depth: false,
+        powerPreference: 'high-performance',
+      });
+
+      if (gl) {
+        const VS = `
+attribute vec2 p;
+varying vec2 vUv;
+void main(){
+  vUv = (p + 1.0) * 0.5;
+  gl_Position = vec4(p, 0.0, 1.0);
+}`;
+
+        const OCT = MOBILE ? '2' : '3';
+        const FS = `
 #ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
 precision mediump float;
 #endif
 varying vec2 vUv;
-uniform sampler2D uA, uB;
-uniform vec2 uRes, uResA, uResB, uMouse;
+uniform sampler2D uA, uB, uC, uD, uE;
+uniform vec2 uRes, uResA, uResB, uResC, uResD, uResE, uMouse;
 uniform float uTime, uDescent, uMix, uVel, uReveal;
 
 float hash(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
@@ -178,210 +205,253 @@ float fbm(vec2 p){
   return v;
 }
 vec2 cover(vec2 uv, vec2 img){
-  float rs=uRes.x/uRes.y, ri=img.x/img.y;
-  vec2 r=vec2(min(rs/ri,1.), min(ri/rs,1.));
-  return uv*r+(1.-r)*.5;
+  vec2 res = max(img, vec2(1.0));
+  float rs = uRes.x / max(uRes.y, 1.0);
+  float ri = res.x / res.y;
+  vec2 r = vec2(min(rs / ri, 1.0), min(ri / rs, 1.0));
+  vec2 st = uv * r + (1.0 - r) * 0.5;
+  return clamp(st, 0.001, 0.999);
 }
 vec3 samp(sampler2D t, vec2 uv, float ab){
-  return vec3(texture2D(t,uv+vec2(ab,0.)).r, texture2D(t,uv).g, texture2D(t,uv-vec2(ab,0.)).b);
+  vec2 stR = clamp(uv + vec2(ab, 0.0), vec2(0.001), vec2(0.999));
+  vec2 stG = clamp(uv, vec2(0.001), vec2(0.999));
+  vec2 stB = clamp(uv - vec2(ab, 0.0), vec2(0.001), vec2(0.999));
+  return vec3(texture2D(t, stR).r, texture2D(t, stG).g, texture2D(t, stB).b);
 }
 
 void main(){
   float d = uDescent;
   vec2 uv = vUv;
 
-  // Ultra-subtle flight camera micro-vibration
+  // Flight camera micro-vibration
   vec2 shake = vec2(noise(vec2(uTime*4.2, 1.0)), noise(vec2(2.5, uTime*3.8))) - 0.5;
-  uv += shake * (0.0006 + abs(uVel)*0.002);
+  uv += shake * (0.0004 + abs(uVel)*0.0015);
 
-  // Smooth flight altitude camera zoom
-  float zoom = 1.0 + 0.16 * (1.0 - d);
+  // Flight altitude zoom — keep zoom strictly >= 1.00 so UVs never expand beyond image frame
+  float phaseZoom = sin(uMix * 3.14159) * 0.04;
+  float zoom = max(1.00, 1.04 + 0.10 * (1.0 - d) + phaseZoom);
   vec2 g = (uv - 0.5) / zoom + 0.5;
-  g += uMouse * vec2(0.016, 0.012) * (1.0 + d * 0.4);
+  g += uMouse * vec2(0.012, 0.010) * (1.0 + d * 0.3);
 
-  // Silky smooth ocean heat-wave distortion
-  float mist = fbm(g * 2.6 + vec2(uTime * 0.015, -uTime * 0.012));
-  g += (vec2(mist) - 0.5) * (0.002 + abs(uVel) * 0.005);
+  // Organic wave liquid transition displacement (scaled safely)
+  float mist = fbm(g * 2.5 + vec2(uTime * 0.012, -uTime * 0.010));
+  g += (vec2(mist) - 0.5) * (0.0015 + abs(uVel) * 0.004);
 
-  float dn = fbm(g * 2.2 + uTime * 0.01);
-  float m  = smoothstep(0.0, 1.0, uMix * 1.4 - 0.2 + (dn - 0.5) * 0.3);
+  // Clamp g safely before cover aspect ratio transformation
+  g = clamp(g, vec2(0.001), vec2(0.999));
+
+  float m = clamp(uMix, 0.0, 4.0);
   float edge = smoothstep(0.35, 1.0, distance(vUv, vec2(0.5)));
-  float ab = (0.0008 + abs(uVel) * 0.006) * edge;
+  float ab = (0.0006 + abs(uVel) * 0.004) * edge;
 
-  // Sample photo texture A & B with crisp clarity
-  vec3 A = samp(uA, cover(g + vec2(0.0, m * 0.02), uResA), ab);
-  vec3 B = samp(uB, cover(g - vec2(0.0, (1.0 - m) * 0.02), uResB), ab);
-  vec3 col = mix(A, B, m);
+  // 5-Stage Scrollytelling Blending Sequence
+  vec3 A = samp(uA, cover(g, uResA), ab);
+  vec3 B = samp(uB, cover(g, uResB), ab);
+  vec3 C = samp(uC, cover(g, uResC), ab);
+  vec3 D = samp(uD, cover(g, uResD), ab);
+  vec3 E = samp(uE, cover(g, uResE), ab);
 
-  // Soft natural golden sunlight bloom
+  vec3 col;
+  if (m < 1.0) {
+    col = mix(A, B, smoothstep(0.0, 1.0, m));
+  } else if (m < 2.0) {
+    col = mix(B, C, smoothstep(1.0, 2.0, m));
+  } else if (m < 3.0) {
+    col = mix(C, D, smoothstep(2.0, 3.0, m));
+  } else {
+    col = mix(D, E, smoothstep(3.0, 4.0, m));
+  }
+
+  // Golden hour sunlight bloom
   vec2 sunPos = (vUv - vec2(0.72, 0.24)) * vec2(uRes.x / uRes.y, 1.0);
   float sun = exp(-length(sunPos) * 2.8);
-  col += vec3(0.18, 0.14, 0.08) * sun * 0.35;
+  col += vec3(0.16, 0.12, 0.07) * sun * 0.35;
 
-  // Subtle vignette for border framing
-  col *= 1.0 - edge * 0.16;
+  col *= 1.0 - edge * 0.14;
   col *= smoothstep(0.0, 0.4, uReveal + (1.0 - abs(vUv.y - 0.5) * 1.5));
   gl_FragColor = vec4(col, 1.0);
 }`;
 
-          function sh(t: number, src: string) {
-            const o = gl!.createShader(t)!;
-            gl!.shaderSource(o, src);
-            gl!.compileShader(o);
-            if (!gl!.getShaderParameter(o, gl!.COMPILE_STATUS)) {
-              console.warn('[skyscape] shader:', gl!.getShaderInfoLog(o));
-              return null;
-            }
-            return o;
+        function sh(t: number, src: string) {
+          const o = gl!.createShader(t)!;
+          gl!.shaderSource(o, src);
+          gl!.compileShader(o);
+          if (!gl!.getShaderParameter(o, gl!.COMPILE_STATUS)) {
+            console.warn('[skyscape] shader:', gl!.getShaderInfoLog(o));
+            return null;
           }
-          const vs = sh(gl.VERTEX_SHADER, VS);
-          const fs = sh(gl.FRAGMENT_SHADER, FS);
-          if (vs && fs) {
-            const pr = gl.createProgram()!;
-            gl.attachShader(pr, vs);
-            gl.attachShader(pr, fs);
-            gl.linkProgram(pr);
-            if (gl.getProgramParameter(pr, gl.LINK_STATUS)) {
-              gl.useProgram(pr);
-              const buf = gl.createBuffer();
-              gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-              gl.bufferData(
-                gl.ARRAY_BUFFER,
-                new Float32Array([-1, -1, 3, -1, -1, 3]),
-                gl.STATIC_DRAW
-              );
-              const loc = gl.getAttribLocation(pr, 'p');
-              gl.enableVertexAttribArray(loc);
-              gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+          return o;
+        }
+        const vs = sh(gl.VERTEX_SHADER, VS);
+        const fs = sh(gl.FRAGMENT_SHADER, FS);
+        if (vs && fs) {
+          const pr = gl.createProgram()!;
+          gl.attachShader(pr, vs);
+          gl.attachShader(pr, fs);
+          gl.linkProgram(pr);
+          if (gl.getProgramParameter(pr, gl.LINK_STATUS)) {
+            gl.useProgram(pr);
+            const buf = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+            gl.bufferData(
+              gl.ARRAY_BUFFER,
+              new Float32Array([-1, -1, 3, -1, -1, 3]),
+              gl.STATIC_DRAW
+            );
+            const loc = gl.getAttribLocation(pr, 'p');
+            gl.enableVertexAttribArray(loc);
+            gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
-              const u = (n: string) => gl!.getUniformLocation(pr, n);
-              const U_ = {
-                uRes: u('uRes'),
-                uResA: u('uResA'),
-                uResB: u('uResB'),
-                uMouse: u('uMouse'),
-                uTime: u('uTime'),
-                uDescent: u('uDescent'),
-                uMix: u('uMix'),
-                uVel: u('uVel'),
-                uReveal: u('uReveal'),
-              };
-              gl.uniform1i(u('uA'), 0);
-              gl.uniform1i(u('uB'), 1);
+            const u = (n: string) => gl!.getUniformLocation(pr, n);
+            const U_ = {
+              uRes: u('uRes'),
+              uResA: u('uResA'),
+              uResB: u('uResB'),
+              uResC: u('uResC'),
+              uResD: u('uResD'),
+              uResE: u('uResE'),
+              uMouse: u('uMouse'),
+              uTime: u('uTime'),
+              uDescent: u('uDescent'),
+              uMix: u('uMix'),
+              uVel: u('uVel'),
+              uReveal: u('uReveal'),
+            };
+            gl.uniform1i(u('uA'), 0);
+            gl.uniform1i(u('uB'), 1);
+            gl.uniform1i(u('uC'), 2);
+            gl.uniform1i(u('uD'), 3);
+            gl.uniform1i(u('uE'), 4);
 
-              let loaded = 0;
-              function checkLoaded() {
-                if (++loaded >= 2) {
-                  glReady = true;
-                  heroEl.classList.add('gl-on');
-                }
+            let loaded = 0;
+            function checkLoaded() {
+              if (++loaded >= 5) {
+                glReady = true;
+                heroEl?.classList.add('gl-on');
               }
+            }
 
-              function texture(
-                src: string,
-                unit: number,
-                resU: WebGLUniformLocation | null
-              ) {
-                const t = gl!.createTexture();
-                const im = new Image();
-                im.crossOrigin = 'anonymous';
-                im.onload = () => {
-                  gl!.activeTexture(gl!.TEXTURE0 + unit);
-                  gl!.bindTexture(gl!.TEXTURE_2D, t);
-                  gl!.pixelStorei(gl!.UNPACK_FLIP_Y_WEBGL, true);
-                  gl!.texImage2D(
-                    gl!.TEXTURE_2D,
-                    0,
-                    gl!.RGB,
-                    gl!.RGB,
-                    gl!.UNSIGNED_BYTE,
-                    im
-                  );
-                  gl!.texParameteri(gl!.TEXTURE_2D, gl!.TEXTURE_MIN_FILTER, gl!.LINEAR);
-                  gl!.texParameteri(gl!.TEXTURE_2D, gl!.TEXTURE_WRAP_S, gl!.CLAMP_TO_EDGE);
-                  gl!.texParameteri(gl!.TEXTURE_2D, gl!.TEXTURE_WRAP_T, gl!.CLAMP_TO_EDGE);
-                  gl!.uniform2f(resU, im.width, im.height);
-                  checkLoaded();
-                };
-                im.onerror = () => {
-                  console.warn('[skyscape] texture failed:', src);
-                  checkLoaded();
-                };
-                im.src = src;
-              }
-              texture(
-                '/mauritius-coastal-drone-photography-skyscape.jpg',
-                0,
-                U_.uResA
-              );
-              texture(
-                '/mauritius-coastal-drone-photography-skyscape.jpg',
-                1,
-                U_.uResB
-              );
-
-              const MAXPX = MOBILE ? 1.4e6 : 2.6e6;
-              function size() {
-                const w = heroEl.clientWidth,
-                  h = heroEl.clientHeight;
-                let dpr = Math.min(devicePixelRatio || 1, MOBILE ? 1.15 : 1.6);
-                const over = (w * h * dpr * dpr) / MAXPX;
-                if (over > 1) dpr /= Math.sqrt(over);
-                cv.width = Math.round(w * dpr);
-                cv.height = Math.round(h * dpr);
-                cv.style.width = w + 'px';
-                cv.style.height = h + 'px';
-                gl!.viewport(0, 0, cv.width, cv.height);
-                gl!.uniform2f(U_.uRes, cv.width, cv.height);
-              }
-              size();
-              let szT: ReturnType<typeof setTimeout>;
-              const onResize = () => {
-                clearTimeout(szT);
-                szT = setTimeout(size, 120);
-              };
-              window.addEventListener('resize', onResize);
-
-              let onScreen = true;
-              let obs: IntersectionObserver | null = null;
-              if ('IntersectionObserver' in window) {
-                obs = new IntersectionObserver(
-                  ([e]) => {
-                    onScreen = e.isIntersecting;
-                  },
-                  { rootMargin: '15% 0px' }
+            function texture(
+              src: string,
+              unit: number,
+              resU: WebGLUniformLocation | null
+            ) {
+              const t = gl!.createTexture();
+              const im = new Image();
+              im.crossOrigin = 'anonymous';
+              im.onload = () => {
+                gl!.activeTexture(gl!.TEXTURE0 + unit);
+                gl!.bindTexture(gl!.TEXTURE_2D, t);
+                gl!.pixelStorei(gl!.UNPACK_FLIP_Y_WEBGL, true);
+                gl!.texImage2D(
+                  gl!.TEXTURE_2D,
+                  0,
+                  gl!.RGB,
+                  gl!.RGB,
+                  gl!.UNSIGNED_BYTE,
+                  im
                 );
-                obs.observe(heroEl);
-              }
-
-              let mx = 0,
-                my = 0,
-                cx = 0,
-                cy = 0;
-              const t0 = performance.now();
-              const onMouseMove = (e: MouseEvent) => {
-                mx = (e.clientX / innerWidth - 0.5) * 2;
-                my = (e.clientY / innerHeight - 0.5) * 2;
+                gl!.texParameteri(gl!.TEXTURE_2D, gl!.TEXTURE_MIN_FILTER, gl!.LINEAR);
+                gl!.texParameteri(gl!.TEXTURE_2D, gl!.TEXTURE_WRAP_S, gl!.CLAMP_TO_EDGE);
+                gl!.texParameteri(gl!.TEXTURE_2D, gl!.TEXTURE_WRAP_T, gl!.CLAMP_TO_EDGE);
+                gl!.uniform2f(resU, im.width, im.height);
+                checkLoaded();
               };
-              if (FINE)
-                window.addEventListener('mousemove', onMouseMove, {
-                  passive: true,
-                });
+              im.onerror = () => {
+                console.warn('[skyscape] texture failed:', src);
+                checkLoaded();
+              };
+              im.src = src;
+            }
+            texture(
+              '/mauritius-coastal-drone-photography-skyscape.jpg',
+              0,
+              U_.uResA
+            );
+            texture(
+              '/images/kelingking-beach-nusa-penida-drone-skyscape.jpg',
+              1,
+              U_.uResB
+            );
+            texture(
+              '/images/ijen-crater-volcano-aerial-skyscape.jpg',
+              2,
+              U_.uResC
+            );
+            texture(
+              '/images/manipal-end-point-aerial-skyscape.jpg',
+              3,
+              U_.uResD
+            );
+            texture(
+              '/images/angels-billabong-nusa-penida-skyscape.jpg',
+              4,
+              U_.uResE
+            );
 
-              let animId: number;
-              (function frame(t: number) {
-                animId = requestAnimationFrame(frame);
-                if (!glReady || !onScreen || document.hidden) return;
-                cx += (mx - cx) * 0.05;
-                cy += (my - cy) * 0.05;
-                gl!.uniform1f(U_.uTime, (t - t0) / 1000);
-                gl!.uniform2f(U_.uMouse, cx, cy);
-                gl!.uniform1f(U_.uDescent, GL.descent);
-                gl!.uniform1f(U_.uMix, GL.mix);
-                gl!.uniform1f(U_.uVel, GL.vel);
-                gl!.uniform1f(U_.uReveal, GL.reveal);
-                gl!.drawArrays(gl!.TRIANGLES, 0, 3);
-              })(t0);
+            const MAXPX = MOBILE ? 1.4e6 : 2.6e6;
+            function size() {
+              if (!heroEl || !cv) return;
+              const w = heroEl.clientWidth,
+                h = heroEl.clientHeight;
+              let dpr = Math.min(devicePixelRatio || 1, MOBILE ? 1.15 : 1.6);
+              const over = (w * h * dpr * dpr) / MAXPX;
+              if (over > 1) dpr /= Math.sqrt(over);
+              cv.width = Math.round(w * dpr);
+              cv.height = Math.round(h * dpr);
+              cv.style.width = w + 'px';
+              cv.style.height = h + 'px';
+              gl!.viewport(0, 0, cv.width, cv.height);
+              gl!.uniform2f(U_.uRes, cv.width, cv.height);
+            }
+            size();
+            let szT: ReturnType<typeof setTimeout>;
+            const onResize = () => {
+              clearTimeout(szT);
+              szT = setTimeout(size, 120);
+            };
+            window.addEventListener('resize', onResize);
+
+            let onScreen = true;
+            let obs: IntersectionObserver | null = null;
+            if ('IntersectionObserver' in window) {
+              obs = new IntersectionObserver(
+                ([e]) => {
+                  onScreen = e.isIntersecting;
+                },
+                { rootMargin: '15% 0px' }
+              );
+              obs.observe(heroEl);
+            }
+
+            let mx = 0,
+              my = 0,
+              cx = 0,
+              cy = 0;
+            const t0 = performance.now();
+            const onMouseMove = (e: MouseEvent) => {
+              mx = (e.clientX / innerWidth - 0.5) * 2;
+              my = (e.clientY / innerHeight - 0.5) * 2;
+            };
+            if (FINE)
+              window.addEventListener('mousemove', onMouseMove, {
+                passive: true,
+              });
+
+            let animId: number;
+            (function frame(t: number) {
+              animId = requestAnimationFrame(frame);
+              if (!glReady || !onScreen || document.hidden) return;
+              cx += (mx - cx) * 0.05;
+              cy += (my - cy) * 0.05;
+              gl!.uniform1f(U_.uTime, (t - t0) / 1000);
+              gl!.uniform2f(U_.uMouse, cx, cy);
+              gl!.uniform1f(U_.uDescent, GL.descent);
+              gl!.uniform1f(U_.uMix, GL.mix);
+              gl!.uniform1f(U_.uVel, GL.vel);
+              gl!.uniform1f(U_.uReveal, GL.reveal);
+              gl!.drawArrays(gl!.TRIANGLES, 0, 3);
+            })(t0);
 
               stopGL = () => {
                 cancelAnimationFrame(animId);
@@ -393,7 +463,6 @@ void main(){
           }
         }
       }
-    }
 
     // 6. Lenis smooth scroll with luxury inertial momentum
     let lenis: Lenis | null = null;
@@ -447,8 +516,6 @@ void main(){
     const chipVal = document.getElementById('chipVal');
 
     const setEarth = earthshift ? gsap.quickSetter(earthshift, 'opacity') : null;
-
-    const altDrone = document.getElementById('altDrone');
 
     const updateAltitude = (p: number) => {
       const a = Math.round(CEIL * (1 - p));
@@ -547,12 +614,14 @@ void main(){
       const heroMainGroup = document.getElementById('heroMainGroup');
       const beat1 = document.getElementById('beat1');
       const beat2 = document.getElementById('beat2');
+      const beat3 = document.getElementById('beat3');
+      const beat4 = document.getElementById('beat4');
 
       if (beat1 && beat2) {
         if ('scrollRestoration' in history) {
           history.scrollRestoration = 'manual';
         }
-        gsap.set([beat1, beat2], { autoAlpha: 0, y: 24 });
+        gsap.set([beat1, beat2, beat3, beat4].filter(Boolean), { autoAlpha: 0, y: 24 });
         gsap.set(['#heroMainGroup', '.hud', '.h-corner', '.cue', '.hero-birds-layer'], { autoAlpha: 1, y: 0 });
 
         const heroTl = gsap.timeline({
@@ -560,7 +629,7 @@ void main(){
           scrollTrigger: {
             trigger: heroEl,
             start: 'top top',
-            end: MOBILE ? '+=140%' : '+=210%',
+            end: MOBILE ? '+=240%' : '+=340%',
             pin: true,
             pinSpacing: true,
             scrub: 0.8,
@@ -569,20 +638,40 @@ void main(){
         });
 
         heroTl
-          .to(GL, { descent: 1, duration: 1.15, ease: 'power1.inOut' }, 0)
-          .to('.cue', { autoAlpha: 0, duration: 0.18 }, 0)
-          .to('.hero-birds-layer', { autoAlpha: 0.25, y: -50, scale: 1.04, duration: 1.2, ease: 'power1.inOut' }, 0)
+          .to(GL, { descent: 1, duration: 3.4, ease: 'power1.inOut' }, 0)
+          .to('.cue', { autoAlpha: 0, duration: 0.2 }, 0)
+          .to('.hero-birds-layer', { autoAlpha: 0.25, y: -60, scale: 1.05, duration: 2.8, ease: 'power1.inOut' }, 0)
           .to(
             heroMainGroup || '.hero-in',
             { autoAlpha: 0, y: -30, duration: 0.45, ease: 'power2.inOut' },
             0.32
           )
-          .to(beat1, { autoAlpha: 1, y: 0, duration: 0.34, ease: 'power2.out' }, 0.82)
-          .to(beat1, { autoAlpha: 0, y: -30, duration: 0.3, ease: 'power2.in' }, 1.42)
-          .to(GL, { mix: 1, duration: 0.95, ease: 'power1.inOut' }, 1.3)
-          .to(beat2, { autoAlpha: 1, y: 0, duration: 0.34, ease: 'power2.out' }, 1.72)
-          .to(beat2, { autoAlpha: 0, y: -26, duration: 0.3, ease: 'power2.in' }, 2.28)
-          .to('.h-corner, .hud', { autoAlpha: 0, duration: 0.3 }, 2.2);
+          // Beat 1 (245 m AGL): Kelingking Beach (Nusa Penida, Bali)
+          .to(GL, { mix: 1.0, duration: 0.85, ease: 'power1.inOut' }, 0.4)
+          .to(beat1, { autoAlpha: 1, y: 0, duration: 0.34, ease: 'power2.out' }, 0.55)
+          .to(beat1, { autoAlpha: 0, y: -30, duration: 0.3, ease: 'power2.in' }, 1.15)
+          // Beat 2 (198 m AGL): Mount Ijen Acid Caldera (East Java)
+          .to(GL, { mix: 2.0, duration: 0.85, ease: 'power1.inOut' }, 1.15)
+          .to(beat2, { autoAlpha: 1, y: 0, duration: 0.34, ease: 'power2.out' }, 1.3)
+          .to(beat2, { autoAlpha: 0, y: -26, duration: 0.3, ease: 'power2.in' }, 1.9);
+
+        if (beat3) {
+          // Beat 3 (142 m AGL): Manipal End Point Estuary & Plateau
+          heroTl
+            .to(GL, { mix: 3.0, duration: 0.85, ease: 'power1.inOut' }, 1.9)
+            .to(beat3, { autoAlpha: 1, y: 0, duration: 0.34, ease: 'power2.out' }, 2.05)
+            .to(beat3, { autoAlpha: 0, y: -26, duration: 0.3, ease: 'power2.in' }, 2.65);
+        }
+
+        if (beat4) {
+          // Beat 4 (88 m AGL): Angel's Billabong Tidal Pool
+          heroTl
+            .to(GL, { mix: 4.0, duration: 0.85, ease: 'power1.inOut' }, 2.65)
+            .to(beat4, { autoAlpha: 1, y: 0, duration: 0.34, ease: 'power2.out' }, 2.8)
+            .to(beat4, { autoAlpha: 0, y: -26, duration: 0.3, ease: 'power2.in' }, 3.35);
+        }
+
+        heroTl.to('.h-corner, .hud', { autoAlpha: 0, duration: 0.3 }, 3.3);
       }
 
       /* Reveals */
@@ -1108,7 +1197,7 @@ void main(){
           thumb.naturalWidth && thumb.naturalHeight
             ? thumb.naturalWidth / thumb.naturalHeight
             : 1.5;
-        lbImg.src = U(f.img, 2000, 88);
+        lbImg.src = f.img;
         lbImg.alt = `${f.t} | aerial photograph, ${f.l}`;
         setMeta(i);
         lb!.classList.add('open');
@@ -1196,14 +1285,14 @@ void main(){
         setMeta(n);
         const f = F[n];
         if (RM) {
-          lbImg.src = U(f.img, 2000, 88);
+          lbImg.src = f.img;
           return;
         }
         gsap.to(lbImg, {
           autoAlpha: 0,
           duration: 0.28,
           onComplete: () => {
-            lbImg.src = U(f.img, 2000, 88);
+            lbImg.src = f.img;
             lbImg.onload = () => {
               const t = fit(lbImg.naturalWidth / lbImg.naturalHeight);
               gsap.set(lbImg, {

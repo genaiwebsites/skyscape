@@ -57,7 +57,6 @@ export default function RootLayout({
     >
       <head>
         {/* Font preconnects */}
-        <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="anonymous" />
         {/* Zodiak + Satoshi fallback */}
         <link

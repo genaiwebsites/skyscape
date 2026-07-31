@@ -1,23 +1,23 @@
 export interface GalleryFrame {
   t: string;   // title
   l: string;   // location
-  img: string; // Unsplash photo ID
+  img: string; // local image path
   alt: number; // altitude in metres
   gps: string; // GPS coordinates string
   cls: string; // CSS class (s-a / s-b / s-c / s-d + up / down)
 }
 
 export const F: GalleryFrame[] = [
-  { t: 'The Fractured Lake',     l: 'Little Rann of Kutch, Gujarat',  img: 'photo-1500534314209-a25ddb2bd429', alt: 212, gps: '23.43° N · 71.20° E', cls: 's-a' },
-  { t: 'Serpent Valley',         l: 'Spiti Valley, Himachal Pradesh', img: 'photo-1464822759023-fed622ff2c3b', alt: 284, gps: '32.25° N · 78.03° E', cls: 's-b up' },
-  { t: 'Staircase to Green',     l: 'Wayanad, Kerala',                img: 'photo-1503614472-8c93d56e92ce',  alt: 96,  gps: '11.68° N · 76.13° E', cls: 's-c down' },
-  { t: 'Tidal Geometry',         l: 'Dhanushkodi, Tamil Nadu',        img: 'photo-1505118380757-91f5f5632de0', alt: 74,  gps: '9.15° N · 79.44° E',  cls: 's-d' },
-  { t: 'Dust & Light',           l: 'Thar Desert, Rajasthan',         img: 'photo-1509316785289-025f5b846b35', alt: 158, gps: '26.92° N · 70.90° E', cls: 's-b up' },
-  { t: 'Indigo Hour',            l: 'Leh, Ladakh',                    img: 'photo-1486870591958-9b9d0d1dda99', alt: 299, gps: '34.15° N · 77.57° E', cls: 's-a' },
-  { t: 'The Cracked Earth',      l: 'Marathwada, Maharashtra',        img: 'photo-1494500764479-0c8f2919a3d8', alt: 64,  gps: '19.15° N · 76.21° E', cls: 's-c down' },
-  { t: 'Forest Canopy',          l: 'Nagarhole, Karnataka',           img: 'photo-1448375240586-882707db888b', alt: 38,  gps: '12.00° N · 76.13° E', cls: 's-b' },
-  { t: 'The Colour of Salt',     l: 'Sambhar Lake, Rajasthan',        img: 'photo-1469474968028-56623f02e42e', alt: 187, gps: '26.91° N · 75.19° E', cls: 's-d up' },
-  { t: 'Chessboard Fields',      l: 'Punjab Plains, Punjab',          img: 'photo-1500076656116-558758c991c1', alt: 243, gps: '30.90° N · 75.85° E', cls: 's-a' },
-  { t: 'Where Two Rivers Argue', l: 'Prayagraj, Uttar Pradesh',       img: 'photo-1507525428034-b723cf961d3e', alt: 132, gps: '25.43° N · 81.88° E', cls: 's-c down' },
-  { t: 'The Monsoon Grid',       l: 'Western Ghats, Goa',             img: 'photo-1501854140801-50d01698950b', alt: 118, gps: '15.40° N · 74.02° E', cls: 's-b up' },
+  { t: 'Azure Sea Arch', l: 'Nusa Penida, Bali', img: '/images/nusa-penida-coastal-arch-skyscape.jpg', alt: 184, gps: '8.74° S · 115.46° E', cls: 's-a' },
+  { t: 'Coastal Highway Ribbons', l: 'Western Coast, India', img: '/images/coastal-highway-drone-photography-skyscape.jpg', alt: 142, gps: '14.80° N · 74.12° E', cls: 's-b up' },
+  { t: 'Misty Valley Topography', l: 'Western Ghats, India', img: '/images/misty-valley-drone-photography-skyscape.jpg', alt: 226, gps: '13.20° N · 75.25° E', cls: 's-c down' },
+  { t: 'Granite Sea Cliff Surge', l: 'Malvan, Maharashtra', img: '/images/rocky-sea-cliff-skyscape.jpg', alt: 94, gps: '16.05° N · 73.46° E', cls: 's-d' },
+  { t: 'Emerald Coral Reef Lagoon', l: 'Lakshadweep Archipelago', img: '/images/coastal-lagoon-reef-skyscape.jpg', alt: 128, gps: '10.56° N · 72.64° E', cls: 's-b up' },
+  { t: 'Volcanic Basalt Peak', l: 'Deccan Traps, Maharashtra', img: '/images/volcanic-peak-aerial-skyscape.jpg', alt: 275, gps: '19.70° N · 73.80° E', cls: 's-a' },
+  { t: 'High Altitude Ridge', l: 'Himalayan Escarpment', img: '/images/aerial-ridge-topography-skyscape.jpg', alt: 295, gps: '32.12° N · 77.40° E', cls: 's-c down' },
+  { t: 'Braided Estuary Channels', l: 'Swarna Estuary, Karnataka', img: '/images/river-delta-estuary-aerial-skyscape.jpg', alt: 164, gps: '13.36° N · 74.78° E', cls: 's-b' },
+  { t: 'Golden Hour Ridge Mist', l: 'Western Ghats, India', img: '/images/western-ghats-valley-drone-skyscape.jpg', alt: 210, gps: '13.15° N · 75.18° E', cls: 's-d up' },
+  { t: 'Islet Promontory', l: 'Indian Ocean Coast', img: '/images/emerald-island-promontory-skyscape.jpg', alt: 88, gps: '20.42° S · 57.35° E', cls: 's-a' },
+  { t: 'Turquoise Atoll Reef', l: 'Coral Coast, Southeast Asia', img: '/images/coral-reef-turquoise-lagoon-skyscape.jpg', alt: 152, gps: '8.70° S · 115.42° E', cls: 's-c down' },
+  { t: 'Oceanic Surge & Precipice', l: 'Nusa Coastal Ridge, Bali', img: '/images/ocean-surge-rocky-headland-skyscape.jpg', alt: 198, gps: '8.76° S · 115.48° E', cls: 's-b up' },
 ];

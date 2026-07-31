@@ -2,8 +2,7 @@ import { D } from '@/data/descent';
 import { F } from '@/data/gallery';
 import { HeaderNav, SkyscapeEngine } from '@/components/ClientComponents';
 
-const U = (id: string, w: number, q = 80) =>
-  `https://images.unsplash.com/${id}?w=${w}&q=${q}`;
+const U = (path: string) => path;
 
 export default function Home() {
   return (
@@ -257,13 +256,17 @@ export default function Home() {
             />
           </div>
 
+          {/* Subtle Viewfinder Corner Brackets */}
           <div className="h-corner tl" aria-hidden="true" data-depth="-0.15" />
+          <div className="h-corner tr" aria-hidden="true" data-depth="-0.15" />
+          <div className="h-corner bl" aria-hidden="true" data-depth="-0.15" />
           <div className="h-corner br" aria-hidden="true" data-depth="-0.15" />
 
+          {/* Subtle Floating Drone Telemetry Overlay (No Box) */}
           <div className="hud" aria-hidden="true" data-depth="0.15">
-            <span className="lock"><i />GPS lock · 12 sat</span><br />
+            <span className="lock"><i />GPS LOCK · 12 SAT</span><br />
             <span id="hudAlt">299.0 m AGL</span><br />
-            Gimbal −90.0° · nadir<br />
+            GIMBAL −90.0° · NADIR<br />
             34.15° N · 77.57° E
           </div>
 
@@ -290,12 +293,20 @@ export default function Home() {
           <div className="hero-beats" id="heroBeats" aria-hidden="true">
             <div className="wrap">
               <p className="beat" id="beat1">
-                <span className="beat-k">Maximum ceiling · 299 m</span>
-                <span className="beat-l">Mountain ranges resolve into <em>pure geometry.</em></span>
+                <span className="beat-k">High Band · 245 m AGL · Nusa Penida, Bali</span>
+                <span className="beat-l">Limestone ridge plunges into <em>turquoise ocean abyss.</em></span>
               </p>
               <p className="beat" id="beat2">
-                <span className="beat-k">Mid descent · 212 m</span>
-                <span className="beat-l">River veins carve through <em>ancient valleys.</em></span>
+                <span className="beat-k">Mid Descent · 198 m AGL · Mount Ijen, Java</span>
+                <span className="beat-l">Turquoise acid caldera carved into <em>steaming volcanic peak.</em></span>
+              </p>
+              <p className="beat" id="beat3">
+                <span className="beat-k">Plateau Band · 142 m AGL · Swarna Estuary</span>
+                <span className="beat-l">Lush green meadows meet <em>winding river channels.</em></span>
+              </p>
+              <p className="beat" id="beat4">
+                <span className="beat-k">Approach Band · 88 m AGL · Angel&apos;s Billabong</span>
+                <span className="beat-l">Natural tide pools sculpted by <em>crashing ocean surf.</em></span>
               </p>
             </div>
           </div>
@@ -311,14 +322,14 @@ export default function Home() {
                 High altitude. <em>Precise intent.</em>
               </h2>
               <p className="prose" data-anim="fade">
-                I&apos;m <strong>Kshitiz Bathwal</strong>, a landscape and aerial photographer based in <strong>India</strong>: chasing the geometry of rivers from 400 feet, the symmetry of terraced fields at golden hour, and the quiet order of terrain that only reveals itself from above. Flying a 1-inch sensor between 30 and 299 metres AGL, I document landscape structures across 14 Indian states.
+                I am <strong>Kshitiz Bathwal</strong>, an aerial cinematographer and DGCA-certified UAS pilot based in <strong>India</strong>. I specialize in documenting coastal landforms, volcanic terrain, and natural architecture across India, Mauritius, and Southeast Asia. Operating high-resolution 1-inch CMOS sensors between 30 and 299 metres AGL, my work focuses on perspective, spatial scale, and geological structure.
               </p>
               <p className="prose" data-anim="fade">
-                Flying a drone is my way of asking the earth a question it only answers when you step off the ground. <strong>Skyscape Photography</strong> is not a studio: it&apos;s a singular point of view backed by flight discipline: clearing DGCA permits, monitoring wind vectors under 12 knots, and catching low-angle sunlight when long shadows expose natural architecture.
+                <strong>Skyscape Photography</strong> is an independent aerial practice built on flight discipline: securing airspace authorizations, evaluating micro-climate wind vectors, and capturing low-angle directional light when long shadows reveal natural geology.
               </p>
               <blockquote className="quote" data-anim="fade">
-                &ldquo;Every frame is a reminder that perspective changes everything.&rdquo;
-                <footer>K. Bathwal · flight log, Sambhar Lake</footer>
+                <p>&ldquo;From 300 metres above, complex landscapes resolve into pure structural geometry.&rdquo;</p>
+                <footer>Kshitiz Bathwal · Lead UAS Cinematographer</footer>
               </blockquote>
             </div>
             <div className="col-side portrait">
@@ -430,12 +441,10 @@ export default function Home() {
             <div className="sc-media" id="scMedia">
               {D.map((d, i) => (
                 <div className="sc-frame" key={i}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={d.img.startsWith('/') ? d.img : U(d.img, 1500)}
+                    src={d.img}
                     alt={`${d.h} | aerial frame at ${d.a} metres above ground level`}
                     loading="lazy"
-                    crossOrigin={d.img.startsWith('/') ? undefined : 'anonymous'}
                   />
                 </div>
               ))}
@@ -473,12 +482,10 @@ export default function Home() {
                 aria-label={`View ${f.t}, ${f.l}`}
               >
                 <div className="frame">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={U(f.img, 1200)}
+                    src={f.img}
                     alt={`${f.t} | aerial photograph, ${f.l}`}
                     loading="lazy"
-                    crossOrigin="anonymous"
                   />
                   <div className="reticle" aria-hidden="true">
                     <i /><i /><i /><i />
@@ -552,7 +559,29 @@ export default function Home() {
               <div className="c-meta meta" data-anim="fade">
                 <span>Based in<b>India · Travels nationwide</b></span>
                 <span>License<b>DGCA Certified UAS Pilot</b></span>
+                <span>Social<b><a href="https://www.instagram.com/skyscape_photography/" target="_blank" rel="noopener noreferrer" className="c-insta-link">@skyscape_photography ↗</a></b></span>
                 <span>Response<b>Within 24 hours</b></span>
+              </div>
+            </div>
+
+            {/* Pilot Profile Card in Contact Section (Right Side) */}
+            <div className="col-side contact-pilot-card" data-anim="fade">
+              <div className="contact-pilot-frame">
+                <div className="reticle tl"><i></i><i></i></div>
+                <div className="reticle tr"><i></i><i></i></div>
+                <div className="reticle bl"><i></i><i></i></div>
+                <div className="reticle br"><i></i><i></i></div>
+                <span className="p-badge">UAS PILOT · IN FIELD</span>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/skyscape-drone-pilot-profile.jpg"
+                  alt="Kshitiz Bathwal · DGCA Certified Drone Pilot overlooking mountain ridge"
+                  loading="lazy"
+                />
+                <div className="contact-pilot-caption">
+                  <b>KSHITIZ BATHWAL</b>
+                  <small>FOUNDER &amp; LEAD UAS CINEMATOGRAPHER</small>
+                </div>
               </div>
             </div>
           </div>
@@ -572,13 +601,32 @@ export default function Home() {
           />
           <span className="foot-brand-text">SKYSCAPE PHOTOGRAPHY</span>
         </div>
-        <small>© 2026 Kshitiz Bathwal · All rights reserved</small>
-        <a className="rth" href="#top">
-          <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.8" aria-hidden="true">
-            <path d="M12 19V5M5 12l7-7 7 7" />
-          </svg>
-          Return to home point
-        </a>
+
+        <small className="foot-copy">© 2026 Kshitiz Bathwal · All rights reserved</small>
+
+        <div className="foot-actions">
+          <a
+            href="https://www.instagram.com/skyscape_photography/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="foot-insta-icon"
+            aria-label="Skyscape Photography Instagram Profile"
+            title="Follow @skyscape_photography on Instagram"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width={18} height={18}>
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+            </svg>
+          </a>
+
+          <a className="rth" href="#top">
+            <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.8" aria-hidden="true">
+              <path d="M12 19V5M5 12l7-7 7 7" />
+            </svg>
+            Return to home point
+          </a>
+        </div>
       </footer>
 
       {/* ── LIGHTBOX ── */}

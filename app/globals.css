@@ -594,6 +594,140 @@ main{position:relative;z-index:1}
   gap: 12px;
 }
 
+/* Premium Instagram Social Link Icon (No outer box) */
+.insta-link-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  background: transparent;
+  border: none;
+  color: var(--fog);
+  transition: transform 0.35s ease, color 0.35s ease;
+  text-decoration: none;
+}
+
+.insta-link-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke: var(--fog);
+  transition: transform 0.35s ease, stroke 0.35s ease, filter 0.35s ease;
+}
+
+.insta-link-btn:hover {
+  color: var(--amber);
+  transform: translateY(-2px);
+}
+
+.insta-link-btn:hover svg {
+  stroke: var(--amber);
+  transform: scale(1.14) rotate(4deg);
+  filter: drop-shadow(0 0 8px rgba(206, 148, 80, 0.75));
+}
+
+.insta-tooltip {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  opacity: 0;
+  pointer-events: none;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--amber);
+  background: rgba(5, 8, 13, 0.92);
+  border: 1px solid rgba(206, 148, 80, 0.3);
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+  transition: all 0.25s ease;
+  z-index: 100;
+}
+
+.insta-link-btn:hover .insta-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Mobile & Contact Instagram Links */
+.mobile-insta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  background: rgba(206, 148, 80, 0.08);
+  border: 1px solid rgba(206, 148, 80, 0.3);
+  color: var(--amber);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+}
+
+.mobile-insta-link svg {
+  width: 15px;
+  height: 15px;
+  stroke: var(--amber);
+}
+
+.mobile-insta-link:hover {
+  background: rgba(206, 148, 80, 0.18);
+  border-color: rgba(206, 148, 80, 0.6);
+  box-shadow: 0 0 14px rgba(206, 148, 80, 0.3);
+}
+
+.c-insta-link {
+  color: var(--amber);
+  text-decoration: none;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.c-insta-link:hover {
+  color: #FFFFFF;
+  text-shadow: 0 0 10px rgba(206, 148, 80, 0.7);
+}
+
+.foot-center {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.foot-insta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--fog);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.foot-insta-link:hover {
+  color: var(--amber);
+  transform: translateY(-1px);
+}
+
+.foot-insta-link svg {
+  transition: transform 0.3s ease, stroke 0.3s ease;
+}
+
+.foot-insta-link:hover svg {
+  stroke: var(--amber);
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 4px rgba(206, 148, 80, 0.5));
+}
+
 .mobile-menu-btn {
   display: none;
   flex-direction: column;
@@ -962,9 +1096,11 @@ main{position:relative;z-index:1}
 .hero canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:2;pointer-events:none}
 .hero-fallback{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;opacity:1!important;display:block!important}
 .hero.gl-on .hero-fallback{opacity:1!important}
+.hero.gl-on .hero-fallback{opacity:1!important}
 .hero-tint{
   position:absolute;inset:0;
-  background:linear-gradient(180deg, rgba(5,8,13,0.18) 0%, transparent 40%, rgba(5,8,13,0.65) 100%);
+  background:radial-gradient(90% 70% at 50% 65%, rgba(5,8,13,0.12) 0%, rgba(5,8,13,0.68) 100%),
+             linear-gradient(180deg, rgba(5,8,13,0.55) 0%, transparent 35%, rgba(5,8,13,0.85) 100%);
   pointer-events:none;
 }
 .hero-birds-layer{
@@ -998,19 +1134,93 @@ main{position:relative;z-index:1}
   transition:all 0.4s ease;
 }
 .hero-in{position:relative;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:clamp(88px,11vh,128px)}
-.hud{position:absolute;top:clamp(84px,11vh,104px);right:var(--gutter);text-align:right;font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.16em;color:var(--fog);line-height:2.2;font-variant-numeric:tabular-nums}
-.hud .lock{color:var(--haze);display:flex;align-items:center;gap:8px;justify-content:flex-end}
-.hud .lock i{width:5px;height:5px;background:var(--haze);border-radius:50%;animation:blip 2s ease-in-out infinite}
-@keyframes blip{0%,100%{opacity:1}50%{opacity:.22}}
-.h-corner{position:absolute;width:16px;height:16px;border:1px solid rgba(158,172,186,.34)}
-.h-corner.tl{top:clamp(78px,10vh,92px);left:calc(var(--rail) + var(--gutter));border-right:0;border-bottom:0}
-.h-corner.br{bottom:28px;right:var(--gutter);border-left:0;border-top:0}
-.hero-kick{margin-bottom:clamp(18px,2.4vh,28px);color:#94A3B8;text-shadow:0 1px 12px rgba(0,0,0,.75)}
+
+/* Sleek Viewfinder Corner Brackets */
+.h-corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 1px solid rgba(158, 172, 186, 0.45);
+  z-index: 6;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.8));
+}
+
+.h-corner.tl {
+  top: clamp(78px, 10vh, 92px);
+  left: calc(var(--rail) + var(--gutter));
+  border-right: 0;
+  border-bottom: 0;
+}
+.h-corner.tr {
+  top: clamp(78px, 10vh, 92px);
+  right: var(--gutter);
+  border-left: 0;
+  border-bottom: 0;
+}
+.h-corner.bl {
+  bottom: 28px;
+  left: calc(var(--rail) + var(--gutter));
+  border-right: 0;
+  border-top: 0;
+}
+.h-corner.br {
+  bottom: 28px;
+  right: var(--gutter);
+  border-left: 0;
+  border-top: 0;
+}
+
+/* Subtle Floating Drone Telemetry (No Box) */
+.hud {
+  position: absolute;
+  top: clamp(84px, 11vh, 104px);
+  right: var(--gutter);
+  text-align: right;
+  font-family: var(--mono);
+  font-size: var(--t-mono);
+  letter-spacing: 0.16em;
+  color: var(--fog);
+  line-height: 2.1;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95);
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  z-index: 6;
+}
+
+.hud .lock {
+  color: #64D2FF;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.hud .lock i {
+  width: 5px;
+  height: 5px;
+  background: #64D2FF;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #64D2FF;
+  animation: blip 2s ease-in-out infinite;
+}
+
+/* Beat 0: Mauritius Coastal Lagoon (Sapphire Ocean & Golden Light) */
+.hero-kick{
+  margin-bottom:clamp(18px,2.4vh,28px);
+  color:#64D2FF;
+  font-weight:600;
+  letter-spacing:0.18em;
+  text-shadow:0 2px 14px rgba(0,0,0,0.92), 0 0 24px rgba(100,210,255,0.4);
+}
 .hero-main-group{position:relative;z-index:2;will-change:transform,opacity}
-.hero-main-group .d1{color:#FFFFFF;text-shadow:0 2px 24px rgba(0,0,0,.85)}
-.hero-main-group .d1 em{color:#CBD5E1;text-shadow:0 2px 24px rgba(0,0,0,.85)}
+.hero-main-group .d1{color:#FFFFFF;text-shadow:0 3px 28px rgba(0,0,0,0.95), 0 0 40px rgba(5,8,13,0.8)}
+.hero-main-group .d1 em{color:#7DD3FC;font-style:italic;text-shadow:0 3px 28px rgba(0,0,0,0.95), 0 0 30px rgba(56,189,248,0.5)}
 .hero-sub{margin-top:clamp(22px,3.5vh,36px);display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--gap);align-items:end}
-.hero-sub .lede{grid-column:1 / span 6;max-width:44ch;color:#E2E8F0;font-size:var(--t-lead);line-height:1.58;text-shadow:0 1px 16px rgba(0,0,0,.85)}
+.hero-sub .lede{grid-column:1 / span 6;max-width:44ch;color:#F1F5F9;font-size:var(--t-lead);line-height:1.58;text-shadow:0 2px 18px rgba(0,0,0,0.92)}
 .hero-meta{
   grid-column:8 / span 5;
   display:flex;
@@ -1018,8 +1228,8 @@ main{position:relative;z-index:1}
   justify-content:flex-end;
   text-align:right;
 }
-.hero-meta span{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase}
-.hero-meta b{color:var(--fog);font-weight:500;letter-spacing:.13em;margin-top:2px;display:block}
+.hero-meta span{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:rgba(226,232,240,0.75);text-transform:uppercase;text-shadow:0 2px 10px rgba(0,0,0,0.85)}
+.hero-meta b{color:#7DD3FC;font-weight:600;letter-spacing:.13em;margin-top:2px;display:block;text-shadow:0 2px 12px rgba(0,0,0,0.9)}
 
 .hero-beats{
   position:absolute;
@@ -1044,14 +1254,56 @@ main{position:relative;z-index:1}
   font-size:var(--t-mono);
   letter-spacing:.24em;
   text-transform:uppercase;
-  color:var(--haze);
+  color:var(--beat-accent, #64D2FF);
+  font-weight:600;
   font-variant-numeric:tabular-nums;
   white-space:nowrap;
+  text-shadow:0 2px 14px rgba(0,0,0,0.92), 0 0 24px var(--beat-glow, rgba(100,210,255,0.5));
+  transition:color 0.4s ease;
 }
-.beat-l{font-family:var(--display);font-size:var(--d3);line-height:1.05;letter-spacing:-.02em;text-wrap:balance}
-.beat-l em{font-style:italic;color:var(--haze)}
-.cue{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.32em;text-transform:uppercase;color:var(--dim);display:flex;flex-direction:column;align-items:center;gap:10px}
-.cue::after{content:"";width:1px;height:34px;background:linear-gradient(180deg,var(--haze),transparent);animation:drop 2.4s ease-in-out infinite}
+.beat-l{
+  font-family:var(--display);
+  font-size:var(--d3);
+  line-height:1.05;
+  letter-spacing:-.02em;
+  text-wrap:balance;
+  color:#FFFFFF;
+  text-shadow:0 3px 28px rgba(0,0,0,0.95), 0 0 40px rgba(5,8,13,0.85);
+}
+.beat-l em{
+  font-style:italic;
+  color:var(--beat-accent, #64D2FF);
+  text-shadow:0 3px 28px rgba(0,0,0,0.95), 0 0 30px var(--beat-glow, rgba(100,210,255,0.5));
+  transition:color 0.4s ease;
+}
+
+/* Image-Matched Image Beat Color Palettes */
+/* Beat 1: Kelingking T-Rex Cliff (Turquoise Ocean & White Foam) */
+#beat1 {
+  --beat-accent: #34E0A1;
+  --beat-glow: rgba(52, 224, 161, 0.55);
+}
+
+/* Beat 2: Mount Ijen Crater (Acidic Turquoise Lake & Sulfur Vapor) */
+#beat2 {
+  --beat-accent: #38BDF8;
+  --beat-glow: rgba(56, 189, 248, 0.55);
+}
+
+/* Beat 3: Manipal End Point Estuary (Lush Green & Golden Sun Mist) */
+#beat3 {
+  --beat-accent: #FBBF24;
+  --beat-glow: rgba(251, 191, 36, 0.55);
+}
+
+/* Beat 4: Angel's Billabong (Emerald Infinity Pool & Wave Spray) */
+#beat4 {
+  --beat-accent: #2DD4BF;
+  --beat-glow: rgba(45, 212, 191, 0.55);
+}
+
+.cue{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.32em;text-transform:uppercase;color:#CBD5E1;text-shadow:0 2px 10px rgba(0,0,0,0.9);display:flex;flex-direction:column;align-items:center;gap:10px}
+.cue::after{content:"";width:1px;height:34px;background:linear-gradient(180deg,#64D2FF,transparent);animation:drop 2.4s ease-in-out infinite}
 @keyframes drop{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 
 
@@ -1060,12 +1312,42 @@ main{position:relative;z-index:1}
 ================================================================== */
 .about{padding-block:var(--sec) calc(var(--sec) * .62)}
 .about h2{margin:clamp(20px,3vh,30px) 0 clamp(26px,4vh,42px)}
-.quote{
-  margin-top:clamp(34px,5vh,56px);padding-left:24px;border-left:1px solid var(--haze);
-  font-family:var(--display);font-style:italic;font-size:var(--d4);line-height:1.46;max-width:42ch;
-  letter-spacing:-.008em;text-indent:-.4em;
+.quote {
+  margin-top: clamp(34px, 5vh, 56px);
+  padding-left: 24px;
+  border-left: 1px solid var(--amber);
+  max-width: 44ch;
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
-.quote footer{margin-top:14px;font-family:var(--mono);font-style:normal;font-size:var(--t-mono);letter-spacing:.2em;text-transform:uppercase;color:var(--dim);text-indent:0}
+
+.quote p {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: var(--d4);
+  line-height: 1.46;
+  color: var(--white);
+  letter-spacing: -0.008em;
+  margin: 0;
+}
+
+.quote footer {
+  margin-top: 16px;
+  display: block;
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: var(--t-mono);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dim);
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+}
 
 .portrait{position:sticky;top:clamp(96px,12vh,124px)}
 .p-frame{
@@ -1193,9 +1475,9 @@ main{position:relative;z-index:1}
 .htrack{display:flex;align-items:center;gap:clamp(24px,3.6vw,68px);height:100svh;will-change:transform;
   padding-left:calc(var(--rail) + var(--gutter));padding-right:26vw;
   padding-top:clamp(74px,10vh,116px);padding-bottom:clamp(54px,8vh,86px)}
-.shot{position:relative;flex:none;text-align:left;display:block}
-.shot .frame{position:relative;overflow:hidden;background:var(--ink-2)}
-.shot img{width:100%;height:100%;object-fit:cover;filter:saturate(.92);transform:scale(1.16);will-change:transform;transition:filter .7s ease}
+.shot{position:relative;flex:none;text-align:left;display:flex;flex-direction:column;max-height:100%}
+.shot .frame{position:relative;overflow:hidden;background:var(--ink-2);border-radius:4px}
+.shot img{width:100%;height:100%;object-fit:cover;filter:saturate(.92);transform:scale(1.12);will-change:transform;transition:filter .7s ease}
 .shot:hover img{filter:saturate(1.06)}
 .reticle{position:absolute;inset:13px;border:1px solid rgba(238,243,247,.5);opacity:0;transform:scale(1.04)}
 .reticle i{position:absolute;width:9px;height:9px;border:1px solid var(--white)}
@@ -1203,13 +1485,12 @@ main{position:relative;z-index:1}
 .reticle i:nth-child(2){top:-1px;right:-1px;border-left:0;border-bottom:0}
 .reticle i:nth-child(3){bottom:-1px;left:-1px;border-right:0;border-top:0}
 .reticle i:nth-child(4){bottom:-1px;right:-1px;border-left:0;border-top:0}
-.shot{max-height:100%}
-.s-a{width:min(46vw,700px)}.s-a .frame{aspect-ratio:16/10}
-.s-b{width:min(26vw,400px)}.s-b .frame{aspect-ratio:4/5}
-.s-c{width:min(32vw,500px)}.s-c .frame{aspect-ratio:1/1}
-.s-d{width:min(38vw,580px)}.s-d .frame{aspect-ratio:3/2}
-.shot.up{align-self:flex-start}
-.shot.down{align-self:flex-end}
+.s-a{width:min(46vw,640px)}.s-a .frame{aspect-ratio:16/10}
+.s-b{width:min(26vw,360px)}.s-b .frame{aspect-ratio:4/5}
+.s-c{width:min(32vw,440px)}.s-c .frame{aspect-ratio:1/1}
+.s-d{width:min(38vw,520px)}.s-d .frame{aspect-ratio:3/2}
+.shot.up{align-self:center;transform:translateY(-24px)}
+.shot.down{align-self:center;transform:translateY(24px)}
 .cap{display:flex;justify-content:space-between;align-items:baseline;gap:18px;margin-top:14px}
 .cap-t{font-family:var(--display);font-size:var(--d4);letter-spacing:-.012em;line-height:1.16}
 .cap-l{font-size:var(--t-cap);color:var(--dim);margin-top:4px}
@@ -1252,15 +1533,164 @@ main{position:relative;z-index:1}
 .mail:hover svg{transform:translate(4px,-4px)}
 .c-meta{margin-top:clamp(40px,6vh,76px);display:flex;gap:clamp(26px,5vw,76px);flex-wrap:wrap}
 
-.foot{border-top:1px solid var(--line-soft);padding:24px var(--gutter) 24px calc(var(--rail) + var(--gutter));display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;position:relative;z-index:1}
-.foot-brand{display:flex;align-items:center;gap:10px}
-.foot-logo{width:26px;height:26px;object-fit:contain;opacity:.85;transition:opacity .3s ease,transform .3s ease}
-.foot-brand:hover .foot-logo{opacity:1;transform:scale(1.08)}
-.foot-brand-text{font-family:var(--mono);font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--fog)}
-.foot small{font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
-.rth{font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.22em;text-transform:uppercase;color:var(--fog);display:inline-flex;align-items:center;gap:10px;padding:8px 0}
-.rth:hover{color:var(--amber)}
-.rth svg{width:12px;height:12px;stroke:currentColor}
+/* Contact Section Pilot Profile Card (Right Column) */
+.contact-pilot-card {
+  grid-column: 9 / span 4;
+  align-self: center;
+}
+.contact-pilot-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid rgba(124, 167, 194, 0.28);
+  box-shadow: 0 24px 60px rgba(5, 8, 13, 0.9), 0 0 35px rgba(124, 167, 194, 0.1);
+  background: var(--ink-2);
+  transition: all 0.5s var(--ease);
+}
+.contact-pilot-frame:hover {
+  border-color: rgba(124, 167, 194, 0.55);
+  box-shadow: 0 28px 70px rgba(5, 8, 13, 0.95), 0 0 45px rgba(124, 167, 194, 0.2);
+}
+.contact-pilot-frame img {
+  aspect-ratio: 4 / 5;
+  width: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  filter: saturate(0.95) contrast(1.05);
+  transform: scale(1.02);
+  transition: transform 0.8s var(--ease), filter 0.8s var(--ease);
+  will-change: transform;
+}
+.contact-pilot-frame:hover img {
+  transform: scale(1.06);
+  filter: saturate(1.05) contrast(1.08);
+}
+.contact-pilot-caption {
+  position: absolute;
+  bottom: 0;
+  inset-x: 0;
+  padding: 20px 16px 16px;
+  background: linear-gradient(to top, rgba(5, 8, 13, 0.92) 0%, rgba(5, 8, 13, 0.5) 60%, transparent 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  z-index: 2;
+}
+.contact-pilot-caption b {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  color: var(--white);
+  text-transform: uppercase;
+}
+.contact-pilot-caption small {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 0.18em;
+  color: var(--amber);
+  text-transform: uppercase;
+}
+
+@media (max-width: 900px) {
+  .contact-pilot-card {
+    grid-column: 1 / -1;
+    margin-top: 36px;
+    max-width: 440px;
+  }
+}
+
+.foot {
+  border-top: 1px solid var(--line-soft);
+  padding: 24px var(--gutter) 24px calc(var(--rail) + var(--gutter));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+.foot-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.foot-logo {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  opacity: .85;
+  transition: opacity .3s ease, transform .3s ease;
+}
+.foot-brand:hover .foot-logo {
+  opacity: 1;
+  transform: scale(1.08);
+}
+.foot-brand-text {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: var(--fog);
+}
+.foot-copy {
+  font-family: var(--mono);
+  font-size: var(--t-mono);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.foot-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.foot-insta-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  background: transparent;
+  border: none;
+  color: var(--fog);
+  text-decoration: none;
+  transition: transform 0.35s ease, color 0.35s ease;
+}
+.foot-insta-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke: var(--fog);
+  transition: transform 0.35s ease, stroke 0.35s ease, filter 0.35s ease;
+}
+.foot-insta-icon:hover {
+  color: var(--amber);
+  transform: translateY(-2px);
+}
+.foot-insta-icon:hover svg {
+  stroke: var(--amber);
+  transform: scale(1.14) rotate(4deg);
+  filter: drop-shadow(0 0 8px rgba(206, 148, 80, 0.75));
+}
+.rth {
+  font-family: var(--mono);
+  font-size: var(--t-mono);
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--fog);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  text-decoration: none;
+}
+.rth:hover {
+  color: var(--amber);
+}
+.rth svg {
+  width: 12px;
+  height: 12px;
+  stroke: currentColor;
+}
 
 /* ==================================================================
    12 · LIGHTBOX

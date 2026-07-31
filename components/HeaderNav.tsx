@@ -66,6 +66,22 @@ export default function HeaderNav() {
 
       {/* Mobile Glassmorphic Navigation Overlay */}
       <div className={`mobile-menu-overlay ${isOpen ? 'open' : ''}`}>
+        <div className="mobile-menu-top-bar">
+          <span className="mobile-menu-title">NAVIGATION</span>
+          <button
+            className="mobile-menu-close-btn"
+            type="button"
+            onClick={closeMenu}
+            aria-label="Close Navigation Menu"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+            <span>CLOSE</span>
+          </button>
+        </div>
+
         <div className="mobile-menu-content">
           <nav className="mobile-menu-nav">
             <a href="#about" onClick={closeMenu}>

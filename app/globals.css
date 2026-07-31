@@ -642,6 +642,49 @@ main{position:relative;z-index:1}
   transform: translateY(-12px);
   transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
 }
+.mobile-menu-top-bar {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  right: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 120;
+}
+.mobile-menu-title {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  color: var(--fog);
+}
+.mobile-menu-close-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: rgba(238, 243, 247, 0.1);
+  border: 1px solid rgba(238, 243, 247, 0.28);
+  color: #FFFFFF;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+}
+.mobile-menu-close-btn:hover {
+  background: rgba(238, 243, 247, 0.22);
+  border-color: rgba(238, 243, 247, 0.5);
+  transform: scale(1.04);
+}
+.mobile-menu-close-btn svg {
+  width: 14px;
+  height: 14px;
+}
 .mobile-menu-overlay.open {
   opacity: 1;
   pointer-events: auto;

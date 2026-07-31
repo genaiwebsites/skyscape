@@ -134,7 +134,7 @@ export default function HeaderNav() {
               <span>@skyscape_photography</span>
             </a>
             <div className="meta-brand">SKYSCAPE PHOTOGRAPHY</div>
-            <small>4K HDR CINEMATOGRAPHY · DGCA CERTIFIED</small>
+            <small>4K HDR CINEMATOGRAPHY · AERIAL PHOTOGRAPHY</small>
           </div>
         </div>
       </div>

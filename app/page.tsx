@@ -291,8 +291,8 @@ export default function Home() {
           <div className="hero-beats" id="heroBeats" aria-hidden="true">
             <div className="wrap">
               <p className="beat" id="beat1">
-                <span className="beat-k">High Band · 245 m AGL · Nusa Penida, Bali</span>
-                <span className="beat-l">Limestone ridge plunges into <em>turquoise ocean abyss.</em></span>
+                <span className="beat-k">High Band · 245 m AGL · Western Coast, India</span>
+                <span className="beat-l">Winding coastal tarmac ribbons trace <em>ocean-carved geology.</em></span>
               </p>
               <p className="beat" id="beat2">
                 <span className="beat-k">Mid Descent · 198 m AGL · Mount Ijen, Java</span>
@@ -320,7 +320,7 @@ export default function Home() {
                 High altitude. <em>Precise intent.</em>
               </h2>
               <p className="prose" data-anim="fade">
-                I am <strong>Kshitiz Bathwal</strong>, an aerial cinematographer and DGCA-certified UAS pilot based in <strong>India</strong>. I specialize in documenting coastal landforms, volcanic terrain, and natural architecture across India, Mauritius, and Southeast Asia. Operating high-resolution 1-inch CMOS sensors between 30 and 299 metres AGL, my work focuses on perspective, spatial scale, and geological structure.
+                I am <strong>Kshitiz Bathwal</strong>, an aerial cinematographer and UAS pilot based in <strong>India</strong>. I specialize in documenting coastal landforms, volcanic terrain, and natural architecture across India, Mauritius, and Southeast Asia. Operating high-resolution 1-inch CMOS sensors between 30 and 299 metres AGL, my work focuses on perspective, spatial scale, and geological structure.
               </p>
               <p className="prose" data-anim="fade">
                 <strong>Skyscape Photography</strong> is an independent aerial practice built on flight discipline: securing airspace authorizations, evaluating micro-climate wind vectors, and capturing low-angle directional light when long shadows reveal natural geology.
@@ -557,7 +557,7 @@ export default function Home() {
               </a>
               <div className="c-meta meta" data-anim="fade">
                 <span>Based in<b>India · Travels nationwide</b></span>
-                <span>License<b>DGCA Certified UAS Pilot</b></span>
+                <span>Specialization<b>Aerial Landscape Photography</b></span>
                 <span>Social<b><a href="https://www.instagram.com/skyscape_photography/" target="_blank" rel="noopener noreferrer" className="c-insta-link">@skyscape_photography ↗</a></b></span>
                 <span>Response<b>Within 24 hours</b></span>
               </div>
@@ -574,7 +574,7 @@ export default function Home() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/images/skyscape-drone-pilot-profile.jpg"
-                  alt="Kshitiz Bathwal · DGCA Certified Drone Pilot overlooking mountain ridge"
+                  alt="Kshitiz Bathwal · Aerial Landscape Photographer overlooking mountain ridge"
                   loading="lazy"
                 />
                 <div className="contact-pilot-caption">

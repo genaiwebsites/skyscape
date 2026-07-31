@@ -455,7 +455,7 @@ void main(){
               U_.uResA
             );
             texture(
-              '/images/kelingking-beach-nusa-penida-drone-skyscape.jpg',
+              '/images/coastal-highway-drone-photography-skyscape.jpg',
               1,
               U_.uResB
             );

@@ -1,6 +1,6 @@
 import { D } from '@/data/descent';
 import { F } from '@/data/gallery';
-import { AmbientSoundtrack, SkyscapeEngine } from '@/components/ClientComponents';
+import { HeaderNav, SkyscapeEngine } from '@/components/ClientComponents';
 
 const U = (id: string, w: number, q = 80) =>
   `https://images.unsplash.com/${id}?w=${w}&q=${q}`;
@@ -226,37 +226,8 @@ export default function Home() {
         <b id="chipVal">299 M</b> AGL
       </div>
 
-      {/* ── Header ── */}
-      <header className="head" id="head">
-        <a className="brand" href="#top" aria-label="Skyscape Photography Home">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/skyscape-aerial-photography-logo-white.png"
-            alt="Skyscape Photography Logo"
-            className="nav-logo"
-            width={34}
-            height={34}
-          />
-          <span className="brand-text">SKYSCAPE PHOTOGRAPHY</span>
-        </a>
-        <nav className="nav" aria-label="Primary">
-          <a href="#about">
-            <span className="roll"><i>Pilot</i><i aria-hidden="true">Pilot</i></span>
-          </a>
-          <a href="#descent">
-            <span className="roll"><i>Descent</i><i aria-hidden="true">Descent</i></span>
-          </a>
-          <a href="#work">
-            <span className="roll"><i>Work</i><i aria-hidden="true">Work</i></span>
-          </a>
-          <a href="#contact">
-            <span className="roll"><i>Contact</i><i aria-hidden="true">Contact</i></span>
-          </a>
-        </nav>
-
-        {/* ── Ambient Audio Soundtrack Controller ── */}
-        <AmbientSoundtrack />
-      </header>
+      {/* ── Header Navigation & Mobile Menu ── */}
+      <HeaderNav />
 
       {/* ════════════════════════════════════════
           MAIN

@@ -3,51 +3,24 @@ import { useEffect, useRef, useState } from 'react';
 
 export default function AmbientSoundtrack() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const userMutedRef = useRef(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
     audio.volume = 0.35;
-    audio.muted = false;
 
-    // Direct playback attempt
-    const attemptPlay = () => {
-      if (userMutedRef.current) return;
-      audio.muted = false;
-      audio.volume = 0.35;
-      audio
-        .play()
-        .then(() => setIsPlaying(true))
-        .catch(() => {
-          // If browser restricts un-clicked autoplay, keep audio ready and unlock on gesture
-          setIsPlaying(false);
-        });
-    };
-
-    attemptPlay();
-
-    // Auto-unlock on first pointer / mouse / scroll interaction
-    const unlockGesture = () => {
-      if (userMutedRef.current || !audio) return;
-      if (audio.paused || audio.muted) {
-        audio.muted = false;
-        audio.volume = 0.35;
-        audio
-          .play()
-          .then(() => setIsPlaying(true))
-          .catch(() => {});
-      }
-    };
-
-    const events = ['pointerdown', 'mousemove', 'touchstart', 'scroll', 'keydown'];
-    events.forEach((evt) => window.addEventListener(evt, unlockGesture, { passive: true }));
-
-    return () => {
-      events.forEach((evt) => window.removeEventListener(evt, unlockGesture));
-    };
+    // Optional autoplay attempt on page load
+    audio
+      .play()
+      .then(() => {
+        setIsPlaying(true);
+      })
+      .catch(() => {
+        // Autoplay blocked by browser policy; stay in clean MUTED state
+        setIsPlaying(false);
+      });
   }, []);
 
   const toggleSound = (e: React.MouseEvent) => {
@@ -56,21 +29,24 @@ export default function AmbientSoundtrack() {
     const audio = audioRef.current;
     if (!audio) return;
 
-    if (!audio.paused && !audio.muted) {
-      // User requested mute
-      userMutedRef.current = true;
+    if (isPlaying) {
+      // Clean Mute
       audio.pause();
       audio.muted = true;
       setIsPlaying(false);
     } else {
-      // User requested unmute / play
-      userMutedRef.current = false;
+      // Clean Play / Unmute
       audio.muted = false;
       audio.volume = 0.35;
       audio
         .play()
-        .then(() => setIsPlaying(true))
-        .catch(() => setIsPlaying(false));
+        .then(() => {
+          setIsPlaying(true);
+        })
+        .catch((err) => {
+          console.warn('[skyscape] audio playback failed:', err);
+          setIsPlaying(false);
+        });
     }
   };
 
@@ -111,14 +87,9 @@ export default function AmbientSoundtrack() {
         ref={audioRef}
         id="bgAudio"
         src="/audio/skyscape-aerial-photography-ambient-soundtrack.mp3"
-        autoPlay
         loop
         preload="auto"
         playsInline
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => {
-          if (userMutedRef.current) setIsPlaying(false);
-        }}
       />
     </div>
   );

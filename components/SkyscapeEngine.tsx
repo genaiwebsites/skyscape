@@ -141,7 +141,7 @@ export default function SkyscapeEngine() {
 
     // 5. Original WebGL Shader (Exact match to index.html)
     const heroEl = document.getElementById('hero') as HTMLElement;
-    const GL = { descent: 0, mix: 0, vel: 0, reveal: 0 };
+    const GL = { descent: 0, mix: 0, vel: 0, reveal: 1 };
     let glReady = false;
     let stopGL = () => {};
 

@@ -8,3 +8,7 @@ export const SkyscapeEngine = dynamic(() => import('./SkyscapeEngine'), {
 export const AmbientSoundtrack = dynamic(() => import('./AmbientSoundtrack'), {
   ssr: false,
 });
+
+export const HeaderNav = dynamic(() => import('./HeaderNav'), {
+  ssr: false,
+});

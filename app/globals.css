@@ -1179,12 +1179,145 @@ main{position:relative;z-index:1}
   .htrack{padding-top:64px;padding-bottom:48px}
 }
 /* short landscape phones */
-@media (max-height:520px) and (orientation:landscape){
+@media (max-height:540px) and (orientation:landscape){
+  .pre{padding:12px 20px}
+  .pre-drone-stage{width:clamp(120px,32vh,180px)!important;height:clamp(120px,32vh,180px)!important}
+  .pre-hud-wing{display:none!important}
+  .pre-mid{padding-bottom:4px}
   .hero{min-height:440px}
   .hero-in{padding-bottom:56px}
   .cue{display:none}
   .sc-media{height:52svh}
 }
+
+/* ==================================================================
+   14 · ULTRAWIDE & HIGH-DPI DISPLAYS (>= 1800px, >= 2560px)
+================================================================== */
+@media (min-width: 1800px) {
+  :root {
+    --max: 1720px;
+    --rail: 100px;
+    --d1: clamp(76px, 6vw, 120px);
+    --d2: clamp(56px, 4.5vw, 88px);
+  }
+  .pre-flight-hud {
+    max-width: 1400px;
+  }
+  .pre-hud-wing {
+    width: 220px;
+  }
+  .pre-drone-stage {
+    width: 380px;
+    height: 380px;
+  }
+}
+
+@media (min-width: 2560px) {
+  :root {
+    --max: 2200px;
+    --rail: 120px;
+    --d1: clamp(96px, 6.5vw, 150px);
+  }
+  .pre-flight-hud {
+    max-width: 1800px;
+  }
+  .pre-drone-stage {
+    width: 440px;
+    height: 440px;
+  }
+}
+
+/* ==================================================================
+   15 · PRELOADER MOBILE & TABLET RESPONSIVE REFINEMENTS
+================================================================== */
+@media (max-width: 900px) {
+  .pre-compass-tape {
+    font-size: 8.5px;
+    gap: 12px;
+  }
+  .pre-hud-wing {
+    width: 110px;
+  }
+  .hud-metric small { font-size: 7.5px; }
+  .hud-metric b { font-size: 10px; }
+  .hud-pitch-svg, .hud-range-svg { display: none; }
+}
+
+@media (max-width: 768px) {
+  /* Hide side simulation wings on mobile to keep drone stage perfectly centered */
+  .pre-hud-wing {
+    display: none !important;
+  }
+  .pre-flight-hud {
+    justify-content: center;
+  }
+  .pre-drone-stage {
+    width: clamp(180px, 50vw, 260px);
+    height: clamp(180px, 50vw, 260px);
+  }
+  .pre-compass-tape {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .pre {
+    padding: 20px 16px 24px;
+  }
+  .pre-logo {
+    width: 30px;
+    height: 30px;
+  }
+  .pre-brand-text {
+    font-size: 11px;
+    letter-spacing: 0.20em;
+  }
+  .sats-tag {
+    font-size: 9px;
+    padding: 3px 8px;
+  }
+  
+  /* Stack bottom telemetry vertically */
+  .pre-mid {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    padding-bottom: 10px;
+  }
+  .pre-alt-unit {
+    align-items: center;
+  }
+  .pre-count {
+    font-size: clamp(32px, 9vw, 48px);
+  }
+  .pre-center-tele {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 12px;
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+  }
+  .pre-status-badge {
+    padding: 4px 10px;
+  }
+  .pre-status {
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 380px) {
+  .pre-brand-text {
+    display: none;
+  }
+  .pre-count {
+    font-size: 30px;
+  }
+  .pre-center-tele {
+    font-size: 8.5px;
+  }
+}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001s!important;transition-duration:.001s!important;animation-iteration-count:1!important}
   .p-frame img,.shot img,.plate img,.sc-frame img{transform:none!important}

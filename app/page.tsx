@@ -1,6 +1,6 @@
 import { D } from '@/data/descent';
 import { F } from '@/data/gallery';
-import { SkyscapeEngine } from '@/components/ClientComponents';
+import { AmbientSoundtrack, SkyscapeEngine } from '@/components/ClientComponents';
 
 const U = (id: string, w: number, q = 80) =>
   `https://images.unsplash.com/${id}?w=${w}&q=${q}`;
@@ -199,6 +199,9 @@ export default function Home() {
             <span className="roll"><i>Contact</i><i aria-hidden="true">Contact</i></span>
           </a>
         </nav>
+
+        {/* ── Ambient Audio Soundtrack Controller ── */}
+        <AmbientSoundtrack />
       </header>
 
       {/* ════════════════════════════════════════
@@ -218,7 +221,17 @@ export default function Home() {
             fetchPriority="high"
           />
           <div className="hero-tint" aria-hidden="true" />
-          <div id="vantaClouds" className="hero-vanta-clouds" aria-hidden="true" />
+
+          {/* ── Lottie Birds Animation Layer ── */}
+          <div className="hero-birds-layer" id="heroBirdsLayer" aria-hidden="true" data-depth="-0.18">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/birds.svg"
+              alt="Flock of birds aerial animation"
+              className="hero-birds-img"
+            />
+          </div>
+
           <div className="h-corner tl" aria-hidden="true" data-depth="-0.15" />
           <div className="h-corner br" aria-hidden="true" data-depth="-0.15" />
 

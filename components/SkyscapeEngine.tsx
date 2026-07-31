@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
-import * as THREE from 'three';
 import { D } from '@/data/descent';
 import { F } from '@/data/gallery';
 
@@ -22,42 +21,6 @@ export default function SkyscapeEngine() {
     const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const FINE = matchMedia('(pointer:fine)').matches;
     const MOBILE = matchMedia('(max-width:900px)').matches;
-
-    // Vanta CLOUDS2 interactive cloud effect setup
-    if (typeof window !== 'undefined') {
-      (window as any).THREE = THREE;
-    }
-    let vantaEffect: any = null;
-    const vantaContainer = document.getElementById('vantaClouds');
-    if (vantaContainer && !RM) {
-      try {
-        // @ts-ignore
-        const vantaMod = require('vanta/dist/vanta.clouds2.min');
-        const CLOUDS2 = vantaMod.default || vantaMod;
-        if (typeof CLOUDS2 === 'function') {
-          vantaEffect = CLOUDS2({
-            el: vantaContainer,
-            THREE: THREE,
-            mouseControls: true,
-            touchControls: true,
-            gyroControls: false,
-            minHeight: 200.0,
-            minWidth: 200.0,
-            scale: 1.0,
-            texturePath: '/gallery/noise.png',
-            skyColor: 0x4a6f8a,
-            cloudColor: 0xcde0ee,
-            cloudShadowColor: 0x1a2d3e,
-            sunColor: 0xffeedd,
-            sunGlareColor: 0xffffff,
-            sunlightColor: 0xfff0e0,
-            speed: 1.0,
-          });
-        }
-      } catch (err) {
-        console.warn('Vanta CLOUDS2 init skipped:', err);
-      }
-    }
 
     // 2. Register GSAP ScrollTrigger
     gsap.registerPlugin(ScrollTrigger);
@@ -576,7 +539,7 @@ void main(){
           history.scrollRestoration = 'manual';
         }
         gsap.set([beat1, beat2], { autoAlpha: 0, y: 24 });
-        gsap.set(['#heroMainGroup', '.hud', '.h-corner', '.cue'], { autoAlpha: 1, y: 0 });
+        gsap.set(['#heroMainGroup', '.hud', '.h-corner', '.cue', '.hero-birds-layer'], { autoAlpha: 1, y: 0 });
 
         const heroTl = gsap.timeline({
           defaults: { ease: 'none' },
@@ -593,8 +556,8 @@ void main(){
 
         heroTl
           .to(GL, { descent: 1, duration: 1.15, ease: 'power1.inOut' }, 0)
-          .to('#vantaClouds', { opacity: 0, duration: 1.1, ease: 'power1.inOut' }, 0)
           .to('.cue', { autoAlpha: 0, duration: 0.18 }, 0)
+          .to('.hero-birds-layer', { autoAlpha: 0.25, y: -50, scale: 1.04, duration: 1.2, ease: 'power1.inOut' }, 0)
           .to(
             heroMainGroup || '.hero-in',
             { autoAlpha: 0, y: -30, duration: 0.45, ease: 'power2.inOut' },
@@ -1269,10 +1232,8 @@ void main(){
     const sats = document.getElementById('preSats')!;
     const curtain = document.getElementById('curtain')!;
     const urls = [
-      U('photo-1486870591958-9b9d0d1dda99', 1800, 85),
-      U('photo-1500534314209-a25ddb2bd429', 1800, 85),
-      ...D.slice(0, 3).map((d) => U(d.img, 1500)),
-      ...F.slice(0, 3).map((f) => U(f.img, 1200)),
+      '/mauritius-coastal-drone-photography-skyscape.jpg',
+      '/birds.svg',
     ];
     let done = 0,
       shown = 0;
@@ -1294,14 +1255,11 @@ void main(){
     let tickFrame: number;
     (function tick(t) {
       tickFrame = requestAnimationFrame(tick);
-      const el = (t - t0) / 1000,
-        real = done / urls.length,
-        floor = Math.min(1, el / 2.4);
-      const target = Math.min(
-        real * 0.75 + floor * 0.25,
-        real === 1 ? 1 : 0.94
-      );
-      shown += (target - shown) * 0.08;
+      const el = (t - t0) / 1000;
+      const real = urls.length > 0 ? done / urls.length : 1;
+      const floor = Math.min(1, el / 1.1);
+      const target = Math.min(1, real * 0.4 + floor * 0.6);
+      shown += (target - shown) * 0.16;
       if (num) num.textContent = String(Math.round(shown * CEIL)).padStart(3, '0');
       if (bar) bar.style.transform = 'scaleX(' + shown + ')';
       if (status)
@@ -1311,7 +1269,7 @@ void main(){
           ];
       if (sats)
         sats.textContent = shown > 0.4 ? 'GPS lock · 12 sat' : 'Acquiring GPS';
-      if (shown > 0.985 || el > 7) {
+      if (shown > 0.985 || el > 1.6) {
         cancelAnimationFrame(tickFrame);
         launch();
         return;
@@ -1355,13 +1313,12 @@ void main(){
           '<'
         )
         .to(GL, { reveal: 1, duration: 1.6, ease: 'power2.out' }, '<.2')
-        .set(['#heroMainGroup', '.hud', '.h-corner', '.cue'], { autoAlpha: 1, y: 0, clearProps: 'all' })
+        .set(['#heroMainGroup', '.hud', '.h-corner', '.cue', '.hero-birds-layer'], { autoAlpha: 1, y: 0, clearProps: 'all' })
         .set(pre, { display: 'none' });
     }
 
     return () => {
       stopGL();
-      if (vantaEffect && typeof vantaEffect.destroy === 'function') vantaEffect.destroy();
       window.removeEventListener('scroll', onScrollDronePitch);
       if (onParallaxMove) window.removeEventListener('mousemove', onParallaxMove);
       if (lenis) lenis.destroy();

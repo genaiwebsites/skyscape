@@ -111,196 +111,408 @@ main{position:relative;z-index:1}
 /* ==================================================================
    5 · CHROME — preloader, cursor, header, altimeter
 ================================================================== */
-.pre{
-  position:fixed;inset:0;z-index:200;background:var(--ink);
-  display:flex;flex-direction:column;justify-content:space-between;
-  padding:clamp(20px,4vh,40px) var(--gutter);
-  overflow:hidden;
-}
-.pre-bg-grid{
-  position:absolute;inset:0;pointer-events:none;opacity:.07;
-  background-size:40px 40px;
-  background-image:linear-gradient(to right, rgba(124,167,194,0.5) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(124,167,194,0.5) 1px, transparent 1px);
-}
-.pre-top{
-  display:flex;justify-content:space-between;align-items:center;gap:16px;
-  position:relative;z-index:2;
-}
-.pre-brand{display:flex;align-items:center;gap:12px}
-.pre-logo{
-  width:28px;
-  height:28px;
-  object-fit:contain;
-  flex:none;
-  filter:drop-shadow(0 0 8px rgba(255,255,255,0.3));
-}
-.pre-brand-text{
-  font-family:var(--mono);
-  font-size:11px;
-  font-weight:500;
-  letter-spacing:.28em;
-  text-transform:uppercase;
-  color:rgba(238,243,247,0.78);
-  white-space:nowrap;
-}
-.beacon{width:8px;height:8px;border-radius:50%;background:#10b981;box-shadow:0 0 10px #10b981;animation:beaconPulse 1.4s infinite ease-in-out}
-@keyframes beaconPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(0.85)}}
-
-.pre-tele-status{font-family:var(--mono);font-size:var(--t-mono);letter-spacing:.22em;text-transform:uppercase;color:var(--fog)}
-
-.pre-drone-stage{
-  position:relative;width:clamp(200px,28vw,340px);height:clamp(200px,28vw,340px);
-  margin:0 auto;display:grid;place-items:center;
-}
-.pre-radar-sweep{
-  position:absolute;inset:0;border-radius:50%;
-  background:conic-gradient(from 0deg, rgba(124,167,194,0.22), transparent 70deg);
-  animation:radarRotate 3s linear infinite;
-  pointer-events:none;
-}
-@keyframes radarRotate{100%{transform:rotate(360deg)}}
-
-.pre-hud-ring{position:absolute;border-radius:50%;border:1px solid rgba(124,167,194,0.2);pointer-events:none}
-.ring-outer{inset:0;border-style:dashed}
-.ring-inner{inset:18%;border-color:rgba(124,167,194,0.35)}
-.pre-crosshair{position:absolute;background:rgba(124,167,194,0.25);pointer-events:none}
-.ch-h{width:100%;height:1px;top:50%}
-.ch-v{height:100%;width:1px;left:50%}
-
-.pre-drone-svg-wrap{position:relative;z-index:2;width:75%;height:75%;filter:drop-shadow(0 0 24px rgba(124,167,194,0.25))}
-.pre-drone-svg{width:100%;height:100%}
-
-.prop-spin{transform-origin:52px 52px;animation:spinProp 0.1s linear infinite}
-.prop-tr .prop-spin{transform-origin:148px 52px}
-.prop-bl .prop-spin{transform-origin:52px 148px}
-.prop-br .prop-spin{transform-origin:148px 148px}
-.prop-rev{animation-direction:reverse}
-
-@keyframes spinProp{
-  0%{transform:scaleY(1) rotate(0deg)}
-  50%{transform:scaleY(0.4) rotate(180deg)}
-  100%{transform:scaleY(1) rotate(360deg)}
+.pre {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: #04070c;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(24px, 4.5vh, 44px) clamp(24px, 4vw, 56px);
+  overflow: hidden;
 }
 
-.led-blink{animation:ledFlash 0.8s infinite alternate ease-in-out}
-.led-blink-alt{animation:ledFlash 0.8s infinite alternate-reverse ease-in-out}
-@keyframes ledFlash{0%{opacity:.2}100%{opacity:1;filter:drop-shadow(0 0 6px currentColor)}}
-
-.pre-bottom{
-  position:relative;z-index:2;
-  border-top:1px solid rgba(124,167,194,0.14);
-  padding-top:clamp(16px,2vh,24px);
-}
-.pre-mid{
-  display:grid;
-  grid-template-columns:auto 1fr auto;
-  align-items:center;
-  gap:clamp(20px,3vw,48px);
-}
-
-.pre-alt-unit{display:flex;flex-direction:column;gap:6px}
-.pre-alt-label{
-  font-family:var(--mono);
-  font-size:9.5px;
-  letter-spacing:.22em;
-  color:var(--haze);
-  text-transform:uppercase;
-}
-.pre-count{
-  font-family:var(--display);
-  font-size:clamp(44px,7.5vw,96px);
-  line-height:.85;
-  font-variant-numeric:tabular-nums;
-  letter-spacing:-.03em;
-  color:var(--white);
-}
-.pre-count sup{
-  font-family:var(--mono);
-  font-size:.18em;
-  letter-spacing:.22em;
-  color:var(--fog);
-  vertical-align:top;
-  margin-left:.25em;
+/* Pulsating Ambient Glow Behind Drone */
+.pre-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(75vw, 650px);
+  height: min(75vw, 650px);
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, rgba(124, 167, 194, 0.06) 40%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(40px);
+  animation: preloaderPulse 4s infinite alternate ease-in-out;
 }
 
-.pre-center-tele{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:10px;
-  padding:12px 20px;
-  border-radius:6px;
-  background:rgba(124,167,194,0.03);
-  border:1px solid rgba(124,167,194,0.12);
-}
-.pre-coords{
-  font-family:var(--mono);
-  font-size:10px;
-  letter-spacing:.24em;
-  color:var(--fog);
-  text-transform:uppercase;
-}
-.pre-metrics-grid{
-  display:flex;
-  gap:clamp(16px,2.5vw,36px);
-}
-.pre-metric-item{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:2px;
-}
-.pre-metric-item small{
-  font-family:var(--mono);
-  font-size:8.5px;
-  letter-spacing:.2em;
-  color:var(--dim);
-}
-.pre-metric-item b{
-  font-family:var(--mono);
-  font-size:10px;
-  letter-spacing:.14em;
-  color:var(--haze);
-  font-weight:500;
+@keyframes preloaderPulse {
+  0% { transform: translate(-50%, -50%) scale(0.88); opacity: 0.6; }
+  100% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
 }
 
-.pre-status-box{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
-.pre-status-badge{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  background:rgba(16,185,129,0.08);
-  border:1px solid rgba(16,185,129,0.25);
-  padding:4px 10px;
-  border-radius:4px;
-}
-.status-pulse{
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  background:#10b981;
-  box-shadow:0 0 8px #10b981;
-  animation:beaconPulse 1.2s infinite ease-in-out;
-}
-.pre-status{
-  font-family:var(--mono);
-  font-size:10px;
-  letter-spacing:.22em;
-  text-transform:uppercase;
-  color:#10b981;
-  font-weight:500;
-}
-.pre-tele-pills{display:flex;gap:8px}
-.pre-tele-pills span{
-  font-family:var(--mono);font-size:9px;letter-spacing:.16em;
-  padding:3px 8px;border-radius:3px;background:rgba(124,167,194,0.08);
-  border:1px solid rgba(124,167,194,0.2);color:var(--fog);
+/* Pulsating Dot Grid Background */
+.pre-bg-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.14;
+  background-size: 48px 48px;
+  background-image: 
+    radial-gradient(circle, rgba(124, 167, 194, 0.45) 1px, transparent 1px),
+    linear-gradient(to right, rgba(124, 167, 194, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(124, 167, 194, 0.08) 1px, transparent 1px);
+  animation: gridBreathe 6s infinite alternate ease-in-out;
 }
 
-.pre-bar-wrap{margin-top:clamp(14px,2vh,22px)}
-.pre-bar{height:2px;background:var(--line);position:relative;overflow:hidden;border-radius:2px}
-.pre-bar i{position:absolute;inset:0;background:linear-gradient(90deg, #10b981, var(--haze), var(--white));transform:scaleX(0);transform-origin:left}
+@keyframes gridBreathe {
+  0% { opacity: 0.10; }
+  100% { opacity: 0.22; }
+}
+
+/* Reticle Corner Marks */
+.pre-reticle {
+  position: absolute;
+  font-family: var(--mono);
+  font-size: 14px;
+  color: rgba(124, 167, 194, 0.35);
+  pointer-events: none;
+  line-height: 1;
+  user-select: none;
+}
+.pre-reticle.tl { top: 24px; left: 24px; }
+.pre-reticle.tr { top: 24px; right: 24px; }
+.pre-reticle.bl { bottom: 24px; left: 24px; }
+.pre-reticle.br { bottom: 24px; right: 24px; }
+
+/* Compass Tape Across Sub-Header */
+.pre-compass-tape {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: clamp(14px, 2vw, 32px);
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  color: rgba(124, 167, 194, 0.45);
+  pointer-events: none;
+  z-index: 2;
+  user-select: none;
+}
+.pre-compass-tape .north {
+  color: #10b981;
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+}
+.pre-compass-tape .ne {
+  color: var(--haze);
+  font-weight: 600;
+}
+
+/* Top Header Bar */
+.pre-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+.pre-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.pre-logo {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.45));
+}
+.pre-brand-text {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  text-shadow: 0 0 12px rgba(124, 167, 194, 0.4);
+}
+.beacon {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 12px #10b981;
+  animation: beaconPulse 1.4s infinite ease-in-out;
+}
+@keyframes beaconPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.85); }
+}
+
+.pre-tele-status {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fog);
+}
+.sats-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: 4px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  color: #10b981;
+  font-weight: 600;
+}
+
+/* Tactical Flight Simulation HUD Stage */
+.pre-flight-hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  z-index: 2;
+}
+
+.pre-hud-wing {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+  width: clamp(130px, 14vw, 170px);
+  pointer-events: none;
+}
+.pre-hud-wing.left { align-items: flex-start; }
+.pre-hud-wing.right { align-items: flex-end; text-align: right; }
+
+.hud-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.hud-metric small {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 0.2em;
+  color: var(--dim);
+  text-transform: uppercase;
+}
+.hud-metric b {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  color: #FFFFFF;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.hud-pitch-svg,
+.hud-range-svg {
+  width: 50px;
+  height: 60px;
+  margin-top: 4px;
+  opacity: 0.85;
+}
+
+.pre-drone-stage {
+  position: relative;
+  width: clamp(220px, 26vw, 320px);
+  height: clamp(220px, 26vw, 320px);
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+}
+.pre-radar-sweep {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, rgba(16, 185, 129, 0.22), transparent 70deg);
+  animation: radarRotate 3s linear infinite;
+  pointer-events: none;
+}
+@keyframes radarRotate {
+  100% { transform: rotate(360deg); }
+}
+
+/* Cardinal Direction Markers */
+.cardinal {
+  position: absolute;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: rgba(124, 167, 194, 0.6);
+  pointer-events: none;
+}
+.cardinal.n { top: 6px; color: #10b981; }
+.cardinal.s { bottom: 6px; }
+.cardinal.e { right: 8px; }
+.cardinal.w { left: 8px; }
+
+.pre-hud-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(124, 167, 194, 0.2);
+  pointer-events: none;
+}
+.ring-outer { inset: 0; border-style: dashed; }
+.ring-inner { inset: 18%; border-color: rgba(124, 167, 194, 0.35); }
+.pre-crosshair {
+  position: absolute;
+  background: rgba(124, 167, 194, 0.25);
+  pointer-events: none;
+}
+.ch-h { width: 100%; height: 1px; top: 50%; }
+.ch-v { height: 100%; width: 1px; left: 50%; }
+
+.pre-drone-svg-wrap {
+  position: relative;
+  z-index: 2;
+  width: 75%;
+  height: 75%;
+  filter: drop-shadow(0 0 24px rgba(124, 167, 194, 0.25));
+}
+.pre-drone-svg { width: 100%; height: 100%; }
+
+.prop-spin { transform-origin: 52px 52px; animation: spinProp 0.1s linear infinite; }
+.prop-tr .prop-spin { transform-origin: 148px 52px; }
+.prop-bl .prop-spin { transform-origin: 52px 148px; }
+.prop-br .prop-spin { transform-origin: 148px 148px; }
+.prop-rev { animation-direction: reverse; }
+
+@keyframes spinProp {
+  0% { transform: scaleY(1) rotate(0deg); }
+  50% { transform: scaleY(0.4) rotate(180deg); }
+  100% { transform: scaleY(1) rotate(360deg); }
+}
+
+.led-blink { animation: ledFlash 0.8s infinite alternate ease-in-out; }
+.led-blink-alt { animation: ledFlash 0.8s infinite alternate-reverse ease-in-out; }
+@keyframes ledFlash { 0% { opacity: 0.2; } 100% { opacity: 1; filter: drop-shadow(0 0 6px currentColor); } }
+
+/* Modern De-cluttered Footer */
+.pre-bottom {
+  position: relative;
+  z-index: 2;
+}
+.pre-mid {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  padding-bottom: 16px;
+}
+
+/* Altimeter Block - Clean Modern Numerical Typography */
+.pre-alt-unit {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.pre-alt-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  color: var(--dim);
+  text-transform: uppercase;
+}
+.pre-count {
+  font-family: var(--mono);
+  font-size: clamp(38px, 4.5vw, 64px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: #FFFFFF;
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.pre-count small {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: var(--haze);
+  text-transform: uppercase;
+}
+
+/* Center Telemetry Ticker - Sleek Borderless Single Row */
+.pre-center-tele {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--fog);
+  font-variant-numeric: tabular-nums;
+}
+.tele-sep {
+  color: rgba(16, 185, 129, 0.6);
+  font-size: 12px;
+}
+
+/* Status Badge Capsule */
+.pre-status-box {
+  display: flex;
+  align-items: center;
+}
+.pre-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 6px 14px;
+  border-radius: 20px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.15);
+}
+.status-pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: beaconPulse 1.2s infinite ease-in-out;
+}
+.pre-status {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #10b981;
+  font-weight: 600;
+}
+
+/* Sleek Progress Bar */
+.pre-bar-wrap {
+  margin-top: 14px;
+}
+.pre-bar {
+  height: 2px;
+  background: rgba(124, 167, 194, 0.12);
+  position: relative;
+  overflow: hidden;
+  border-radius: 2px;
+}
+.pre-bar i {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #10b981, var(--haze), #FFFFFF);
+  transform: scaleX(0);
+  transform-origin: left;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
+}
 .curtain{position:fixed;inset:0;z-index:199;background:var(--ink);transform-origin:top;pointer-events:none}
 
 /* Native clean cursor */

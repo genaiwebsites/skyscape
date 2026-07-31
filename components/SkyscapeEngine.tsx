@@ -1268,7 +1268,21 @@ void main(){
             Math.min(stages.length - 1, Math.floor(shown * stages.length))
           ];
       if (sats)
-        sats.textContent = shown > 0.4 ? 'GPS lock · 12 sat' : 'Acquiring GPS';
+        sats.textContent = shown > 0.4 ? 'GPS LOCK · 18 SATS' : 'ACQUIRING GPS';
+
+      // Dynamic real-time live flight telemetry fluctuations
+      const pEl = document.getElementById('hudPitch');
+      const rEl = document.getElementById('hudRoll');
+      const vsEl = document.getElementById('hudVS');
+      const wEl = document.getElementById('hudWind');
+      const latEl = document.getElementById('hudLatency');
+
+      if (pEl) pEl.textContent = `${(-15.4 + Math.sin(t * 0.008) * 0.5).toFixed(1)}°`;
+      if (rEl) rEl.textContent = `${(0.8 + Math.cos(t * 0.006) * 0.4 >= 0 ? '+' : '')}${(0.8 + Math.cos(t * 0.006) * 0.4).toFixed(1)}°`;
+      if (vsEl) vsEl.textContent = `${(1.8 + Math.sin(t * 0.005) * 0.3).toFixed(1)} m/s`;
+      if (wEl) wEl.textContent = `${(3.2 + Math.cos(t * 0.004) * 0.2).toFixed(1)} m/s ↘`;
+      if (latEl) latEl.textContent = `${Math.floor(12 + Math.sin(t * 0.01) * 2)} ms`;
+
       if (shown > 0.985 || el > 1.6) {
         cancelAnimationFrame(tickFrame);
         launch();
@@ -1298,7 +1312,7 @@ void main(){
           ScrollTrigger.refresh();
         },
       });
-      tl.to(['.pre-drone-stage', num, status, sats, '.pre-tele-pills', '.pre-bar'], {
+      tl.to(['.pre-drone-stage', num, status, sats, '.pre-center-tele', '.pre-bar'], {
         autoAlpha: 0,
         y: -14,
         scale: 0.95,

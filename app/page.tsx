@@ -13,7 +13,20 @@ export default function Home() {
 
       {/* ── High-Tech Quadcopter Telemetry Preloader ── */}
       <div className="pre" id="pre">
+        {/* Animated HUD Grid & Radial Pulse Background */}
         <div className="pre-bg-grid" aria-hidden="true" />
+        <div className="pre-glow" aria-hidden="true" />
+
+        {/* Corner Reticle Accents */}
+        <div className="pre-reticle tl" aria-hidden="true">+</div>
+        <div className="pre-reticle tr" aria-hidden="true">+</div>
+        <div className="pre-reticle bl" aria-hidden="true">+</div>
+        <div className="pre-reticle br" aria-hidden="true">+</div>
+
+        {/* Tactical Compass Flight Heading Tape */}
+        <div className="pre-compass-tape" aria-hidden="true">
+          <span>330°</span><span>345°</span><span className="north">N 000°</span><span>015°</span><span>030°</span><span className="ne">045° NE</span>
+        </div>
 
         {/* Top telemetry status bar */}
         <div className="pre-top">
@@ -24,121 +37,162 @@ export default function Home() {
               src="/skyscape-aerial-photography-logo-white.png"
               alt="Skyscape Photography Logo"
               className="pre-logo"
-              width={28}
-              height={28}
+              width={38}
+              height={38}
             />
             <span className="pre-brand-text">SKYSCAPE PHOTOGRAPHY</span>
           </div>
           <div className="pre-tele-status">
-            <span id="preSats">Acquiring GPS Lock</span>
+            <span id="preSats" className="sats-tag">GPS LOCK • 18 SATS</span>
           </div>
         </div>
 
-        {/* Center Drone & Radar Telemetry HUD */}
-        <div className="pre-drone-stage" aria-hidden="true">
-          <div className="pre-radar-sweep" />
-          <div className="pre-hud-ring ring-outer" />
-          <div className="pre-hud-ring ring-inner" />
-          <div className="pre-crosshair ch-h" />
-          <div className="pre-crosshair ch-v" />
+        {/* Center Drone & Tactical Flight Simulation HUD */}
+        <div className="pre-flight-hud" aria-hidden="true">
+          {/* Left Telemetry Simulation Wing */}
+          <div className="pre-hud-wing left">
+            <div className="hud-metric">
+              <small>PITCH</small>
+              <b id="hudPitch">-15.4°</b>
+            </div>
+            <div className="hud-metric">
+              <small>ROLL</small>
+              <b id="hudRoll">+0.8°</b>
+            </div>
+            <div className="hud-metric">
+              <small>V/S</small>
+              <b id="hudVS">+1.8 m/s</b>
+            </div>
+            <div className="hud-metric">
+              <small>WIND</small>
+              <b id="hudWind">3.2 m/s ↘</b>
+            </div>
+            {/* SVG Pitch Ladder Graphic */}
+            <svg className="hud-pitch-svg" viewBox="0 0 60 80" fill="none">
+              <line x1="10" y1="20" x2="50" y2="20" stroke="rgba(124,167,194,0.4)" strokeWidth="1" />
+              <line x1="18" y1="35" x2="42" y2="35" stroke="rgba(124,167,194,0.6)" strokeWidth="1.5" />
+              <line x1="10" y1="50" x2="50" y2="50" stroke="rgba(124,167,194,0.4)" strokeWidth="1" />
+              <line x1="22" y1="65" x2="38" y2="65" stroke="rgba(124,167,194,0.3)" strokeWidth="1" />
+            </svg>
+          </div>
 
-          {/* Animated Quadcopter Vector SVG */}
-          <div className="pre-drone-svg-wrap">
-            <svg className="pre-drone-svg" viewBox="0 0 200 200" fill="none">
-              {/* Target reticle & gimbal axis */}
-              <circle cx="100" cy="100" r="88" stroke="rgba(124,167,194,0.18)" strokeWidth="1" strokeDasharray="4 4" />
-              <circle cx="100" cy="100" r="54" stroke="rgba(124,167,194,0.28)" strokeWidth="1" />
+          {/* Center Quadcopter Stage & Radar */}
+          <div className="pre-drone-stage">
+            <div className="pre-radar-sweep" />
+            <div className="pre-hud-ring ring-outer" />
+            <div className="pre-hud-ring ring-inner" />
+            <div className="pre-crosshair ch-h" />
+            <div className="pre-crosshair ch-v" />
 
-              {/* Diagonal Quad Arms */}
-              <line x1="52" y1="52" x2="148" y2="148" stroke="var(--fog)" strokeWidth="4.5" strokeLinecap="round" />
-              <line x1="148" y1="52" x2="52" y2="148" stroke="var(--fog)" strokeWidth="4.5" strokeLinecap="round" />
+            {/* Cardinal Direction Indicators */}
+            <span className="cardinal n">N</span>
+            <span className="cardinal e">E</span>
+            <span className="cardinal s">S</span>
+            <span className="cardinal w">W</span>
 
-              {/* Drone Central Body Shell */}
-              <rect x="84" y="74" width="32" height="52" rx="8" fill="#0c121c" stroke="var(--haze)" strokeWidth="2" />
-              <circle cx="100" cy="90" r="7" fill="#182436" stroke="var(--amber)" strokeWidth="1.5" />
-              <path d="M96 112 h8 v6 h-8 z" fill="var(--haze)" />
+            {/* Animated Quadcopter Vector SVG */}
+            <div className="pre-drone-svg-wrap">
+              <svg className="pre-drone-svg" viewBox="0 0 200 200" fill="none">
+                <circle cx="100" cy="100" r="88" stroke="rgba(124,167,194,0.18)" strokeWidth="1" strokeDasharray="4 4" />
+                <circle cx="100" cy="100" r="54" stroke="rgba(124,167,194,0.28)" strokeWidth="1" />
 
-              {/* 4 Motor Mounts & Spinning Propellers */}
-              {/* Top Left Motor */}
-              <g className="prop-group prop-tl">
-                <circle cx="52" cy="52" r="22" stroke="rgba(124,167,194,0.4)" strokeWidth="1" strokeDasharray="3 3" />
-                <ellipse cx="52" cy="52" rx="22" ry="4" fill="rgba(238,243,247,0.45)" className="prop-spin" />
-                <circle cx="52" cy="52" r="5" fill="#182436" stroke="var(--haze)" strokeWidth="1.5" />
-                <circle cx="52" cy="52" r="2" fill="#10b981" className="led-blink" />
-              </g>
+                <line x1="52" y1="52" x2="148" y2="148" stroke="var(--fog)" strokeWidth="4.5" strokeLinecap="round" />
+                <line x1="148" y1="52" x2="52" y2="148" stroke="var(--fog)" strokeWidth="4.5" strokeLinecap="round" />
 
-              {/* Top Right Motor */}
-              <g className="prop-group prop-tr">
-                <circle cx="148" cy="52" r="22" stroke="rgba(124,167,194,0.4)" strokeWidth="1" strokeDasharray="3 3" />
-                <ellipse cx="148" cy="52" rx="22" ry="4" fill="rgba(238,243,247,0.45)" className="prop-spin prop-rev" />
-                <circle cx="148" cy="52" r="5" fill="#182436" stroke="var(--haze)" strokeWidth="1.5" />
-                <circle cx="148" cy="52" r="2" fill="#10b981" className="led-blink" />
-              </g>
+                <rect x="84" y="74" width="32" height="52" rx="8" fill="#0c121c" stroke="var(--haze)" strokeWidth="2" />
+                <circle cx="100" cy="90" r="7" fill="#182436" stroke="var(--amber)" strokeWidth="1.5" />
+                <path d="M96 112 h8 v6 h-8 z" fill="var(--haze)" />
 
-              {/* Bottom Left Motor */}
-              <g className="prop-group prop-bl">
-                <circle cx="52" cy="148" r="22" stroke="rgba(124,167,194,0.4)" strokeWidth="1" strokeDasharray="3 3" />
-                <ellipse cx="52" cy="148" rx="22" ry="4" fill="rgba(238,243,247,0.45)" className="prop-spin prop-rev" />
-                <circle cx="52" cy="148" r="5" fill="#182436" stroke="var(--haze)" strokeWidth="1.5" />
-                <circle cx="52" cy="148" r="2" fill="var(--amber)" className="led-blink-alt" />
-              </g>
+                <g className="prop-group prop-tl">
+                  <circle cx="52" cy="52" r="22" stroke="rgba(124,167,194,0.4)" strokeWidth="1" strokeDasharray="3 3" />
+                  <ellipse cx="52" cy="52" rx="22" ry="4" fill="rgba(238,243,247,0.45)" className="prop-spin" />
+                  <circle cx="52" cy="52" r="5" fill="#182436" stroke="var(--haze)" strokeWidth="1.5" />
+                  <circle cx="52" cy="52" r="2" fill="#10b981" className="led-blink" />
+                </g>
 
-              {/* Bottom Right Motor */}
-              <g className="prop-group prop-br">
-                <circle cx="148" cy="148" r="22" stroke="rgba(124,167,194,0.4)" strokeWidth="1" strokeDasharray="3 3" />
-                <ellipse cx="148" cy="148" rx="22" ry="4" fill="rgba(238,243,247,0.45)" className="prop-spin" />
-                <circle cx="148" cy="148" r="5" fill="#182436" stroke="var(--haze)" strokeWidth="1.5" />
-                <circle cx="148" cy="148" r="2" fill="var(--amber)" className="led-blink-alt" />
-              </g>
+                <g className="prop-group prop-tr">
+                  <circle cx="148" cy="52" r="22" stroke="rgba(124,167,194,0.4)" strokeWidth="1" strokeDasharray="3 3" />
+                  <ellipse cx="148" cy="52" rx="22" ry="4" fill="rgba(238,243,247,0.45)" className="prop-spin prop-rev" />
+                  <circle cx="148" cy="52" r="5" fill="#182436" stroke="var(--haze)" strokeWidth="1.5" />
+                  <circle cx="148" cy="52" r="2" fill="#10b981" className="led-blink" />
+                </g>
+
+                <g className="prop-group prop-bl">
+                  <circle cx="52" cy="148" r="22" stroke="rgba(124,167,194,0.4)" strokeWidth="1" strokeDasharray="3 3" />
+                  <ellipse cx="52" cy="148" rx="22" ry="4" fill="rgba(238,243,247,0.45)" className="prop-spin prop-rev" />
+                  <circle cx="52" cy="148" r="5" fill="#182436" stroke="var(--haze)" strokeWidth="1.5" />
+                  <circle cx="52" cy="148" r="2" fill="var(--amber)" className="led-blink-alt" />
+                </g>
+
+                <g className="prop-group prop-br">
+                  <circle cx="148" cy="148" r="22" stroke="rgba(124,167,194,0.4)" strokeWidth="1" strokeDasharray="3 3" />
+                  <ellipse cx="148" cy="148" rx="22" ry="4" fill="rgba(238,243,247,0.45)" className="prop-spin" />
+                  <circle cx="148" cy="148" r="5" fill="#182436" stroke="var(--haze)" strokeWidth="1.5" />
+                  <circle cx="148" cy="148" r="2" fill="var(--amber)" className="led-blink-alt" />
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          {/* Right Optics Telemetry Wing */}
+          <div className="pre-hud-wing right">
+            <div className="hud-metric">
+              <small>CAM OPTICS</small>
+              <b>4K 60FPS D-LOG</b>
+            </div>
+            <div className="hud-metric">
+              <small>GIMBAL</small>
+              <b>-15.0° LOCK</b>
+            </div>
+            <div className="hud-metric">
+              <small>LATENCY</small>
+              <b id="hudLatency">12 ms</b>
+            </div>
+            <div className="hud-metric">
+              <small>STORAGE</small>
+              <b>482 GB FREE</b>
+            </div>
+            {/* SVG Rangefinder Reticle Graphic */}
+            <svg className="hud-range-svg" viewBox="0 0 60 80" fill="none">
+              <path d="M15 25 H25 V15" stroke="rgba(124,167,194,0.5)" strokeWidth="1.5" />
+              <path d="M45 25 H35 V15" stroke="rgba(124,167,194,0.5)" strokeWidth="1.5" />
+              <path d="M15 55 H25 V65" stroke="rgba(124,167,194,0.5)" strokeWidth="1.5" />
+              <path d="M45 55 H35 V65" stroke="rgba(124,167,194,0.5)" strokeWidth="1.5" />
+              <circle cx="30" cy="40" r="4" fill="#10b981" />
             </svg>
           </div>
         </div>
 
-        {/* Bottom Telemetry Counter & Launch Status */}
+        {/* Ultra-Clean Modern Footer Telemetry */}
         <div className="pre-bottom">
           <div className="pre-mid">
             {/* Left Altimeter Unit */}
             <div className="pre-alt-unit">
-              <div className="pre-alt-label">ALTITUDE · CEILING 299M</div>
+              <span className="pre-alt-label">ALTITUDE</span>
               <div className="pre-count">
-                <span id="preNum">000</span><sup>M AGL</sup>
+                <span id="preNum">000</span><small>m</small>
               </div>
             </div>
 
-            {/* Center Flight Metrics HUD */}
+            {/* Center Telemetry Ticker */}
             <div className="pre-center-tele">
-              <div className="pre-coords">28.6139° N · 77.2090° E · INDIA</div>
-              <div className="pre-metrics-grid">
-                <div className="pre-metric-item">
-                  <small>SYSTEM</small>
-                  <b>NOMINAL</b>
-                </div>
-                <div className="pre-metric-item">
-                  <small>BATTERY</small>
-                  <b>98% · 24.2V</b>
-                </div>
-                <div className="pre-metric-item">
-                  <small>LINK</small>
-                  <b>5.8GHz · 100%</b>
-                </div>
-              </div>
+              <span className="tele-coords">28.6139° N · 77.2090° E</span>
+              <span className="tele-sep">•</span>
+              <span className="tele-batt">BATT 98%</span>
+              <span className="tele-sep">•</span>
+              <span className="tele-link">5.8GHz LINK</span>
             </div>
 
-            {/* Right Status & Systems Console */}
+            {/* Right Status Badge */}
             <div className="pre-status-box">
               <div className="pre-status-badge">
                 <span className="status-pulse" />
-                <span className="pre-status" id="preStatus">Motors Armed</span>
-              </div>
-              <div className="pre-tele-pills">
-                <span>BARO OK</span>
-                <span>IMU READY</span>
-                <span>GNSS LOCK</span>
+                <span className="pre-status" id="preStatus">MOTORS ARMED</span>
               </div>
             </div>
           </div>
 
-          {/* Integrated Loading Bar */}
+          {/* Integrated Sleek Loading Bar */}
           <div className="pre-bar-wrap">
             <div className="pre-bar"><i id="preBar" /></div>
           </div>

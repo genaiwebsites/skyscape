@@ -6,10 +6,13 @@ import Lenis from 'lenis';
 import { D } from '@/data/descent';
 import { F } from '@/data/gallery';
 
+interface ScrollTriggerInstance {
+  progress: number;
+  scroll?: () => number;
+}
+
 const CEIL = 299;
 const PPM = 6;
-
-const U = (path: string) => path;
 
 export default function SkyscapeEngine() {
   useEffect(() => {
@@ -26,11 +29,67 @@ export default function SkyscapeEngine() {
     gsap.config({ force3D: true });
     ScrollTrigger.config({ ignoreMobileResize: true });
 
+    // -----------------------------------------------------------------
+    // DIGITAL ASSET PROTECTION & SECURITY GUARD ENGINE
+    // -----------------------------------------------------------------
+    const handleContextMenu = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (
+        target &&
+        (target.tagName === 'IMG' ||
+          target.tagName === 'CANVAS' ||
+          target.tagName === 'VIDEO' ||
+          target.closest('.gallery-card') ||
+          target.closest('.descent-card') ||
+          target.closest('.hero') ||
+          target.closest('.shot') ||
+          target.closest('.p-frame'))
+      ) {
+        e.preventDefault();
+        return false;
+      }
+    };
+
+    const handleDragStart = (e: DragEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (target && (target.tagName === 'IMG' || target.tagName === 'CANVAS')) {
+        e.preventDefault();
+        return false;
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // F12 key
+      if (e.keyCode === 123) {
+        e.preventDefault();
+        return false;
+      }
+      // Ctrl+Shift+I / Cmd+Option+I / Ctrl+Shift+J / Ctrl+Shift+C (Inspect Element)
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
+        e.preventDefault();
+        return false;
+      }
+      // Ctrl+U / Cmd+Option+U (View Source)
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'u' || e.key === 'U')) {
+        e.preventDefault();
+        return false;
+      }
+      // Ctrl+S / Cmd+S (Save Page As)
+      if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) {
+        e.preventDefault();
+        return false;
+      }
+    };
+
+    document.addEventListener('contextmenu', handleContextMenu, { capture: true });
+    document.addEventListener('dragstart', handleDragStart, { capture: true });
+    window.addEventListener('keydown', handleKeyDown, { capture: true });
+
     let onParallaxMove: ((e: MouseEvent) => void) | null = null;
 
     // 3. Build Altimeter tape ticks & position immediately (zero delay)
     const tape = document.getElementById('tape');
-    let setTape: any = null;
+    let setTape: ReturnType<typeof gsap.quickSetter> | null = null;
 
     if (tape) {
       if (!tape.dataset.built) {
@@ -269,21 +328,23 @@ void main(){
   float edge = smoothstep(0.35, 1.0, distance(vUv, vec2(0.5)));
   float ab = (0.0006 + abs(uVel) * 0.004) * edge;
 
-  // 5-Stage Scrollytelling Blending Sequence
-  vec3 A = samp(uA, cover(g, uResA), ab);
-  vec3 B = samp(uB, cover(g, uResB), ab);
-  vec3 C = samp(uC, cover(g, uResC), ab);
-  vec3 D = samp(uD, cover(g, uResD), ab);
-  vec3 E = samp(uE, cover(g, uResE), ab);
-
+  // 5-Stage Scrollytelling Blending Sequence (Lazy texture fetches for max mobile FPS)
   vec3 col;
   if (m < 1.0) {
+    vec3 A = samp(uA, cover(g, uResA), ab);
+    vec3 B = samp(uB, cover(g, uResB), ab);
     col = mix(A, B, smoothstep(0.0, 1.0, m));
   } else if (m < 2.0) {
+    vec3 B = samp(uB, cover(g, uResB), ab);
+    vec3 C = samp(uC, cover(g, uResC), ab);
     col = mix(B, C, smoothstep(1.0, 2.0, m));
   } else if (m < 3.0) {
+    vec3 C = samp(uC, cover(g, uResC), ab);
+    vec3 D = samp(uD, cover(g, uResD), ab);
     col = mix(C, D, smoothstep(2.0, 3.0, m));
   } else {
+    vec3 D = samp(uD, cover(g, uResD), ab);
+    vec3 E = samp(uE, cover(g, uResE), ab);
     col = mix(D, E, smoothstep(3.0, 4.0, m));
   }
 
@@ -399,27 +460,27 @@ void main(){
               U_.uResB
             );
             texture(
-              '/images/ijen-crater-volcano-aerial-skyscape.jpg',
+              '/images/ijen-crater-volcano-aerial-skyscape.png',
               2,
               U_.uResC
             );
             texture(
-              '/images/manipal-end-point-aerial-skyscape.jpg',
+              '/images/manipal-end-point-aerial-skyscape.png',
               3,
               U_.uResD
             );
             texture(
-              '/images/angels-billabong-nusa-penida-skyscape.jpg',
+              '/images/angels-billabong-nusa-penida-skyscape.png',
               4,
               U_.uResE
             );
 
-            const MAXPX = MOBILE ? 1.4e6 : 2.6e6;
+            const MAXPX = MOBILE ? 0.65e6 : 2.6e6;
             function size() {
               if (!heroEl || !cv) return;
               const w = heroEl.clientWidth,
                 h = heroEl.clientHeight;
-              let dpr = Math.min(devicePixelRatio || 1, MOBILE ? 1.15 : 1.6);
+              let dpr = Math.min(devicePixelRatio || 1, MOBILE ? 1.0 : 1.6);
               const over = (w * h * dpr * dpr) / MAXPX;
               if (over > 1) dpr /= Math.sqrt(over);
               cv.width = Math.round(w * dpr);
@@ -500,7 +561,7 @@ void main(){
         smoothWheel: true,
         wheelMultiplier: 1.0,
         touchMultiplier: 1.5,
-      } as any);
+      });
 
       lenis.on('scroll', () => {
         ScrollTrigger.update();
@@ -513,7 +574,7 @@ void main(){
       gsap.ticker.add(updateLenis);
       gsap.ticker.lagSmoothing(0);
 
-      lenis.on('scroll', ({ velocity }: any) => {
+      lenis.on('scroll', ({ velocity }: { velocity: number }) => {
         const targetV = Math.max(-1, Math.min(1, velocity / 50));
         GL.vel += (targetV - GL.vel) * 0.14;
       });
@@ -605,7 +666,7 @@ void main(){
         start: 'top top',
         end: 'bottom bottom',
         scrub: true,
-        onUpdate: (s: any) => {
+        onUpdate: (s: ScrollTriggerInstance) => {
           const p = s.progress,
             a = Math.round(CEIL * (1 - p));
           if (setTape) setTape(window.innerHeight / 2 - CEIL * p * PPM);
@@ -627,7 +688,7 @@ void main(){
               if (altRail) altRail.classList.toggle('landed', a <= 4);
             }
           }
-          const stuck = s.scroll() > 40;
+          const stuck = (s.scroll ? s.scroll() : window.scrollY) > 40;
           if (stuck !== lastStuck) {
             lastStuck = stuck;
             if (head) head.classList.toggle('scrolled', stuck);
@@ -914,7 +975,7 @@ void main(){
             pinSpacing: true,
             scrub: 1,
             invalidateOnRefresh: true,
-            onUpdate: (s: any) => {
+            onUpdate: (s: ScrollTriggerInstance) => {
               const idx = Math.min(
                 D.length - 1,
                 Math.round(s.progress * (D.length - 1))
@@ -989,7 +1050,7 @@ void main(){
               pin: true,
               scrub: 0.8,
               invalidateOnRefresh: true,
-              onUpdate: (s: any) => {
+              onUpdate: (s: ScrollTriggerInstance) => {
                 gsap.set('#hBar', { scaleX: s.progress });
                 const n = Math.min(
                   F.length,
@@ -1480,6 +1541,9 @@ void main(){
       stopGL();
       window.removeEventListener('scroll', onScrollDronePitch);
       if (onParallaxMove) window.removeEventListener('mousemove', onParallaxMove);
+      document.removeEventListener('contextmenu', handleContextMenu, { capture: true });
+      document.removeEventListener('dragstart', handleDragStart, { capture: true });
+      window.removeEventListener('keydown', handleKeyDown, { capture: true });
       if (lenis) lenis.destroy();
       ScrollTrigger.getAll().forEach((t) => t.kill());
     };

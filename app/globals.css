@@ -1940,3 +1940,23 @@ main{position:relative;z-index:1}
   .sc-steps{display:flex;flex-direction:column;gap:clamp(22px,4vh,36px)}
   .sc-step{opacity:1!important;visibility:visible!important}
 }
+
+/* ==================================================================
+   DIGITAL ASSET PROTECTION & SECURITY STYLING
+================================================================== */
+img, canvas, video {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+  -webkit-user-drag: none !important;
+  -khtml-user-drag: none !important;
+  -moz-user-drag: none !important;
+  -o-user-drag: none !important;
+  pointer-events: none !important;
+}
+
+/* Re-enable pointer events for container elements, interactive links & buttons */
+.hero, .gallery-card, .descent-card, .p-frame, .shot, .frame, .lb-inner, a, button, input, textarea, select {
+  pointer-events: auto !important;
+}

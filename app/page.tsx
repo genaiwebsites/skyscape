@@ -2,8 +2,6 @@ import { D } from '@/data/descent';
 import { F } from '@/data/gallery';
 import { HeaderNav, SkyscapeEngine } from '@/components/ClientComponents';
 
-const U = (path: string) => path;
-
 export default function Home() {
   return (
     <>
@@ -340,6 +338,7 @@ export default function Home() {
                   src="/images/pilot.jpg"
                   alt="Kshitiz Bathwal | Aerial Landscape Photographer"
                   loading="lazy"
+                  draggable={false}
                 />
                 <div className="p-veil" aria-hidden="true" />
                 <div className="p-badge" aria-hidden="true">

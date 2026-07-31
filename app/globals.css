@@ -899,9 +899,9 @@ main{position:relative;z-index:1}
    6 · HERO
 ================================================================== */
 .hero{position:relative;height:100svh;min-height:600px;overflow:hidden}
-.hero canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:2}
-.hero-fallback{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;opacity:1;transition:opacity 1.2s ease}
-.hero.gl-on .hero-fallback{opacity:0.4}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:2;pointer-events:none}
+.hero-fallback{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;opacity:1!important;display:block!important}
+.hero.gl-on .hero-fallback{opacity:1!important}
 .hero-tint{
   position:absolute;inset:0;
   background:linear-gradient(180deg, rgba(5,8,13,0.18) 0%, transparent 40%, rgba(5,8,13,0.65) 100%);

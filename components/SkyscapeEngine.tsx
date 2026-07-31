@@ -150,7 +150,7 @@ export default function SkyscapeEngine() {
       if (cv) {
         const gl = cv.getContext('webgl', {
           antialias: false,
-          alpha: false,
+          alpha: true,
           powerPreference: 'high-performance',
         });
         if (gl) {
@@ -270,6 +270,13 @@ void main(){
               gl.uniform1i(u('uB'), 1);
 
               let loaded = 0;
+              function checkLoaded() {
+                if (++loaded >= 2) {
+                  glReady = true;
+                  heroEl.classList.add('gl-on');
+                }
+              }
+
               function texture(
                 src: string,
                 unit: number,
@@ -294,13 +301,12 @@ void main(){
                   gl!.texParameteri(gl!.TEXTURE_2D, gl!.TEXTURE_WRAP_S, gl!.CLAMP_TO_EDGE);
                   gl!.texParameteri(gl!.TEXTURE_2D, gl!.TEXTURE_WRAP_T, gl!.CLAMP_TO_EDGE);
                   gl!.uniform2f(resU, im.width, im.height);
-                  if (++loaded === 2) {
-                    glReady = true;
-                    heroEl.classList.add('gl-on');
-                  }
+                  checkLoaded();
                 };
-                im.onerror = () =>
+                im.onerror = () => {
                   console.warn('[skyscape] texture failed:', src);
+                  checkLoaded();
+                };
                 im.src = src;
               }
               texture(
@@ -309,7 +315,7 @@ void main(){
                 U_.uResA
               );
               texture(
-                U('photo-1500534314209-a25ddb2bd429', 1800, 85),
+                '/mauritius-coastal-drone-photography-skyscape.jpg',
                 1,
                 U_.uResB
               );

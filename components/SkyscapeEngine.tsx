@@ -395,34 +395,42 @@ void main(){
       }
     }
 
-    // 6. Lenis smooth scroll
+    // 6. Lenis smooth scroll with luxury inertial momentum
     let lenis: Lenis | null = null;
     if (!RM) {
       lenis = new Lenis({
-        lerp: 0.085,
-        wheelMultiplier: 1,
+        duration: 1.2,
+        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: 'vertical',
+        gestureOrientation: 'vertical',
         smoothWheel: true,
+        wheelMultiplier: 1.0,
         touchMultiplier: 1.5,
-        syncTouch: false,
       } as any);
-      lenis.on('scroll', ScrollTrigger.update);
-      gsap.ticker.add((t: number) => lenis!.raf(t * 1000));
+
+      lenis.on('scroll', () => {
+        ScrollTrigger.update();
+      });
+
+      const updateLenis = (time: number) => {
+        lenis?.raf(time * 1000);
+      };
+
+      gsap.ticker.add(updateLenis);
       gsap.ticker.lagSmoothing(0);
 
-      let velTarget = 0;
       lenis.on('scroll', ({ velocity }: any) => {
-        velTarget = Math.max(-1, Math.min(1, velocity / 55));
+        const targetV = Math.max(-1, Math.min(1, velocity / 50));
+        GL.vel += (targetV - GL.vel) * 0.14;
       });
-      (function decay() {
-        requestAnimationFrame(decay);
-        velTarget *= 0.92;
-        GL.vel += (velTarget - GL.vel) * 0.12;
-      })();
 
       document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) => {
         a.addEventListener('click', (e) => {
           e.preventDefault();
-          lenis!.scrollTo(a.getAttribute('href')!, { offset: -10, duration: 1.5 });
+          const target = a.getAttribute('href');
+          if (target && lenis) {
+            lenis.scrollTo(target, { offset: -10, duration: 1.4 });
+          }
         });
       });
     } else {

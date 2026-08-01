@@ -307,7 +307,8 @@ void main(){
   // 5-Stage Scrollytelling Blending Sequence (Lazy texture fetches for max mobile FPS)
   vec3 col;
   if (m < 1.0) {
-    vec3 A = samp(uA, cover(g, uResA), ab);
+    vec2 gA = (g - 0.5) * 0.88 + 0.5;
+    vec3 A = samp(uA, cover(gA, uResA), ab);
     vec3 B = samp(uB, cover(g, uResB), ab);
     col = mix(A, B, smoothstep(0.0, 1.0, m));
   } else if (m < 2.0) {
@@ -689,8 +690,8 @@ void main(){
         if ('scrollRestoration' in history) {
           history.scrollRestoration = 'manual';
         }
-        gsap.set([beat1, beat2, beat3, beat4].filter(Boolean), { autoAlpha: 0, y: 24 });
-        gsap.set(['#heroMainGroup', '.hud', '.h-corner', '.cue', '.hero-birds-layer'], { autoAlpha: 1, y: 0 });
+        gsap.set([beat1, beat2, beat3, beat4, heroMainGroup].filter(Boolean), { autoAlpha: 0, y: 24 });
+        gsap.set(['.hud', '.h-corner', '.cue', '.hero-birds-layer'], { autoAlpha: 1, y: 0 });
 
         const heroTl = gsap.timeline({
           defaults: { ease: 'none' },
@@ -709,10 +710,17 @@ void main(){
           .to(GL, { descent: 1, duration: 3.4, ease: 'power1.inOut' }, 0)
           .to('.cue', { autoAlpha: 0, duration: 0.2 }, 0)
           .to('.hero-birds-layer', { autoAlpha: 0.25, y: -60, scale: 1.05, duration: 2.8, ease: 'power1.inOut' }, 0)
+          // 1. Text smoothly fades IN after scrolling 25m AGL (299m -> 274m AGL)
           .to(
             heroMainGroup || '.hero-in',
-            { autoAlpha: 0, y: -30, duration: 0.45, ease: 'power2.inOut' },
-            0.32
+            { autoAlpha: 1, y: 0, duration: 0.28, ease: 'power2.out' },
+            0.06
+          )
+          // 2. Text smoothly fades OUT as descent proceeds towards Beat 1
+          .to(
+            heroMainGroup || '.hero-in',
+            { autoAlpha: 0, y: -24, duration: 0.25, ease: 'power2.in' },
+            0.36
           )
           // Beat 1 (245 m AGL): Kelingking Beach (Nusa Penida, Bali)
           .to(GL, { mix: 1.0, duration: 0.85, ease: 'power1.inOut' }, 0.4)
@@ -1250,7 +1258,8 @@ void main(){
           '<'
         )
         .to(GL, { reveal: 1, duration: 1.6, ease: 'power2.out' }, '<.2')
-        .set(['#heroMainGroup', '.hud', '.h-corner', '.cue', '.hero-birds-layer'], { autoAlpha: 1, y: 0, clearProps: 'all' })
+        .set(['.hud', '.h-corner', '.cue', '.hero-birds-layer'], { autoAlpha: 1, y: 0 })
+        .set('#heroMainGroup', { autoAlpha: 0, y: 24 })
         .set(pre, { display: 'none' });
     }
 

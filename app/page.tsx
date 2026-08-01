@@ -1,6 +1,7 @@
 import { D } from '@/data/descent';
 import { F } from '@/data/gallery';
 import { HeaderNav, SkyscapeEngine } from '@/components/ClientComponents';
+import { ContactEmailLink, ContactInstagramLink } from '@/components/ContactLink';
 
 export default function Home() {
   return (
@@ -516,19 +517,18 @@ export default function Home() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             data-par="0.22"
-            src="https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=2000&q=85"
-            alt="Braided glacial river channels in Zanskar seen from above"
-            loading="lazy"
-            crossOrigin="anonymous"
+            src="/images/nusa-penida-featured.jpeg"
+            alt="Volcanic sea stacks and azure ocean surf in Nusa Penida, Bali, Indonesia seen from 198 metres above ground level"
+            decoding="async"
           />
           <div className="veil" />
           <div className="txt">
             <h3 className="display d3" data-split>
-              Braided glacial river channels in <em>Zanskar.</em>
+              Volcanic sea stacks &amp; azure surf of <em>Nusa Penida.</em>
             </h3>
             <div className="tele" data-anim="fade">
-              Zanskar, Ladakh<br />
-              271 m AGL · 33.47° N · 76.90° E · 06:52 IST
+              Nusa Penida, Bali, Indonesia<br />
+              198 m AGL · 8.72° S · 115.54° E · 07:10 WITA
             </div>
           </div>
         </section>
@@ -544,21 +544,11 @@ export default function Home() {
               <p className="lede" data-anim="fade">
                 Available for fine art prints, editorial commissions, commercial licensing, and survey mapping across India.
               </p>
-              <a
-                className="mail"
-                data-magnet
-                data-anim="soft"
-                href="mailto:kshitiz@skyscapephotography.in"
-              >
-                <span>kshitiz@skyscapephotography.in</span>
-                <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.5" aria-hidden="true">
-                  <path d="M7 17L17 7M17 7H8M17 7v9" />
-                </svg>
-              </a>
+              <ContactEmailLink />
               <div className="c-meta meta" data-anim="fade">
                 <span>Based in<b>India · Travels nationwide</b></span>
                 <span>Specialization<b>Aerial Landscape Photography</b></span>
-                <span>Social<b><a href="https://www.instagram.com/skyscape_photography/" target="_blank" rel="noopener noreferrer" className="c-insta-link">@skyscape_photography ↗</a></b></span>
+                <span>Social<b><ContactInstagramLink /></b></span>
                 <span>Response<b>Within 24 hours</b></span>
               </div>
             </div>

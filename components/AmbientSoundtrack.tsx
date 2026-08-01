@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import { trackEvent } from '@/lib/analytics';
 
 export default function AmbientSoundtrack() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -34,6 +35,7 @@ export default function AmbientSoundtrack() {
       audio.pause();
       audio.muted = true;
       setIsPlaying(false);
+      trackEvent('audio_toggled', { action: 'mute' });
     } else {
       // Clean Play / Unmute
       audio.muted = false;
@@ -42,6 +44,7 @@ export default function AmbientSoundtrack() {
         .play()
         .then(() => {
           setIsPlaying(true);
+          trackEvent('audio_toggled', { action: 'play' });
         })
         .catch((err) => {
           console.warn('[skyscape] audio playback failed:', err);

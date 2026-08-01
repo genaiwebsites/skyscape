@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 import { D } from '@/data/descent';
 import { F } from '@/data/gallery';
+import { trackEvent } from '@/lib/analytics';
 
 interface ScrollTriggerInstance {
   progress: number;
@@ -875,18 +876,20 @@ void main(){
         );
       });
 
-      gsap.utils.toArray<HTMLElement>('.plate img, .p-frame img').forEach((img) => {
+
+      gsap.utils.toArray<HTMLElement>('.p-frame img').forEach((img) => {
         gsap.fromTo(
           img,
-          { yPercent: -9 },
+          { yPercent: -12 },
           {
-            yPercent: 9,
+            yPercent: 12,
             ease: 'none',
             scrollTrigger: {
-              trigger: img.closest('.plate, .p-frame'),
+              trigger: img.closest('.p-frame'),
               start: 'top bottom',
               end: 'bottom top',
-              scrub: true,
+              scrub: 1.2,
+              invalidateOnRefresh: true,
             },
           }
         );
@@ -1181,10 +1184,49 @@ void main(){
         );
       }
 
+      /* Featured Plate Parallax (registered after pinned .sc and .hgal sections) */
+      gsap.utils.toArray<HTMLElement>('.plate img').forEach((img) => {
+        const parentPlate = img.closest('.plate') || img.parentElement;
+        gsap.fromTo(
+          img,
+          { yPercent: -14, scale: 1.08 },
+          {
+            yPercent: 14,
+            scale: 1.0,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: parentPlate,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 1.2,
+              invalidateOnRefresh: true,
+            },
+          }
+        );
+      });
+
+      ScrollTrigger.sort();
       ScrollTrigger.refresh();
-      window.addEventListener('load', () => ScrollTrigger.refresh());
+      window.addEventListener('load', () => {
+        ScrollTrigger.sort();
+        ScrollTrigger.refresh();
+      });
+      document.querySelectorAll<HTMLImageElement>('.plate img').forEach((img) => {
+        if (img.complete) {
+          ScrollTrigger.sort();
+          ScrollTrigger.refresh();
+        } else {
+          img.addEventListener('load', () => {
+            ScrollTrigger.sort();
+            ScrollTrigger.refresh();
+          }, { once: true });
+        }
+      });
       if (document.fonts?.ready)
-        document.fonts.ready.then(() => ScrollTrigger.refresh());
+        document.fonts.ready.then(() => {
+          ScrollTrigger.sort();
+          ScrollTrigger.refresh();
+        });
       let rzT: ReturnType<typeof setTimeout>;
       window.addEventListener('resize', () => {
         clearTimeout(rzT);
@@ -1291,6 +1333,12 @@ void main(){
       function openLB(i: number) {
         li = i;
         const f = F[i];
+        trackEvent('image_viewed', {
+          title: f.t,
+          location: f.l,
+          altitude: f.alt,
+          index: i,
+        });
         const thumb = document.querySelector<HTMLImageElement>(
           `.shot[data-i="${i}"] img`
         );

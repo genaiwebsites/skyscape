@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import AmbientSoundtrack from './AmbientSoundtrack';
+import { trackEvent } from '@/lib/analytics';
 
 export default function HeaderNav() {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,10 +17,28 @@ export default function HeaderNav() {
 
   const closeMenu = () => setIsOpen(false);
 
+  const handleNavClick = (section: string, placement: 'desktop_nav' | 'mobile_nav') => {
+    trackEvent('navigation_clicked', { section, placement });
+    if (placement === 'mobile_nav') closeMenu();
+  };
+
+  const handleInstaClick = (placement: 'desktop_nav' | 'mobile_nav') => {
+    trackEvent('contact_initiated', { channel: 'instagram', placement });
+    if (placement === 'mobile_nav') closeMenu();
+  };
+
   return (
     <>
       <header className={`head ${scrolled ? 'scrolled' : ''}`} id="head">
-        <a className="brand" href="#top" onClick={closeMenu} aria-label="Skyscape Photography Home">
+        <a
+          className="brand"
+          href="#top"
+          onClick={() => {
+            trackEvent('navigation_clicked', { section: 'top', placement: 'desktop_nav' });
+            closeMenu();
+          }}
+          aria-label="Skyscape Photography Home"
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/skyscape-aerial-photography-logo-white.png"
@@ -33,16 +52,16 @@ export default function HeaderNav() {
 
         {/* Desktop Primary Navigation */}
         <nav className="nav" aria-label="Primary">
-          <a href="#about">
+          <a href="#about" onClick={() => handleNavClick('about', 'desktop_nav')}>
             <span className="roll"><i>Pilot</i><i aria-hidden="true">Pilot</i></span>
           </a>
-          <a href="#descent">
+          <a href="#descent" onClick={() => handleNavClick('descent', 'desktop_nav')}>
             <span className="roll"><i>Descent</i><i aria-hidden="true">Descent</i></span>
           </a>
-          <a href="#work">
+          <a href="#work" onClick={() => handleNavClick('work', 'desktop_nav')}>
             <span className="roll"><i>Work</i><i aria-hidden="true">Work</i></span>
           </a>
-          <a href="#contact">
+          <a href="#contact" onClick={() => handleNavClick('contact', 'desktop_nav')}>
             <span className="roll"><i>Contact</i><i aria-hidden="true">Contact</i></span>
           </a>
         </nav>
@@ -58,6 +77,7 @@ export default function HeaderNav() {
             className="insta-link-btn"
             aria-label="Skyscape Photography Instagram Profile"
             title="Follow @skyscape_photography on Instagram"
+            onClick={() => handleInstaClick('desktop_nav')}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
@@ -100,19 +120,19 @@ export default function HeaderNav() {
 
         <div className="mobile-menu-content">
           <nav className="mobile-menu-nav">
-            <a href="#about" onClick={closeMenu}>
+            <a href="#about" onClick={() => handleNavClick('about', 'mobile_nav')}>
               <small>01</small>
               <span>PILOT &amp; ABOUT</span>
             </a>
-            <a href="#descent" onClick={closeMenu}>
+            <a href="#descent" onClick={() => handleNavClick('descent', 'mobile_nav')}>
               <small>02</small>
               <span>FLIGHT DESCENT</span>
             </a>
-            <a href="#work" onClick={closeMenu}>
+            <a href="#work" onClick={() => handleNavClick('work', 'mobile_nav')}>
               <small>03</small>
               <span>FEATURED WORK</span>
             </a>
-            <a href="#contact" onClick={closeMenu}>
+            <a href="#contact" onClick={() => handleNavClick('contact', 'mobile_nav')}>
               <small>04</small>
               <span>CONTACT &amp; TOUCHDOWN</span>
             </a>
@@ -124,7 +144,7 @@ export default function HeaderNav() {
               target="_blank"
               rel="noopener noreferrer"
               className="mobile-insta-link"
-              onClick={closeMenu}
+              onClick={() => handleInstaClick('mobile_nav')}
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />

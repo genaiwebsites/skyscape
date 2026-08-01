@@ -2006,47 +2006,146 @@ main{position:relative;z-index:1}
 .contact-pilot-card {
   grid-column: 9 / span 4;
   align-self: flex-start;
+  height: fit-content;
 }
 .contact-pilot-frame {
   position: relative;
   overflow: hidden;
-  border-radius: 8px;
-  border: 1px solid rgba(124, 167, 194, 0.28);
-  box-shadow: 0 24px 60px rgba(5, 8, 13, 0.9), 0 0 35px rgba(124, 167, 194, 0.1);
+  border-radius: 12px;
+  border: 1px solid rgba(124, 167, 194, 0.32);
+  box-shadow: 0 28px 75px rgba(5, 8, 13, 0.92), 0 0 40px rgba(124, 167, 194, 0.12);
   background: var(--ink-2);
-  transition: all 0.5s var(--ease);
-  display: flex;
-  flex-direction: column;
+  transition: border-color 0.5s var(--ease), box-shadow 0.5s var(--ease);
+  height: fit-content;
 }
 .contact-pilot-frame:hover {
-  border-color: rgba(124, 167, 194, 0.55);
-  box-shadow: 0 28px 70px rgba(5, 8, 13, 0.95), 0 0 45px rgba(124, 167, 194, 0.2);
+  border-color: rgba(124, 167, 194, 0.65);
+  box-shadow: 0 32px 85px rgba(5, 8, 13, 0.98), 0 0 55px rgba(124, 167, 194, 0.22);
+}
+.contact-pilot-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
 }
 .contact-pilot-frame img {
-  aspect-ratio: 4 / 5;
   width: 100%;
-  height: 100%;
+  height: 128%; /* Extra height allows smooth vertical GSAP scroll parallax scrub */
   object-fit: cover;
   object-position: center 25%;
-  filter: saturate(0.95) contrast(1.05);
-  transform: scale(1.0);
-  transition: transform 0.8s var(--ease), filter 0.8s var(--ease);
+  filter: saturate(0.96) contrast(1.06);
+  animation: pilotAutoZoom 16s ease-in-out infinite alternate;
+  transition: filter 0.8s var(--ease);
   will-change: transform;
   display: block;
+  margin-top: -14%;
 }
+
+@keyframes pilotAutoZoom {
+  0% {
+    scale: 1.05;
+  }
+  50% {
+    scale: 1.20;
+  }
+  100% {
+    scale: 1.08;
+  }
+}
+
 .contact-pilot-frame:hover img {
-  transform: scale(1.02);
-  filter: saturate(1.05) contrast(1.08);
+  filter: saturate(1.08) contrast(1.10);
 }
+
+/* Tactical Pilot HUD Crosshair Overlay */
+.pilot-hud-crosshair {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+.ch-center-target {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.65;
+  transition: opacity 0.5s ease;
+}
+.contact-pilot-frame:hover .ch-center-target {
+  opacity: 1;
+}
+.ch-ring {
+  width: 32px;
+  height: 32px;
+  border: 1px dashed rgba(238, 243, 247, 0.55);
+  border-radius: 50%;
+  animation: chSpin 22s linear infinite;
+}
+@keyframes chSpin {
+  100% { transform: rotate(360deg); }
+}
+.ch-dot {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: var(--amber);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--amber);
+}
+.ch-telemetry {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 0.16em;
+  color: var(--dim);
+  z-index: 4;
+}
+.ch-rec {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #ff4d4d;
+  font-weight: 600;
+  background: rgba(10, 16, 24, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 77, 77, 0.3);
+  padding: 3px 7px;
+  border-radius: 3px;
+}
+.ch-rec i {
+  width: 6px;
+  height: 6px;
+  background: #ff4d4d;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #ff4d4d;
+  animation: recBlink 1.2s ease-in-out infinite alternate;
+}
+@keyframes recBlink {
+  0% { opacity: 0.2; }
+  100% { opacity: 1; }
+}
+
 .contact-pilot-caption {
   position: absolute;
   bottom: 0;
   inset-x: 0;
-  padding: 20px 16px 16px;
-  background: linear-gradient(to top, rgba(5, 8, 13, 0.92) 0%, rgba(5, 8, 13, 0.5) 60%, transparent 100%);
+  padding: 24px 18px 18px;
+  background: linear-gradient(to top, rgba(5, 8, 13, 0.94) 0%, rgba(5, 8, 13, 0.5) 60%, transparent 100%);
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   z-index: 2;
 }
 .contact-pilot-caption b {

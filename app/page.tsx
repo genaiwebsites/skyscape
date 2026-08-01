@@ -507,13 +507,24 @@ export default function Home() {
                 <div className="reticle tr"><i></i><i></i></div>
                 <div className="reticle bl"><i></i><i></i></div>
                 <div className="reticle br"><i></i><i></i></div>
+                <div className="pilot-hud-crosshair" aria-hidden="true">
+                  <div className="ch-center-target">
+                    <span className="ch-ring" />
+                    <span className="ch-dot" />
+                  </div>
+                  <div className="ch-telemetry">
+                    <span className="ch-rec"><i />REC</span>
+                  </div>
+                </div>
                 <span className="p-badge">UAS PILOT · IN FIELD</span>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/images/skyscape-drone-pilot-profile.jpg"
-                  alt="Kshitiz Bathwal · Aerial Landscape Photographer overlooking mountain ridge"
-                  loading="lazy"
-                />
+                <div className="contact-pilot-img-wrap">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/images/skyscape-drone-pilot-profile.jpg"
+                    alt="Kshitiz Bathwal · Aerial Landscape Photographer overlooking ocean ridge"
+                    loading="lazy"
+                  />
+                </div>
                 <div className="contact-pilot-caption">
                   <b>KSHITIZ BATHWAL</b>
                   <small>FOUNDER &amp; LEAD UAS CINEMATOGRAPHER</small>

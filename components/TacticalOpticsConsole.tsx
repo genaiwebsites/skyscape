@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { trackEvent } from '@/lib/analytics';
 
 export default function TacticalOpticsConsole() {
-  const [mode, setMode] = useState<number>(0); // 0: RGB, 1: FLIR
+  const [mode, setMode] = useState<number>(0); // 0: RGB, 1: FLIR, 2: NEGATIVE
 
   const changeOptics = (newMode: number, modeName: string) => {
     setMode(newMode);
@@ -32,6 +32,14 @@ export default function TacticalOpticsConsole() {
           title="FLIR Thermal Infrared Heatmap"
         >
           <span className="flir-dot" /> FLIR
+        </button>
+        <button
+          type="button"
+          className={`optics-btn ${mode === 2 ? 'active negative' : ''}`}
+          onClick={() => changeOptics(2, 'NEGATIVE')}
+          title="B&W Inverse Infrared Reconnaissance"
+        >
+          NEG IR
         </button>
       </div>
     </div>

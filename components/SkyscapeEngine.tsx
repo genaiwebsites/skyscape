@@ -304,6 +304,15 @@ vec3 applyFLIR(vec3 color) {
   return therm;
 }
 
+// B&W Inverse Infrared Reconnaissance Shader (Black Hot Tactical Optics)
+vec3 applyBWNegative(vec3 color) {
+  float lum = dot(color, vec3(0.299, 0.587, 0.114));
+  float negLum = smoothstep(0.04, 0.96, 1.0 - lum);
+  vec3 darkMetal = vec3(0.04, 0.06, 0.09);
+  vec3 brightSilver = vec3(0.92, 0.95, 0.98);
+  return mix(darkMetal, brightSilver, negLum);
+}
+
 void main(){
   float d = uDescent;
   vec2 uv = vUv;
@@ -359,10 +368,16 @@ void main(){
   col *= 1.0 - edge * 0.14;
   col *= smoothstep(0.0, 0.4, uReveal + (1.0 - abs(vUv.y - 0.5) * 1.5));
 
-  // Apply Tactical FLIR Thermal Heatmap Mode
+  // Apply Tactical Optics Modes (RGB -> FLIR -> NEGATIVE IR)
   if (uOpticsMode > 0.01) {
     vec3 flirCol = applyFLIR(col);
-    col = mix(col, flirCol, clamp(uOpticsMode, 0.0, 1.0));
+    vec3 negCol = applyBWNegative(col);
+    if (uOpticsMode <= 1.0) {
+      col = mix(col, flirCol, uOpticsMode);
+    } else {
+      float negW = clamp(uOpticsMode - 1.0, 0.0, 1.0);
+      col = mix(flirCol, negCol, negW);
+    }
   }
 
   gl_FragColor = vec4(col, 1.0);

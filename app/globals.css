@@ -982,9 +982,11 @@ main{position:relative;z-index:1}
   box-shadow: 0 0 6px #f59e0b;
   animation: flirPulse 1s infinite alternate ease-in-out;
 }
-@keyframes flirPulse {
-  0% { opacity: 0.4; transform: scale(0.8); }
-  100% { opacity: 1; transform: scale(1.2); }
+.optics-btn.active.negative {
+  background: rgba(226, 232, 240, 0.2);
+  border-color: rgba(226, 232, 240, 0.6);
+  color: #f1f5f9;
+  box-shadow: 0 0 12px rgba(226, 232, 240, 0.35);
 }
 
 

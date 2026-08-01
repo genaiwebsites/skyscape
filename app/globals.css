@@ -2005,7 +2005,7 @@ main{position:relative;z-index:1}
 /* Contact Section Pilot Profile Card (Right Column) */
 .contact-pilot-card {
   grid-column: 9 / span 4;
-  align-self: center;
+  align-self: flex-start;
 }
 .contact-pilot-frame {
   position: relative;
@@ -2015,6 +2015,8 @@ main{position:relative;z-index:1}
   box-shadow: 0 24px 60px rgba(5, 8, 13, 0.9), 0 0 35px rgba(124, 167, 194, 0.1);
   background: var(--ink-2);
   transition: all 0.5s var(--ease);
+  display: flex;
+  flex-direction: column;
 }
 .contact-pilot-frame:hover {
   border-color: rgba(124, 167, 194, 0.55);
@@ -2023,12 +2025,14 @@ main{position:relative;z-index:1}
 .contact-pilot-frame img {
   aspect-ratio: 4 / 5;
   width: 100%;
+  height: 100%;
   object-fit: cover;
   object-position: center 25%;
   filter: saturate(0.95) contrast(1.05);
   transform: scale(1.0);
   transition: transform 0.8s var(--ease), filter 0.8s var(--ease);
   will-change: transform;
+  display: block;
 }
 .contact-pilot-frame:hover img {
   transform: scale(1.02);

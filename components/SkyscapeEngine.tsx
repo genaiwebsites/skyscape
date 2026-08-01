@@ -270,12 +270,12 @@ vec2 cover(vec2 uv, vec2 img){
   float ri = res.x / res.y;
   vec2 r = vec2(min(rs / ri, 1.0), min(ri / rs, 1.0));
   vec2 st = uv * r + (1.0 - r) * 0.5;
-  return clamp(st, 0.001, 0.999);
+  return clamp(st, 0.005, 0.995);
 }
 vec3 samp(sampler2D t, vec2 uv, float ab){
-  vec2 stR = clamp(uv + vec2(ab, 0.0), vec2(0.001), vec2(0.999));
-  vec2 stG = clamp(uv, vec2(0.001), vec2(0.999));
-  vec2 stB = clamp(uv - vec2(ab, 0.0), vec2(0.001), vec2(0.999));
+  vec2 stR = clamp(uv + vec2(ab, 0.0), vec2(0.005), vec2(0.995));
+  vec2 stG = clamp(uv, vec2(0.005), vec2(0.995));
+  vec2 stB = clamp(uv - vec2(ab, 0.0), vec2(0.005), vec2(0.995));
   return vec3(texture2D(t, stR).r, texture2D(t, stG).g, texture2D(t, stB).b);
 }
 
@@ -287,8 +287,8 @@ void main(){
   vec2 shake = vec2(noise(vec2(uTime*4.2, 1.0)), noise(vec2(2.5, uTime*3.8))) - 0.5;
   uv += shake * (0.0004 + abs(uVel)*0.0015);
 
-  // Flight altitude zoom — keep zoom strictly at 1.00 so landscape photos are never cropped
-  float zoom = 1.00;
+  // Safe 1.025 edge margin buffer prevents boundary texture sampling line glitches on screen edges
+  float zoom = 1.025;
   vec2 g = (uv - 0.5) / zoom + 0.5;
   g += uMouse * vec2(0.012, 0.010) * (1.0 + d * 0.3);
 
@@ -297,7 +297,7 @@ void main(){
   g += (vec2(mist) - 0.5) * (0.0015 + abs(uVel) * 0.004);
 
   // Clamp g safely before cover aspect ratio transformation
-  g = clamp(g, vec2(0.001), vec2(0.999));
+  g = clamp(g, vec2(0.005), vec2(0.995));
 
   float m = clamp(uMix, 0.0, 4.0);
 

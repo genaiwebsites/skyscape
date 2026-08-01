@@ -185,6 +185,7 @@ export default function Home() {
             <div className="pre-status-box">
               <div className="pre-status-badge">
                 <span className="status-pulse" />
+                <span className="pre-status-sys">SYS //</span>
                 <span className="pre-status" id="preStatus">MOTORS ARMED</span>
               </div>
             </div>

@@ -287,8 +287,8 @@ void main(){
   vec2 shake = vec2(noise(vec2(uTime*4.2, 1.0)), noise(vec2(2.5, uTime*3.8))) - 0.5;
   uv += shake * (0.0004 + abs(uVel)*0.0015);
 
-  // Safe 1.025 edge margin buffer prevents boundary texture sampling line glitches on screen edges
-  float zoom = 1.025;
+  // Default uncompressed aspect ratio zoom — 1.00 fits full landscape photograph without cropping
+  float zoom = 1.00;
   vec2 g = (uv - 0.5) / zoom + 0.5;
   g += uMouse * vec2(0.012, 0.010) * (1.0 + d * 0.3);
 
@@ -297,33 +297,9 @@ void main(){
   g += (vec2(mist) - 0.5) * (0.0015 + abs(uVel) * 0.004);
 
   // Clamp g safely before cover aspect ratio transformation
-  g = clamp(g, vec2(0.005), vec2(0.995));
+  g = clamp(g, vec2(0.001), vec2(0.999));
 
   float m = clamp(uMix, 0.0, 4.0);
-
-  // Hydro-dynamic oceanic surge refraction for Image E (Angel's Billabong Precipice)
-  float surgeMix = smoothstep(2.8, 4.0, m);
-  if (surgeMix > 0.01) {
-    // Sample texture E to isolate ocean water and wave foam from solid rock cliff
-    vec3 eRaw = texture2D(uE, cover(g, uResE)).rgb;
-    float lum = dot(eRaw, vec3(0.299, 0.587, 0.114));
-
-    // Blue/cyan water saturation (water has higher blue & green than red)
-    float blueWater = smoothstep(0.01, 0.06, eRaw.b - eRaw.r) * smoothstep(-0.02, 0.05, eRaw.g - eRaw.r);
-
-    // Cool white foam (high luminance with low warm color delta)
-    float coolFoam = smoothstep(0.64, 0.88, lum) * (1.0 - smoothstep(0.06, 0.20, eRaw.r - eRaw.b));
-
-    // Suppress warm brown/tan rock tones (where red component exceeds blue)
-    float rockFactor = smoothstep(0.01, 0.08, eRaw.r - eRaw.b);
-
-    float waterMask = clamp((blueWater + coolFoam * 0.85) * (1.0 - rockFactor * 0.95), 0.0, 1.0);
-
-    float waveX = sin(g.y * 24.0 + uTime * 1.8) * cos(g.x * 18.0 + uTime * 1.4);
-    float waveY = cos(g.y * 20.0 - uTime * 1.5) * sin(g.x * 22.0 + uTime * 1.2);
-    g += vec2(waveX, waveY) * 0.0038 * surgeMix * waterMask;
-    g = clamp(g, vec2(0.001), vec2(0.999));
-  }
 
   float edge = smoothstep(0.35, 1.0, distance(vUv, vec2(0.5)));
   float ab = (0.0006 + abs(uVel) * 0.004) * edge;
@@ -344,7 +320,8 @@ void main(){
     col = mix(C, D, smoothstep(2.0, 3.0, m));
   } else {
     vec3 D = samp(uD, cover(g, uResD), ab);
-    vec3 E = samp(uE, cover(g, uResE), ab);
+    vec2 gE = (g - 0.5) * 0.84 + 0.5;
+    vec3 E = samp(uE, cover(gE, uResE), ab);
     col = mix(D, E, smoothstep(3.0, 4.0, m));
   }
 
@@ -720,10 +697,10 @@ void main(){
           scrollTrigger: {
             trigger: heroEl,
             start: 'top top',
-            end: MOBILE ? '+=240%' : '+=340%',
+            end: MOBILE ? '+=220%' : '+=290%',
             pin: true,
             pinSpacing: true,
-            scrub: 0.8,
+            scrub: 0.4,
             invalidateOnRefresh: true,
           },
         });
@@ -758,25 +735,24 @@ void main(){
           // Beat 4 (88 m AGL): Angel's Billabong Tidal Pool Precipice
           heroTl
             .to(GL, { mix: 4.0, duration: 0.85, ease: 'power1.inOut' }, 2.65)
-            .to('#glc', { scale: 1.08, duration: 0.9, ease: 'power2.inOut' }, 2.7)
             .to(beat4, { autoAlpha: 1, y: 0, duration: 0.34, ease: 'power2.out' }, 2.8)
             .to(beat4, { autoAlpha: 0, y: -26, duration: 0.3, ease: 'power2.in' }, 3.35);
         }
 
-        heroTl.to('.h-corner, .hud', { autoAlpha: 0, duration: 0.3 }, 3.3);
+        heroTl.to('.h-corner, .hud', { autoAlpha: 0, duration: 0.3 }, 3.2);
 
-        // Smooth Parallax Glide & 3D Depth Zoom of Hero WebGL Canvas into About section while retaining active liquid shader effects
+        // Smooth Parallax Glide of Hero WebGL Canvas as user scrolls into About section
         const glc = document.getElementById('glc');
         if (glc) {
           gsap.to(glc, {
-            yPercent: 24,
-            scale: 1.12,
+            yPercent: 20,
             ease: 'none',
             scrollTrigger: {
               trigger: '#about',
-              start: 'top bottom',
+              start: 'top 95%',
               end: 'bottom top',
-              scrub: 0.4,
+              scrub: 0.5,
+              invalidateOnRefresh: true,
             },
           });
         }

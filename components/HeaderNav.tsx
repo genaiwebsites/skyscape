@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import AmbientSoundtrack from './AmbientSoundtrack';
+import TacticalOpticsConsole from './TacticalOpticsConsole';
 import { trackEvent } from '@/lib/analytics';
 
 export default function HeaderNav() {
@@ -66,8 +67,9 @@ export default function HeaderNav() {
           </a>
         </nav>
 
-        {/* Ambient Audio Soundtrack Controller, Instagram & Mobile Hamburger */}
+        {/* Tactical Viewfinder Optics Console, Ambient Audio Soundtrack Controller, Instagram & Mobile Hamburger */}
         <div className="header-actions">
+          <TacticalOpticsConsole />
           <AmbientSoundtrack />
 
           <a

@@ -199,7 +199,7 @@ export default function SkyscapeEngine() {
     }
 
     // 5. Original WebGL Shader
-    const GL = { descent: 0, mix: 0, vel: 0, reveal: 1 };
+    const GL = { descent: 0, mix: 0, vel: 0, reveal: 1, opticsMode: 0, targetOpticsMode: 0 };
 
     // Interactive Alt Drone Icon Click Handler
     const altDrone = document.getElementById('altDrone');
@@ -252,7 +252,7 @@ precision mediump float;
 varying vec2 vUv;
 uniform sampler2D uA, uB, uC, uD, uE;
 uniform vec2 uRes, uResA, uResB, uResC, uResD, uResE, uMouse;
-uniform float uTime, uDescent, uMix, uVel, uReveal;
+uniform float uTime, uDescent, uMix, uVel, uReveal, uOpticsMode;
 
 float hash(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
 float noise(vec2 p){
@@ -277,6 +277,31 @@ vec3 samp(sampler2D t, vec2 uv, float ab){
   vec2 stG = clamp(uv, vec2(0.005), vec2(0.995));
   vec2 stB = clamp(uv - vec2(ab, 0.0), vec2(0.005), vec2(0.995));
   return vec3(texture2D(t, stR).r, texture2D(t, stG).g, texture2D(t, stB).b);
+}
+
+// Military-Grade FLIR Thermal Infrared Heatmap Shader
+vec3 applyFLIR(vec3 color) {
+  float lum = dot(color, vec3(0.299, 0.587, 0.114));
+  vec3 navy = vec3(0.02, 0.05, 0.18);
+  vec3 indigo = vec3(0.22, 0.04, 0.45);
+  vec3 magenta = vec3(0.75, 0.10, 0.52);
+  vec3 amber = vec3(0.96, 0.50, 0.06);
+  vec3 yellow = vec3(0.98, 0.94, 0.35);
+  vec3 white = vec3(1.0, 1.0, 0.95);
+
+  vec3 therm;
+  if (lum < 0.20) {
+    therm = mix(navy, indigo, lum * 5.0);
+  } else if (lum < 0.40) {
+    therm = mix(indigo, magenta, (lum - 0.20) * 5.0);
+  } else if (lum < 0.65) {
+    therm = mix(magenta, amber, (lum - 0.40) * 4.0);
+  } else if (lum < 0.85) {
+    therm = mix(amber, yellow, (lum - 0.65) * 5.0);
+  } else {
+    therm = mix(yellow, white, (lum - 0.85) * 6.66);
+  }
+  return therm;
 }
 
 void main(){
@@ -333,6 +358,13 @@ void main(){
 
   col *= 1.0 - edge * 0.14;
   col *= smoothstep(0.0, 0.4, uReveal + (1.0 - abs(vUv.y - 0.5) * 1.5));
+
+  // Apply Tactical FLIR Thermal Heatmap Mode
+  if (uOpticsMode > 0.01) {
+    vec3 flirCol = applyFLIR(col);
+    col = mix(col, flirCol, clamp(uOpticsMode, 0.0, 1.0));
+  }
+
   gl_FragColor = vec4(col, 1.0);
 }`;
 
@@ -380,6 +412,7 @@ void main(){
               uMix: u('uMix'),
               uVel: u('uVel'),
               uReveal: u('uReveal'),
+              uOpticsMode: u('uOpticsMode'),
             };
             gl.uniform1i(u('uA'), 0);
             gl.uniform1i(u('uB'), 1);
@@ -497,6 +530,14 @@ void main(){
               mx = (e.clientX / innerWidth - 0.5) * 2;
               my = (e.clientY / innerHeight - 0.5) * 2;
             };
+            const onOpticsChange = (e: Event) => {
+              const customEv = e as CustomEvent<{ mode: number }>;
+              if (typeof customEv.detail?.mode === 'number') {
+                GL.targetOpticsMode = customEv.detail.mode;
+              }
+            };
+            window.addEventListener('skyscape:optics', onOpticsChange);
+
             if (FINE)
               window.addEventListener('mousemove', onMouseMove, {
                 passive: true,
@@ -508,12 +549,15 @@ void main(){
               if (!glReady || !onScreen || document.hidden) return;
               cx += (mx - cx) * 0.05;
               cy += (my - cy) * 0.05;
+              GL.opticsMode += (GL.targetOpticsMode - GL.opticsMode) * 0.08;
+
               gl!.uniform1f(U_.uTime, (t - t0) / 1000);
               gl!.uniform2f(U_.uMouse, cx, cy);
               gl!.uniform1f(U_.uDescent, GL.descent);
               gl!.uniform1f(U_.uMix, GL.mix);
               gl!.uniform1f(U_.uVel, GL.vel);
               gl!.uniform1f(U_.uReveal, GL.reveal);
+              gl!.uniform1f(U_.uOpticsMode, GL.opticsMode);
               gl!.drawArrays(gl!.TRIANGLES, 0, 3);
             })(t0);
 
@@ -521,6 +565,7 @@ void main(){
                 cancelAnimationFrame(animId);
                 window.removeEventListener('resize', onResize);
                 if (FINE) window.removeEventListener('mousemove', onMouseMove);
+                window.removeEventListener('skyscape:optics', onOpticsChange);
                 if (obs) obs.disconnect();
               };
             }

@@ -23,7 +23,10 @@ export type AnalyticsEventMap = {
     mode: 'carousel' | 'bento';
   };
 
-  // Audio / Ambience controller
+  // Audio / Ambience & Optics controllers
+  optics_mode_changed: {
+    mode: string;
+  };
   audio_toggled: {
     action: 'play' | 'mute';
   };

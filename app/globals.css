@@ -915,6 +915,84 @@ main{position:relative;z-index:1}
   .mobile-menu-btn { display: flex !important; }
 }
 
+/* Tactical Optics Viewfinder Console Widget */
+.optics-hud-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(10, 16, 24, 0.82);
+  border: 1px solid rgba(124, 167, 194, 0.25);
+  padding: 3px 8px;
+  border-radius: 20px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  user-select: none;
+  box-shadow: 0 4px 16px rgba(5, 8, 13, 0.6);
+}
+.optics-hud-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--dim);
+  padding-left: 4px;
+}
+.optics-hud-btn-group {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.optics-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--fog);
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  padding: 3px 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.optics-btn:hover {
+  color: var(--white);
+  background: rgba(124, 167, 194, 0.15);
+}
+.optics-btn.active.rgb {
+  background: rgba(124, 167, 194, 0.22);
+  border-color: rgba(124, 167, 194, 0.5);
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(124, 167, 194, 0.3);
+}
+.optics-btn.active.flir {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: rgba(245, 158, 11, 0.6);
+  color: #f59e0b;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.35);
+}
+.flir-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #f59e0b;
+  box-shadow: 0 0 6px #f59e0b;
+  animation: flirPulse 1s infinite alternate ease-in-out;
+}
+@keyframes flirPulse {
+  0% { opacity: 0.4; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1.2); }
+}
+
+
+@media (max-width: 768px) {
+  .optics-hud-label { display: none; }
+  .optics-btn { padding: 3px 6px; font-size: 8.5px; }
+}
+
 /* Ambient Audio Controller Widget */
 .audio-ctrl{display:flex;align-items:center;margin-left:clamp(10px,1.6vw,20px)}
 .audio-btn{

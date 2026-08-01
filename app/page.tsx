@@ -517,14 +517,12 @@ export default function Home() {
                   </div>
                 </div>
                 <span className="p-badge">UAS PILOT · IN FIELD</span>
-                <div className="contact-pilot-img-wrap">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/images/skyscape-drone-pilot-profile.jpg"
-                    alt="Kshitiz Bathwal · Aerial Landscape Photographer overlooking ocean ridge"
-                    loading="lazy"
-                  />
-                </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/skyscape-drone-pilot-profile.jpg"
+                  alt="Kshitiz Bathwal · Aerial Landscape Photographer overlooking ocean ridge"
+                  loading="lazy"
+                />
                 <div className="contact-pilot-caption">
                   <b>KSHITIZ BATHWAL</b>
                   <small>FOUNDER &amp; LEAD UAS CINEMATOGRAPHER</small>

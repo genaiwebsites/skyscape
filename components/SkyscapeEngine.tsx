@@ -884,9 +884,9 @@ void main(){
       gsap.utils.toArray<HTMLElement>('.p-frame img, .contact-pilot-frame img').forEach((img) => {
         gsap.fromTo(
           img,
-          { yPercent: -14 },
+          { yPercent: -10 },
           {
-            yPercent: 14,
+            yPercent: 10,
             ease: 'none',
             scrollTrigger: {
               trigger: img.closest('.p-frame, .contact-pilot-frame'),

@@ -9,7 +9,7 @@ export interface GalleryFrame {
 
 export const F: GalleryFrame[] = [
   { t: 'Azure Sea Arch', l: 'Nusa Penida, Bali', img: '/images/nusa-penida-coastal-arch-skyscape.jpg', alt: 184, gps: '8.74° S · 115.46° E', cls: 's-a' },
-  { t: 'Coastal Highway Ribbons', l: 'Western Coast, India', img: '/images/coastal-highway-drone-photography-skyscape.jpg', alt: 142, gps: '14.80° N · 74.12° E', cls: 's-b up' },
+  { t: 'Coastal Highway Ribbons', l: 'Western Coast, India', img: '/images/coastal-highway-drone-photography-skyscape.png', alt: 142, gps: '14.80° N · 74.12° E', cls: 's-b up' },
   { t: 'Misty Valley Topography', l: 'Western Ghats, India', img: '/images/misty-valley-drone-photography-skyscape.jpg', alt: 226, gps: '13.20° N · 75.25° E', cls: 's-c down' },
   { t: 'Granite Sea Cliff Surge', l: 'Malvan, Maharashtra', img: '/images/rocky-sea-cliff-skyscape.jpg', alt: 94, gps: '16.05° N · 73.46° E', cls: 's-d' },
   { t: 'Emerald Coral Reef Lagoon', l: 'Lakshadweep Archipelago', img: '/images/coastal-lagoon-reef-skyscape.jpg', alt: 128, gps: '10.56° N · 72.64° E', cls: 's-b up' },

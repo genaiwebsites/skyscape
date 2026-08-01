@@ -287,9 +287,8 @@ void main(){
   vec2 shake = vec2(noise(vec2(uTime*4.2, 1.0)), noise(vec2(2.5, uTime*3.8))) - 0.5;
   uv += shake * (0.0004 + abs(uVel)*0.0015);
 
-  // Flight altitude zoom — keep zoom strictly >= 1.00 so UVs never expand beyond image frame
-  float phaseZoom = sin(uMix * 3.14159) * 0.04;
-  float zoom = max(1.00, 1.04 + 0.10 * (1.0 - d) + phaseZoom);
+  // Flight altitude zoom — keep zoom strictly at 1.00 so landscape photos are never cropped
+  float zoom = 1.00;
   vec2 g = (uv - 0.5) / zoom + 0.5;
   g += uMouse * vec2(0.012, 0.010) * (1.0 + d * 0.3);
 
@@ -456,7 +455,7 @@ void main(){
               U_.uResA
             );
             texture(
-              '/images/coastal-highway-drone-photography-skyscape.jpg',
+              '/images/coastal-highway-drone-photography-skyscape.png',
               1,
               U_.uResB
             );
@@ -958,7 +957,7 @@ void main(){
         gsap.set(frames.slice(1), { clipPath: 'inset(100% 0% 0% 0%)' });
         const validImgs = frames.map((f) => f.querySelector('img')).filter(Boolean);
         if (validImgs.length) {
-          gsap.set(validImgs, { scale: 1.14 });
+          gsap.set(validImgs, { scale: 1 });
         }
         const firstImg = frames[0]?.querySelector('img');
         if (firstImg) {
@@ -1016,7 +1015,7 @@ void main(){
             )
             .to(
               prevFr.querySelector('img'),
-              { scale: 1.06, duration: seg * 0.9 },
+              { scale: 1, duration: seg * 0.9 },
               at + seg * 0.1
             )
             .to(
@@ -1189,7 +1188,7 @@ void main(){
         const parentPlate = img.closest('.plate') || img.parentElement;
         gsap.fromTo(
           img,
-          { yPercent: -14, scale: 1.08 },
+          { yPercent: -14, scale: 1.0 },
           {
             yPercent: 14,
             scale: 1.0,
@@ -1256,7 +1255,7 @@ void main(){
             ease: 'expo.out',
           });
           gsap.to(s.querySelector<HTMLElement>('img'), {
-            scale: 1.03,
+            scale: 1.02,
             duration: 1.1,
             ease: 'expo.out',
           });
@@ -1268,7 +1267,7 @@ void main(){
             duration: 0.4,
           });
           gsap.to(s.querySelector<HTMLElement>('img'), {
-            scale: 1.16,
+            scale: 1.0,
             duration: 1.1,
             ease: 'expo.out',
           });

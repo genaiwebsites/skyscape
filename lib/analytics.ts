@@ -15,6 +15,13 @@ export type AnalyticsEventMap = {
     index: number;
     title: string;
   };
+  gallery_filter_changed: {
+    category: string;
+    count: number;
+  };
+  gallery_view_mode_changed: {
+    mode: 'carousel' | 'bento';
+  };
 
   // Audio / Ambience controller
   audio_toggled: {

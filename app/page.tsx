@@ -1,6 +1,6 @@
 import { D } from '@/data/descent';
 import { F } from '@/data/gallery';
-import { HeaderNav, SkyscapeEngine } from '@/components/ClientComponents';
+import { HeaderNav, SkyscapeEngine, WorkGallery } from '@/components/ClientComponents';
 import { ContactEmailLink, ContactInstagramLink } from '@/components/ContactLink';
 
 export default function Home() {
@@ -457,60 +457,7 @@ export default function Home() {
         </section>
 
         {/* ── WORK ── */}
-        <div className="shell" id="work" data-alt="130">
-          <div className="wrap g12 work-head">
-            <div className="col-main">
-              <p className="eyebrow" data-anim="fade">Selected work · 2022 - 2026</p>
-              <h2 className="display d2" data-split>
-                Terrain &amp; <em>coastal geometry.</em>
-              </h2>
-            </div>
-            <div className="work-intro" data-anim="fade">
-              Twelve frames captured at varying altitudes. Each photograph is documented with precise flight altitude and GPS telemetry.
-              <span className="m">30 - 299 m AGL · DJI Air 2S · 1&quot; CMOS</span>
-            </div>
-          </div>
-        </div>
-
-        <section className="hgal" aria-label="Photograph gallery">
-          <div className="htrack" id="htrack">
-            {F.map((f, i) => (
-              <button
-                key={i}
-                className={`shot ${f.cls}`}
-                data-i={i}
-                aria-label={`View ${f.t}, ${f.l}`}
-              >
-                <div className="frame">
-                  <img
-                    src={f.img}
-                    alt={`${f.t} | aerial photograph, ${f.l}`}
-                    loading="lazy"
-                  />
-                  <div className="reticle" aria-hidden="true">
-                    <i /><i /><i /><i />
-                  </div>
-                </div>
-                <div className="cap">
-                  <div>
-                    <div className="cap-t">{f.t}</div>
-                    <div className="cap-l">{f.l}</div>
-                  </div>
-                  <div className="tele">
-                    ALT <b>{f.alt} M</b>
-                    <br />
-                    {f.gps}
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
-          <div className="hgal-idx" aria-hidden="true">
-            <span id="hIdx">01 / 12</span>
-            <span className="bar"><i id="hBar" /></span>
-          </div>
-          <div className="hgal-hint" aria-hidden="true">Scroll to pan →</div>
-        </section>
+        <WorkGallery />
 
         {/* ── PLATE ── */}
         <section className="plate" data-alt="85" aria-label="Featured frame">

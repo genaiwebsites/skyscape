@@ -12,3 +12,7 @@ export const AmbientSoundtrack = dynamic(() => import('./AmbientSoundtrack'), {
 export const HeaderNav = dynamic(() => import('./HeaderNav'), {
   ssr: false,
 });
+
+export const WorkGallery = dynamic(() => import('./WorkGallery'), {
+  ssr: false,
+});

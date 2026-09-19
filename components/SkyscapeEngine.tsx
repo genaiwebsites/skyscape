@@ -476,27 +476,27 @@ void main(){
               im.src = src;
             }
             texture(
-              '/mauritius-coastal-drone-photography-skyscape.jpg',
+              '/images/hero/mauritius-coastal-drone-photography-skyscape.jpg',
               0,
               U_.uResA
             );
             texture(
-              '/images/coastal-highway-drone-photography-skyscape.png',
+              '/images/hero/coastal-highway-drone-photography-skyscape.png',
               1,
               U_.uResB
             );
             texture(
-              '/images/ijen-crater-volcano-aerial-skyscape.png',
+              '/images/hero/ijen-crater-volcano-aerial-skyscape.png',
               2,
               U_.uResC
             );
             texture(
-              '/images/manipal-end-point-aerial-skyscape.png',
+              '/images/hero/manipal-end-point-aerial-skyscape.png',
               3,
               U_.uResD
             );
             texture(
-              '/images/angels-billabong-nusa-penida-skyscape.png',
+              '/images/hero/angels-billabong-nusa-penida-skyscape.png',
               4,
               U_.uResE
             );
@@ -600,6 +600,11 @@ void main(){
         wheelMultiplier: 1.0,
         touchMultiplier: 1.5,
       });
+
+      if (typeof window !== 'undefined') {
+        (window as unknown as { __lenis?: Lenis; lenis?: Lenis }).__lenis = lenis;
+        (window as unknown as { __lenis?: Lenis; lenis?: Lenis }).lenis = lenis;
+      }
 
       lenis.on('scroll', () => {
         ScrollTrigger.update();
@@ -1226,7 +1231,7 @@ void main(){
     const sats = document.getElementById('preSats')!;
     const curtain = document.getElementById('curtain')!;
     const urls = [
-      '/mauritius-coastal-drone-photography-skyscape.jpg',
+      '/images/hero/mauritius-coastal-drone-photography-skyscape.jpg',
       '/birds.svg',
     ];
     let done = 0,
@@ -1333,7 +1338,13 @@ void main(){
       document.removeEventListener('contextmenu', handleContextMenu, { capture: true });
       document.removeEventListener('dragstart', handleDragStart, { capture: true });
       window.removeEventListener('keydown', handleKeyDown, { capture: true });
-      if (lenis) lenis.destroy();
+      if (lenis) {
+        lenis.destroy();
+        if (typeof window !== 'undefined') {
+          delete (window as unknown as { __lenis?: Lenis; lenis?: Lenis }).__lenis;
+          delete (window as unknown as { __lenis?: Lenis; lenis?: Lenis }).lenis;
+        }
+      }
       ScrollTrigger.getAll().forEach((t) => t.kill());
     };
   }, []);

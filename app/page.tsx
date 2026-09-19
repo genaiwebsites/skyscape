@@ -240,7 +240,7 @@ export default function Home() {
           <img
             className="hero-fallback"
             id="heroFallback"
-            src="/mauritius-coastal-drone-photography-skyscape.jpg"
+            src="/images/hero/mauritius-coastal-drone-photography-skyscape.jpg"
             alt="Aerial view of Macondé Peak hairpin ridge and turquoise lagoon in Mauritius"
             fetchPriority="high"
           />

@@ -103,7 +103,14 @@ export default function HeaderNav() {
       </header>
 
       {/* Mobile Glassmorphic Navigation Overlay */}
-      <div className={`mobile-menu-overlay ${isOpen ? 'open' : ''}`}>
+      <div
+        className={`mobile-menu-overlay ${isOpen ? 'open' : ''}`}
+        aria-hidden={!isOpen}
+        style={{
+          pointerEvents: isOpen ? 'auto' : 'none',
+          visibility: isOpen ? 'visible' : 'hidden',
+        }}
+      >
         <div className="mobile-menu-top-bar">
           <span className="mobile-menu-title">NAVIGATION</span>
           <button

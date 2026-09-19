@@ -1,42 +1,124 @@
 'use client';
 
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CATEGORIES, F, GalleryCategory, GalleryFrame } from '@/data/gallery';
+import { CATEGORIES, F, GalleryCategory, GalleryFrame, DEFAULT_ALL_FRAMES, getInterleavedAllFrames } from '@/data/gallery';
 import { trackEvent } from '@/lib/analytics';
 
 export default function WorkGallery() {
   const [activeCategory, setActiveCategory] = useState<GalleryCategory>('all');
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [activeFrameId, setActiveFrameId] = useState<string | null>(null);
+  const [allFrames, setAllFrames] = useState<GalleryFrame[]>(DEFAULT_ALL_FRAMES);
+  const galleryGridRef = useRef<HTMLDivElement>(null);
+
+  // On client-side mount, generate fresh randomized interleaved sequence of all 21 photos
+  useEffect(() => {
+    setAllFrames(getInterleavedAllFrames());
+  }, []);
 
   const filteredFrames = useMemo(() => {
-    if (activeCategory === 'all') return F;
+    if (activeCategory === 'all') return allFrames;
     return F.filter((f) => f.category === activeCategory);
-  }, [activeCategory]);
+  }, [activeCategory, allFrames]);
+
+  const itemsPerPage = activeCategory === 'all' ? 9 : 8;
+  const totalPages = Math.ceil(filteredFrames.length / itemsPerPage);
+
+  const paginatedFrames = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredFrames.slice(start, start + itemsPerPage);
+  }, [filteredFrames, currentPage, itemsPerPage]);
+
+  const categoriesWithCounts = useMemo(() => {
+    return CATEGORIES.map((cat) => ({
+      ...cat,
+      count: cat.id === 'all' ? F.length : F.filter((f) => f.category === cat.id).length,
+    }));
+  }, []);
 
   const handleCategorySelect = (catId: GalleryCategory, e?: React.MouseEvent) => {
     if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
+    if (catId === activeCategory) {
+      if (catId === 'all') {
+        // Refresh with a freshly shuffled interleaved mix
+        setAllFrames(getInterleavedAllFrames());
+      }
+      return;
+    }
+
+    if (catId === 'all') {
+      setAllFrames(getInterleavedAllFrames());
+    }
+
+    // Anchor the filter console's visual position on screen so category filtering NEVER causes layout jump or upward scrolling
+    const consoleEl = galleryGridRef.current;
+    const initialTop = consoleEl ? consoleEl.getBoundingClientRect().top : null;
+
     setActiveCategory(catId);
+    setCurrentPage(1);
+
+    if (initialTop !== null && initialTop >= -100 && initialTop < window.innerHeight) {
+      requestAnimationFrame(() => {
+        if (consoleEl) {
+          const delta = consoleEl.getBoundingClientRect().top - initialTop;
+          if (Math.abs(delta) > 2) {
+            window.scrollBy({ top: delta, behavior: 'instant' as ScrollBehavior });
+          }
+        }
+      });
+    }
+
     const count = catId === 'all' ? F.length : F.filter((f) => f.category === catId).length;
     trackEvent('gallery_filter_changed', { category: catId, count });
   };
 
-  const openLightbox = (originalIndex: number, e?: React.MouseEvent) => {
+  const handlePageChange = (newPage: number, e?: React.MouseEvent) => {
     if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
-    setLightboxIndex(originalIndex);
-    const f = F[originalIndex];
+    if (newPage < 1 || newPage > totalPages) return;
+    setCurrentPage(newPage);
+    try {
+      const lenisInstance = (window as unknown as { __lenis?: { scrollTo: (el: HTMLElement, opts: unknown) => void }; lenis?: { scrollTo: (el: HTMLElement, opts: unknown) => void } }).__lenis
+        || (window as unknown as { lenis?: { scrollTo: (el: HTMLElement, opts: unknown) => void } }).lenis;
+      if (lenisInstance && typeof lenisInstance.scrollTo === 'function' && galleryGridRef.current) {
+        lenisInstance.scrollTo(galleryGridRef.current, { offset: -80, duration: 0.8 });
+      } else if (galleryGridRef.current) {
+        galleryGridRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    } catch {
+      // safe fallback
+    }
+  };
+
+  const openLightbox = (frameId: string, e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    setActiveFrameId(frameId);
+    try {
+      const lenisInstance = (window as unknown as { __lenis?: { stop: () => void }; lenis?: { stop: () => void } }).__lenis
+        || (window as unknown as { lenis?: { stop: () => void } }).lenis;
+      if (lenisInstance && typeof lenisInstance.stop === 'function') {
+        lenisInstance.stop();
+      }
+    } catch {
+      // safe fallback
+    }
+    const f = F.find((item) => item.id === frameId);
     if (f) {
+      const idx = F.findIndex((item) => item.id === frameId);
       trackEvent('image_viewed', {
         title: f.t,
         location: f.l,
         altitude: f.alt,
-        index: originalIndex,
+        index: idx,
       });
     }
   };
@@ -46,7 +128,16 @@ export default function WorkGallery() {
       e.preventDefault();
       e.stopPropagation();
     }
-    setLightboxIndex(null);
+    setActiveFrameId(null);
+    try {
+      const lenisInstance = (window as unknown as { __lenis?: { start: () => void }; lenis?: { start: () => void } }).__lenis
+        || (window as unknown as { lenis?: { start: () => void } }).lenis;
+      if (lenisInstance && typeof lenisInstance.start === 'function') {
+        lenisInstance.start();
+      }
+    } catch {
+      // safe fallback
+    }
   };
 
   const handlePrev = useCallback((e?: React.MouseEvent) => {
@@ -54,29 +145,26 @@ export default function WorkGallery() {
       e.preventDefault();
       e.stopPropagation();
     }
-    if (lightboxIndex === null) return;
-    const currentFilteredIdx = filteredFrames.findIndex((f) => F.indexOf(f) === lightboxIndex);
-    const prevFilteredIdx = (currentFilteredIdx - 1 + filteredFrames.length) % filteredFrames.length;
-    const nextOriginalIndex = F.indexOf(filteredFrames[prevFilteredIdx]);
-    setLightboxIndex(nextOriginalIndex);
-  }, [lightboxIndex, filteredFrames]);
+    if (!activeFrameId || filteredFrames.length === 0) return;
+    const currentIdx = filteredFrames.findIndex((f) => f.id === activeFrameId);
+    const prevIdx = currentIdx <= 0 ? filteredFrames.length - 1 : currentIdx - 1;
+    setActiveFrameId(filteredFrames[prevIdx].id);
+  }, [activeFrameId, filteredFrames]);
 
   const handleNext = useCallback((e?: React.MouseEvent) => {
     if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
-    if (lightboxIndex === null) return;
-    const currentFilteredIdx = filteredFrames.findIndex((f) => F.indexOf(f) === lightboxIndex);
-    const nextFilteredIdx = (currentFilteredIdx + 1) % filteredFrames.length;
-    const nextOriginalIndex = F.indexOf(filteredFrames[nextFilteredIdx]);
-    setLightboxIndex(nextOriginalIndex);
-  }, [lightboxIndex, filteredFrames]);
+    if (!activeFrameId || filteredFrames.length === 0) return;
+    const currentIdx = filteredFrames.findIndex((f) => f.id === activeFrameId);
+    const nextIdx = currentIdx >= filteredFrames.length - 1 ? 0 : currentIdx + 1;
+    setActiveFrameId(filteredFrames[nextIdx].id);
+  }, [activeFrameId, filteredFrames]);
 
-  // Lock scroll & bind keyboard shortcuts when lightbox is open
+  // Keyboard navigation for lightbox
   useEffect(() => {
-    if (lightboxIndex === null) return;
-    document.body.style.overflow = 'hidden';
+    if (!activeFrameId) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') closeLightbox();
@@ -86,12 +174,12 @@ export default function WorkGallery() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => {
-      document.body.style.overflow = '';
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [lightboxIndex, handlePrev, handleNext]);
+  }, [activeFrameId, handlePrev, handleNext]);
 
-  const activeFrame = lightboxIndex !== null ? F[lightboxIndex] : null;
+  const activeFrame = activeFrameId !== null ? F.find((f) => f.id === activeFrameId) || null : null;
+  const currentFilteredIndex = activeFrame !== null ? filteredFrames.findIndex((f) => f.id === activeFrame.id) : -1;
 
   return (
     <section className="work-section-wrap" id="work" data-alt="130">
@@ -100,24 +188,24 @@ export default function WorkGallery() {
         <div className="work-header-grid">
           <div className="work-title-box">
             <div className="eyebrow-group">
-              <p className="eyebrow">Selected work · 2022 – 2026</p>
+              <p className="eyebrow">Selected work · 2018 – 2026</p>
             </div>
             <h2 className="display d2">
-              Terrain &amp; <em>coastal geometry.</em>
+              Terrain, coastal &amp; <em>urban geometry.</em>
             </h2>
           </div>
           <div className="work-copy-box">
             <p className="work-desc">
-              A curated collection of aerial landscapes documented between 30 and 299 metres AGL across India, Bali, and Mauritius.
+              A curated collection of distinct aerial landscapes documented between 20 and 299 metres AGL across India, Bali, and Mauritius.
             </p>
-            <span className="work-specs">30 – 299 m AGL · DJI AIR 2S · 1&quot; CMOS</span>
+            <span className="work-specs">20 – 299 m AGL · DJI AIR 2S &amp; MAVIC 2 PRO · 1&quot; CMOS</span>
           </div>
         </div>
 
-        {/* Category Filter Pills Console */}
-        <div className="work-console">
+        {/* Category Filter Pills Console (Single Sleek Row) */}
+        <div className="work-console" ref={galleryGridRef}>
           <div className="work-filters" role="tablist" aria-label="Gallery category filters">
-            {CATEGORIES.map((cat) => {
+            {categoriesWithCounts.map((cat) => {
               const isActive = activeCategory === cat.id;
               return (
                 <button
@@ -143,27 +231,34 @@ export default function WorkGallery() {
           </div>
 
           <div className="work-count-label">
-            SHOWING <b>{filteredFrames.length}</b> OF <b>{F.length}</b> FRAMES
+            SHOWING <b>{paginatedFrames.length}</b> OF <b>{filteredFrames.length}</b> FRAMES
+            {totalPages > 1 && <> · PAGE <b>{currentPage}</b> OF <b>{totalPages}</b></>}
           </div>
         </div>
 
-        {/* Bento Grid Showcase */}
+        {/* Bento Grid Showcase — Strictly 2 Sizes by Orientation */}
         <div className="bento-gallery-wrap">
-          <AnimatePresence mode="popLayout">
-            <motion.div className="bento-grid" layout>
-              {filteredFrames.map((f, idx) => {
-                const originalIndex = F.findIndex((item) => item.id === f.id);
-                const isFeatured = idx === 0 || idx === 5;
+          <div className="bento-grid">
+            <AnimatePresence>
+              {paginatedFrames.map((f, idx) => {
                 return (
                   <motion.div
-                    layout
-                    initial={{ opacity: 0, scale: 0.95 }}
+                    initial={{ opacity: 0, scale: 0.96 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.92 }}
-                    transition={{ duration: 0.4, delay: idx * 0.03, ease: [0.16, 1, 0.3, 1] }}
-                    key={f.id}
-                    className={`bento-card ${isFeatured ? 'bento-hero' : ''}`}
-                    onClick={(e) => openLightbox(originalIndex, e)}
+                    exit={{ opacity: 0, scale: 0.96 }}
+                    transition={{ duration: 0.28, delay: idx * 0.02, ease: [0.16, 1, 0.3, 1] }}
+                    key={`${activeCategory}-${currentPage}-${f.id}`}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Open photograph: ${f.t}`}
+                    className={`bento-card card-${f.orientation}`}
+                    onClick={(e) => openLightbox(f.id, e)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        openLightbox(f.id);
+                      }
+                    }}
                   >
                     <div className="bento-media">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -188,8 +283,58 @@ export default function WorkGallery() {
                   </motion.div>
                 );
               })}
-            </motion.div>
-          </AnimatePresence>
+            </AnimatePresence>
+          </div>
+
+          {/* Tactical Pagination Bar */}
+          {totalPages > 1 && (
+            <div className="bento-pagination" aria-label="Gallery pagination">
+              <button
+                type="button"
+                className="page-btn"
+                disabled={currentPage === 1}
+                onClick={(e) => handlePageChange(currentPage - 1, e)}
+                aria-label="Previous page"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width={14} height={14}>
+                  <polyline points="15 18 9 12 15 6" />
+                </svg>
+                PREV
+              </button>
+
+              <div className="page-pills">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                  <button
+                    key={pageNum}
+                    type="button"
+                    className={`page-pill ${pageNum === currentPage ? 'active' : ''}`}
+                    onClick={(e) => handlePageChange(pageNum, e)}
+                    aria-label={`Go to page ${pageNum}`}
+                    aria-current={pageNum === currentPage ? 'page' : undefined}
+                  >
+                    {pageNum}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                className="page-btn"
+                disabled={currentPage === totalPages}
+                onClick={(e) => handlePageChange(currentPage + 1, e)}
+                aria-label="Next page"
+              >
+                NEXT
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width={14} height={14}>
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </button>
+
+              <span className="page-info">
+                PAGE {currentPage} / {totalPages}
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -200,7 +345,7 @@ export default function WorkGallery() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.35, ease: 'easeOut' }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
             className="gallery-lightbox-overlay"
             onClick={(e) => closeLightbox(e)}
           >
@@ -208,7 +353,7 @@ export default function WorkGallery() {
               initial={{ scale: 0.94, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.94, opacity: 0 }}
-              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
               className="gallery-lightbox-content"
               onClick={(e) => e.stopPropagation()}
             >
@@ -216,7 +361,14 @@ export default function WorkGallery() {
               <div className="lb-header">
                 <div className="lb-header-title">
                   <h2>{activeFrame.t}</h2>
-                  <span>{activeFrame.l} · {activeFrame.year}</span>
+                  <span>
+                    {activeFrame.l} · {activeFrame.year}
+                    {currentFilteredIndex >= 0 && (
+                      <strong style={{ marginLeft: '12px', opacity: 0.75, fontWeight: 400 }}>
+                        ({currentFilteredIndex + 1} / {filteredFrames.length})
+                      </strong>
+                    )}
+                  </span>
                 </div>
                 <button
                   type="button"
@@ -238,7 +390,7 @@ export default function WorkGallery() {
                   type="button"
                   className="lb-nav-btn lb-prev"
                   onClick={(e) => handlePrev(e)}
-                  aria-label="Previous image"
+                  aria-label="Previous photograph"
                   title="Previous (Left Arrow)"
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -253,7 +405,7 @@ export default function WorkGallery() {
                     initial={{ opacity: 0, scale: 0.98 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.35, ease: 'easeOut' }}
+                    transition={{ duration: 0.3, ease: 'easeOut' }}
                     src={activeFrame.img}
                     alt={`${activeFrame.t} | ${activeFrame.l}`}
                   />
@@ -263,7 +415,7 @@ export default function WorkGallery() {
                   type="button"
                   className="lb-nav-btn lb-next"
                   onClick={(e) => handleNext(e)}
-                  aria-label="Next image"
+                  aria-label="Next photograph"
                   title="Next (Right Arrow)"
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -288,7 +440,7 @@ export default function WorkGallery() {
                 </div>
                 <div className="lb-tele-item">
                   <span className="lb-label">OPTICS &amp; SENSOR</span>
-                  <span className="lb-val">DJI AIR 2S · 1&quot; CMOS · 20MP</span>
+                  <span className="lb-val">{activeFrame.sensor || 'DJI AIR 2S · 1" CMOS · 20MP'}</span>
                 </div>
               </div>
             </motion.div>

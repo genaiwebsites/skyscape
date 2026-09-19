@@ -1252,13 +1252,21 @@ void main(){
     });
     const t0 = performance.now();
     let tickFrame: number;
+
+    // Cache telemetry refs once — querying inside rAF thrashes style recalc
+    const pEl = document.getElementById('hudPitch');
+    const rEl = document.getElementById('hudRoll');
+    const vsEl = document.getElementById('hudVS');
+    const wEl = document.getElementById('hudWind');
+    const latEl = document.getElementById('hudLatency');
+
     (function tick(t) {
       tickFrame = requestAnimationFrame(tick);
       const el = (t - t0) / 1000;
       const real = urls.length > 0 ? done / urls.length : 1;
       const floor = Math.min(1, el / 1.1);
       const target = Math.min(1, real * 0.4 + floor * 0.6);
-      shown += (target - shown) * 0.16;
+      shown += (target - shown) * 0.18;
       if (num) num.textContent = String(Math.round(shown * CEIL)).padStart(3, '0');
       if (bar) bar.style.transform = 'scaleX(' + shown + ')';
       if (status)
@@ -1270,12 +1278,6 @@ void main(){
         sats.textContent = shown > 0.4 ? 'GPS LOCK · 18 SATS' : 'ACQUIRING GPS';
 
       // Dynamic real-time live flight telemetry fluctuations
-      const pEl = document.getElementById('hudPitch');
-      const rEl = document.getElementById('hudRoll');
-      const vsEl = document.getElementById('hudVS');
-      const wEl = document.getElementById('hudWind');
-      const latEl = document.getElementById('hudLatency');
-
       if (pEl) pEl.textContent = `${(-15.4 + Math.sin(t * 0.008) * 0.5).toFixed(1)}°`;
       if (rEl) rEl.textContent = `${(0.8 + Math.cos(t * 0.006) * 0.4 >= 0 ? '+' : '')}${(0.8 + Math.cos(t * 0.006) * 0.4).toFixed(1)}°`;
       if (vsEl) vsEl.textContent = `${(1.8 + Math.sin(t * 0.005) * 0.3).toFixed(1)} m/s`;
@@ -1300,38 +1302,50 @@ void main(){
         return;
       }
       if (lenis) lenis.stop();
+
+      // Promote to compositor layers before animation starts
+      gsap.set(pre, { force3D: true, willChange: 'transform, opacity' });
+      gsap.set(curtain, { force3D: true, willChange: 'opacity' });
+
       const tl = gsap.timeline({
         onComplete: () => {
+          gsap.set(pre, { display: 'none', willChange: 'auto' });
+          gsap.set(curtain, { willChange: 'auto' });
           document.body.style.overflow = '';
           window.scrollTo(0, 0);
           if (lenis) {
             lenis.scrollTo(0, { immediate: true });
             lenis.start();
           }
-          ScrollTrigger.refresh();
+          // Defer to avoid competing with compositor frames
+          setTimeout(() => ScrollTrigger.refresh(), 80);
         },
       });
-      tl.to(['.pre-drone-stage', num, status, sats, '.pre-center-tele', '.pre-bar'], {
-        autoAlpha: 0,
-        y: -14,
-        scale: 0.95,
-        duration: 0.55,
-        stagger: 0.03,
-        ease: 'power2.in',
-      })
-        .to(pre, { yPercent: -100, duration: 1.1, ease: 'expo.inOut' }, '-=.1')
-        .to(
-          curtain,
-          { scaleY: 0, transformOrigin: 'top', duration: 1.1, ease: 'expo.inOut' },
-          '<'
-        )
-        .to(GL, { reveal: 1, duration: 1.6, ease: 'power2.out' }, '<.2')
+
+      tl
         .set(['.hud', '.h-corner', '.cue', '.hero-birds-layer'], { autoAlpha: 1, y: 0 })
         .set('#heroMainGroup', { autoAlpha: 0, y: 24 })
-        .set(pre, { display: 'none' });
+        // Tiny hold at 100% — visual confirmation before dissolve
+        .to(pre, {
+          autoAlpha: 0,
+          duration: 0.65,
+          ease: 'power2.inOut',
+          force3D: true,
+          delay: 0.12,
+        })
+        // Curtain fades out 100ms behind — creates a clean depth layering
+        .to(curtain, {
+          autoAlpha: 0,
+          duration: 0.75,
+          ease: 'power2.inOut',
+          force3D: true,
+        }, '<+0.1')
+        // Hero GL reveal starts with the dissolve
+        .to(GL, { reveal: 1, duration: 1.4, ease: 'power2.out', force3D: true }, '<');
     }
 
     return () => {
+      cancelAnimationFrame(tickFrame);
       stopGL();
       window.removeEventListener('scroll', onScrollDronePitch);
       if (onParallaxMove) window.removeEventListener('mousemove', onParallaxMove);

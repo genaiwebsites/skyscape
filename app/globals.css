@@ -138,6 +138,12 @@ main{position:relative;z-index:1}
   justify-content: space-between;
   padding: clamp(24px, 4.5vh, 44px) clamp(24px, 4vw, 56px);
   overflow: hidden;
+  will-change: transform, opacity;
+  animation: preOnset 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes preOnset {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 /* Pulsating Ambient Glow Behind Drone */
@@ -148,7 +154,7 @@ main{position:relative;z-index:1}
   width: min(75vw, 650px);
   height: min(75vw, 650px);
   transform: translate(-50%, -50%);
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, rgba(124, 167, 194, 0.06) 40%, transparent 70%);
+  background: radial-gradient(circle, rgba(124, 167, 194, 0.10) 0%, rgba(124, 167, 194, 0.04) 40%, transparent 70%);
   border-radius: 50%;
   pointer-events: none;
   filter: blur(40px);
@@ -211,9 +217,9 @@ main{position:relative;z-index:1}
   user-select: none;
 }
 .pre-compass-tape .north {
-  color: #10b981;
+  color: #FFFFFF;
   font-weight: 700;
-  text-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+  text-shadow: 0 0 8px rgba(238, 243, 247, 0.55);
 }
 .pre-compass-tape .ne {
   color: var(--haze);
@@ -252,8 +258,8 @@ main{position:relative;z-index:1}
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  background: #10b981;
-  box-shadow: 0 0 12px #10b981;
+  background: var(--haze);
+  box-shadow: 0 0 10px rgba(124, 167, 194, 0.7);
   animation: beaconPulse 1.4s infinite ease-in-out;
 }
 @keyframes beaconPulse {
@@ -274,9 +280,9 @@ main{position:relative;z-index:1}
   gap: 8px;
   padding: 5px 12px;
   border-radius: 4px;
-  background: rgba(16, 185, 129, 0.08);
-  border: 1px solid rgba(16, 185, 129, 0.28);
-  color: #10b981;
+  background: rgba(124, 167, 194, 0.07);
+  border: 1px solid rgba(124, 167, 194, 0.25);
+  color: var(--haze);
   font-weight: 600;
 }
 
@@ -349,7 +355,7 @@ main{position:relative;z-index:1}
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: conic-gradient(from 0deg, rgba(16, 185, 129, 0.22), transparent 70deg);
+  background: conic-gradient(from 0deg, rgba(124, 167, 194, 0.18), transparent 70deg);
   animation: radarRotate 3s linear infinite;
   pointer-events: none;
 }
@@ -367,7 +373,7 @@ main{position:relative;z-index:1}
   color: rgba(124, 167, 194, 0.6);
   pointer-events: none;
 }
-.cardinal.n { top: 6px; color: #10b981; }
+.cardinal.n { top: 6px; color: #FFFFFF; }
 .cardinal.s { bottom: 6px; }
 .cardinal.e { right: 8px; }
 .cardinal.w { left: 8px; }
@@ -473,7 +479,7 @@ main{position:relative;z-index:1}
   font-variant-numeric: tabular-nums;
 }
 .tele-sep {
-  color: rgba(16, 185, 129, 0.6);
+  color: rgba(124, 167, 194, 0.5);
   font-size: 12px;
 }
 
@@ -488,12 +494,12 @@ main{position:relative;z-index:1}
   align-items: center;
   gap: 7px;
   background: rgba(10, 16, 24, 0.88);
-  border: 1px solid rgba(16, 185, 129, 0.38);
+  border: 1px solid rgba(124, 167, 194, 0.25);
   padding: 5px 12px;
   border-radius: 4px;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 4px 18px rgba(5, 8, 13, 0.85), 0 0 16px rgba(16, 185, 129, 0.14);
+  box-shadow: 0 4px 18px rgba(5, 8, 13, 0.85), 0 0 16px rgba(124, 167, 194, 0.10);
   transition: all 0.3s ease;
 }
 .pre-status-badge::before {
@@ -503,7 +509,7 @@ main{position:relative;z-index:1}
   left: 6px;
   width: 10px;
   height: 1px;
-  background: #10b981;
+  background: var(--haze);
 }
 .pre-status-badge::after {
   content: '';
@@ -512,14 +518,14 @@ main{position:relative;z-index:1}
   right: 6px;
   width: 10px;
   height: 1px;
-  background: #10b981;
+  background: var(--haze);
 }
 .status-pulse {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #10b981;
-  box-shadow: 0 0 8px #10b981;
+  background: var(--haze);
+  box-shadow: 0 0 8px rgba(124, 167, 194, 0.7);
   animation: beaconPulse 1.2s infinite ease-in-out;
   flex: none;
 }
@@ -527,7 +533,7 @@ main{position:relative;z-index:1}
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: 0.16em;
-  color: rgba(16, 185, 129, 0.65);
+  color: rgba(124, 167, 194, 0.6);
   font-weight: 500;
 }
 .pre-status {
@@ -535,7 +541,7 @@ main{position:relative;z-index:1}
   font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #10b981;
+  color: var(--haze);
   font-weight: 600;
 }
 
@@ -553,12 +559,12 @@ main{position:relative;z-index:1}
 .pre-bar i {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, #10b981, var(--haze), #FFFFFF);
+  background: linear-gradient(90deg, var(--haze), rgba(238, 243, 247, 0.85), #FFFFFF);
   transform: scaleX(0);
   transform-origin: left;
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
+  box-shadow: 0 0 10px rgba(124, 167, 194, 0.6);
 }
-.curtain{position:fixed;inset:0;z-index:199;background:var(--ink);transform-origin:top;pointer-events:none}
+.curtain{position:fixed;inset:0;z-index:199;background:var(--ink);pointer-events:none;will-change:opacity;opacity:1;}
 
 /* Native clean cursor */
 .cur,.cur-ring{display:none!important}

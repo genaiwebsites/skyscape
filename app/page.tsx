@@ -105,14 +105,14 @@ export default function Home() {
                   <circle cx="52" cy="52" r="22" stroke="rgba(124,167,194,0.4)" strokeWidth="1" strokeDasharray="3 3" />
                   <ellipse cx="52" cy="52" rx="22" ry="4" fill="rgba(238,243,247,0.45)" className="prop-spin" />
                   <circle cx="52" cy="52" r="5" fill="#182436" stroke="var(--haze)" strokeWidth="1.5" />
-                  <circle cx="52" cy="52" r="2" fill="#10b981" className="led-blink" />
+                  <circle cx="52" cy="52" r="2" fill="var(--haze)" className="led-blink" />
                 </g>
 
                 <g className="prop-group prop-tr">
                   <circle cx="148" cy="52" r="22" stroke="rgba(124,167,194,0.4)" strokeWidth="1" strokeDasharray="3 3" />
                   <ellipse cx="148" cy="52" rx="22" ry="4" fill="rgba(238,243,247,0.45)" className="prop-spin prop-rev" />
                   <circle cx="148" cy="52" r="5" fill="#182436" stroke="var(--haze)" strokeWidth="1.5" />
-                  <circle cx="148" cy="52" r="2" fill="#10b981" className="led-blink" />
+                  <circle cx="148" cy="52" r="2" fill="var(--haze)" className="led-blink" />
                 </g>
 
                 <g className="prop-group prop-bl">
@@ -156,7 +156,7 @@ export default function Home() {
               <path d="M45 25 H35 V15" stroke="rgba(124,167,194,0.5)" strokeWidth="1.5" />
               <path d="M15 55 H25 V65" stroke="rgba(124,167,194,0.5)" strokeWidth="1.5" />
               <path d="M45 55 H35 V65" stroke="rgba(124,167,194,0.5)" strokeWidth="1.5" />
-              <circle cx="30" cy="40" r="4" fill="#10b981" />
+              <circle cx="30" cy="40" r="4" fill="var(--haze)" />
             </svg>
           </div>
         </div>

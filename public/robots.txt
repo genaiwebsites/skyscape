@@ -1,0 +1,37 @@
+# ==============================================================================
+# Skyscape Photography — Robots & AI Crawler Directives
+# ==============================================================================
+
+# 1. Search Engine Indexing (SEO Enabled)
+User-agent: Googlebot
+User-agent: Googlebot-Image
+User-agent: Bingbot
+User-agent: Yandex
+User-agent: DuckDuckBot
+User-agent: Applebot
+Allow: /
+
+# 2. General Crawlers
+User-agent: *
+Allow: /
+Disallow: /api/
+
+# 3. Block Known AI Training & Content Scraping Bots
+User-agent: GPTBot
+User-agent: ChatGPT-User
+User-agent: CCBot
+User-agent: anthropic-ai
+User-agent: ClaudeBot
+User-agent: Claude-Web
+User-agent: Google-Extended
+User-agent: Bytespider
+User-agent: ImagesiftBot
+User-agent: Diffbot
+User-agent: PerplexityBot
+User-agent: Cohere-ai
+User-agent: Omgilibot
+User-agent: FacebookBot
+Disallow: /
+
+# Sitemap
+Sitemap: https://skyscapephotography.in/sitemap.xml

@@ -317,19 +317,22 @@ export default function Home() {
         <section className="shell about" id="about" data-alt="245">
           <div className="wrap g12">
             <div className="col-main">
-              <p className="eyebrow" data-anim="fade">About the pilot</p>
+              <p className="eyebrow" data-anim="fade">About the artist</p>
               <h2 className="display d2" data-split>
-                High altitude. <em>Precise intent.</em>
+                The unseen earth. <em>Felt from the sky.</em>
               </h2>
               <p className="prose" data-anim="fade">
-                I am <strong>Kshitiz Bathwal</strong>, an aerial cinematographer and UAS pilot based in <strong>India</strong>. I specialize in documenting coastal landforms, volcanic terrain, and natural architecture across India, Mauritius, and Southeast Asia. Operating high-resolution 1-inch CMOS sensors between 30 and 299 metres AGL, my work focuses on perspective, spatial scale, and geological structure.
+                By profession, I am a <strong>software engineer</strong>, but at heart, a full-time, obsessive <strong>dronegrapher</strong>. Wherever I walk, I am already flying in my mind: mapping unseen lines across the terrain, exploring how an ordinary stretch of earth transforms when viewed from the heavens. The drone is an extension of my curiosity, offering the rare, quiet privilege of witnessing untouched beauty that remains forever hidden at eye level.
               </p>
               <p className="prose" data-anim="fade">
-                <strong>Skyscape Photography</strong> is an independent aerial practice built on flight discipline: securing airspace authorizations, evaluating micro-climate wind vectors, and capturing low-angle directional light when long shadows reveal natural geology.
+                I don&apos;t launch into the sky simply because I have wings. I look for hidden geometries, delicate symmetries, and living patterns that escape ordinary sight. More than dramatic landscapes, I seek thought-provoking frames that induce emotion and stillness. There is no greater joy than witnessing the sheer shock and awe on someone&apos;s face when they see our world as they have never seen it before.
+              </p>
+              <p className="prose" data-anim="fade">
+                My flights have spanned diverse Indian states, anchored by strict discipline, airspace legalities, and deep advocacy for responsible drone aviation. As my lens continues to ascend, I carry a lingering dream: to journey into the sacred, mist-veiled frontiers of <strong>North East India</strong> and unveil its untouched wonder to the world.
               </p>
               <blockquote className="quote" data-anim="fade">
-                <p>&ldquo;From 300 metres above, complex landscapes resolve into pure structural geometry.&rdquo;</p>
-                <footer>Kshitiz Bathwal · Lead UAS Cinematographer</footer>
+                <p>&ldquo;Long before the propellers turn, I am already flying in my head, searching for the symmetries the earth only whispers to the sky.&rdquo;</p>
+                <footer>Kshitiz Bathwal · Aerial Photographer &amp; Software Engineer</footer>
               </blockquote>
             </div>
             <div className="col-side portrait">
@@ -399,7 +402,7 @@ export default function Home() {
               </div>
               <div className="log-cell">
                 <div className="log-num">
-                  <span data-num="8.4" data-dec="1">0</span><u>km</u>
+                  <span data-num="2.4" data-dec="1">0</span><u>km</u>
                 </div>
                 <div className="log-lab">Furthest from<br />the home point</div>
               </div>

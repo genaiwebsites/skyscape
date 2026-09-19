@@ -334,14 +334,15 @@ export default function Home() {
             </div>
             <div className="col-side portrait">
               <div className="p-frame" data-clip>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  data-par="0.18"
-                  src="/images/pilot.jpg"
-                  alt="Kshitiz Bathwal | Aerial Landscape Photographer"
-                  loading="lazy"
-                  draggable={false}
-                />
+                <div className="p-parallax-track">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/images/pilot.jpg"
+                    alt="Kshitiz Bathwal | Aerial Landscape Photographer"
+                    loading="lazy"
+                    draggable={false}
+                  />
+                </div>
                 <div className="p-veil" aria-hidden="true" />
                 <div className="p-badge" aria-hidden="true">
                   <span>PILOT · 34.15° N 77.57° E</span>
@@ -518,12 +519,14 @@ export default function Home() {
                   </div>
                 </div>
                 <span className="p-badge">UAS PILOT · IN FIELD</span>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/images/skyscape-drone-pilot-profile.jpg"
-                  alt="Kshitiz Bathwal · Aerial Landscape Photographer overlooking ocean ridge"
-                  loading="lazy"
-                />
+                <div className="p-parallax-track">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/images/skyscape-drone-pilot-profile.jpg"
+                    alt="Kshitiz Bathwal · Aerial Landscape Photographer overlooking ocean ridge"
+                    loading="lazy"
+                  />
+                </div>
                 <div className="contact-pilot-caption">
                   <b>KSHITIZ BATHWAL</b>
                   <small>FOUNDER &amp; LEAD UAS CINEMATOGRAPHER</small>

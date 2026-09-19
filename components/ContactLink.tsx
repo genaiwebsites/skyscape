@@ -8,7 +8,7 @@ export function ContactEmailLink() {
       className="mail"
       data-magnet
       data-anim="soft"
-      href="mailto:kshitiz@skyscapephotography.in"
+      href="mailto:skyscapeshoot@gmail.com"
       onClick={() =>
         trackEvent('contact_initiated', {
           channel: 'email',
@@ -16,7 +16,7 @@ export function ContactEmailLink() {
         })
       }
     >
-      <span>kshitiz@skyscapephotography.in</span>
+      <span>skyscapeshoot@gmail.com</span>
       <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.5" aria-hidden="true">
         <path d="M7 17L17 7M17 7H8M17 7v9" />
       </svg>

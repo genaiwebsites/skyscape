@@ -1470,21 +1470,43 @@ main{position:relative;z-index:1}
   border-color:rgba(124,167,194,.5);
   box-shadow:0 24px 60px rgba(5,8,13,.92), 0 0 40px rgba(124,167,194,.16);
 }
-.p-frame img{
-  position:absolute;
-  top:-16%;
-  left:0;
-  width:100%;
-  height:132%;
-  object-fit:cover;object-position:center 20%;
-  filter:saturate(.92) contrast(1.04);
-  transition:transform .8s var(--ease), filter .8s var(--ease);
-  will-change:transform;
-  display:block;
+.p-parallax-track {
+  position: absolute;
+  top: -8%;
+  left: -4%;
+  width: 108%;
+  height: 116%;
+  pointer-events: none;
+  will-change: transform;
 }
-.p-frame:hover img{
-  transform:scale(1.06);
-  filter:saturate(1.0) contrast(1.08);
+.p-frame .p-parallax-track img,
+.p-frame img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  filter: saturate(.92) contrast(1.04);
+  animation: pilotKenBurns 18s ease-in-out infinite alternate;
+  will-change: transform;
+  display: block;
+  transition: filter 0.8s var(--ease);
+}
+.p-frame:hover img {
+  filter: saturate(1.04) contrast(1.08);
+}
+
+@keyframes pilotKenBurns {
+  0% {
+    transform: scale(1.06) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: scale(1.15) translate3d(-1%, -1.2%, 0);
+  }
+  100% {
+    transform: scale(1.08) translate3d(0.8%, 0.6%, 0);
+  }
 }
 .p-veil{
   position:absolute;inset:0;pointer-events:none;
@@ -2138,12 +2160,12 @@ main{position:relative;z-index:1}
   border-color: rgba(124, 167, 194, 0.65);
   box-shadow: 0 32px 85px rgba(5, 8, 13, 0.98), 0 0 55px rgba(124, 167, 194, 0.22);
 }
+.contact-pilot-frame .p-parallax-track img,
 .contact-pilot-frame img {
   position: absolute;
-  top: -16%;
-  left: 0;
+  inset: 0;
   width: 100%;
-  height: 132%;
+  height: 100%;
   object-fit: cover;
   object-position: center 25%;
   filter: saturate(0.96) contrast(1.06);
@@ -2155,13 +2177,13 @@ main{position:relative;z-index:1}
 
 @keyframes pilotAutoZoom {
   0% {
-    scale: 1.05;
+    transform: scale(1.05) translate3d(0, 0, 0);
   }
   50% {
-    scale: 1.20;
+    transform: scale(1.15) translate3d(0.8%, -1%, 0);
   }
   100% {
-    scale: 1.08;
+    transform: scale(1.08) translate3d(-0.6%, 0.8%, 0);
   }
 }
 

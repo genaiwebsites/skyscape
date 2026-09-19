@@ -925,15 +925,18 @@ void main(){
       });
 
 
-      gsap.utils.toArray<HTMLElement>('.p-frame img, .contact-pilot-frame img').forEach((img) => {
+      /* Pilot Card Parallax Track (wrapper-level parallax, preserving internal Ken Burns zoom) */
+      gsap.utils.toArray<HTMLElement>('.p-parallax-track').forEach((track) => {
+        const frame = track.closest('.p-frame, .contact-pilot-frame');
+        if (!frame) return;
         gsap.fromTo(
-          img,
-          { yPercent: -10 },
+          track,
+          { yPercent: -4 },
           {
-            yPercent: 10,
+            yPercent: 4,
             ease: 'none',
             scrollTrigger: {
-              trigger: img.closest('.p-frame, .contact-pilot-frame'),
+              trigger: frame,
               start: 'top bottom',
               end: 'bottom top',
               scrub: 1.2,

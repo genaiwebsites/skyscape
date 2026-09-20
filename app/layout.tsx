@@ -31,8 +31,8 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.skyscapephoto.c
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'Skyscape | Kshitiz Bathwal · Aerial Landscape Photography',
-    template: '%s | Skyscape',
+    default: 'Skyscape Photography | Kshitiz Bathwal · Aerial Landscape Photography',
+    template: '%s | Skyscape Photography',
   },
   description:
     'Aerial landscape photography across India, flown between 30 and 299 metres above ground level by drone pilot Kshitiz Bathwal.',
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: siteUrl,
     siteName: 'Skyscape Photography',
-    title: 'Skyscape | Kshitiz Bathwal · Aerial Landscape Photography',
+    title: 'Skyscape Photography | Kshitiz Bathwal · Aerial Landscape Photography',
     description:
       'Aerial landscape photography across India, flown between 30 and 299 metres above ground level by drone pilot Kshitiz Bathwal.',
     images: [
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
         width: 1200,
         height: 630,
         type: 'image/jpeg',
-        alt: 'Skyscape | Aerial Landscape Photography by Kshitiz Bathwal',
+        alt: 'Skyscape Photography | Aerial Landscape Photography by Kshitiz Bathwal',
       },
       {
         url: `${siteUrl}/og/square/sq_homepage.jpg`,
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Skyscape | Kshitiz Bathwal · Aerial Landscape Photography',
+    title: 'Skyscape Photography | Kshitiz Bathwal · Aerial Landscape Photography',
     description:
       'Aerial landscape photography across India by drone pilot Kshitiz Bathwal.',
     images: [
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
         width: 1200,
         height: 630,
         type: 'image/jpeg',
-        alt: 'Skyscape | Aerial Landscape Photography by Kshitiz Bathwal',
+        alt: 'Skyscape Photography | Aerial Landscape Photography by Kshitiz Bathwal',
       },
       {
         url: `${siteUrl}/og/square/sq_homepage.jpg`,

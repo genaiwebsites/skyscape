@@ -26,10 +26,78 @@ const jakarta = Plus_Jakarta_Sans({
   display: 'swap',
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.skyscapephoto.com';
+
 export const metadata: Metadata = {
-  title: 'Skyscape | Kshitiz Bathwal · Aerial Landscape Photography',
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: 'Skyscape | Kshitiz Bathwal · Aerial Landscape Photography',
+    template: '%s | Skyscape',
+  },
   description:
     'Aerial landscape photography across India, flown between 30 and 299 metres above ground level by drone pilot Kshitiz Bathwal.',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: siteUrl,
+    siteName: 'Skyscape Photography',
+    title: 'Skyscape | Kshitiz Bathwal · Aerial Landscape Photography',
+    description:
+      'Aerial landscape photography across India, flown between 30 and 299 metres above ground level by drone pilot Kshitiz Bathwal.',
+    images: [
+      {
+        url: `${siteUrl}/og/og_homepage.jpg`,
+        secureUrl: `${siteUrl}/og/og_homepage.jpg`,
+        width: 1200,
+        height: 630,
+        type: 'image/jpeg',
+        alt: 'Skyscape | Aerial Landscape Photography by Kshitiz Bathwal',
+      },
+      {
+        url: `${siteUrl}/og/square/sq_homepage.jpg`,
+        secureUrl: `${siteUrl}/og/square/sq_homepage.jpg`,
+        width: 800,
+        height: 800,
+        type: 'image/jpeg',
+        alt: 'Skyscape Photography Monogram Logo',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Skyscape | Kshitiz Bathwal · Aerial Landscape Photography',
+    description:
+      'Aerial landscape photography across India by drone pilot Kshitiz Bathwal.',
+    images: [
+      {
+        url: `${siteUrl}/og/og_homepage.jpg`,
+        secureUrl: `${siteUrl}/og/og_homepage.jpg`,
+        width: 1200,
+        height: 630,
+        type: 'image/jpeg',
+        alt: 'Skyscape | Aerial Landscape Photography by Kshitiz Bathwal',
+      },
+      {
+        url: `${siteUrl}/og/square/sq_homepage.jpg`,
+        secureUrl: `${siteUrl}/og/square/sq_homepage.jpg`,
+        width: 800,
+        height: 800,
+        type: 'image/jpeg',
+        alt: 'Skyscape Photography Monogram Logo',
+      },
+    ],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   icons: {
     icon: [
       { url: '/skyscape-aerial-photography-favicon.png', type: 'image/png' },

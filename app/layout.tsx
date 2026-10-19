@@ -126,12 +126,137 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        {/* Preload critical LCP Hero Photograph */}
+        <link
+          rel="preload"
+          as="image"
+          href="/images/hero/mauritius-coastal-drone-photography-skyscape.jpg"
+          fetchPriority="high"
+        />
         {/* Font preconnects */}
         <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
         {/* Zodiak + Satoshi fallback */}
         <link
           href="https://api.fontshare.com/v2/css?f[]=zodiak@400,401&f[]=satoshi@400,500,700&display=swap"
           rel="stylesheet"
+        />
+        {/* JSON-LD Structured Data Schema for Knowledge Graph, AI Citations & Licensable Badges */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@graph': [
+                {
+                  '@type': 'WebSite',
+                  '@id': 'https://www.skyscapephoto.com/#website',
+                  url: 'https://www.skyscapephoto.com',
+                  name: 'Skyscape Photography',
+                  description:
+                    'Fine art aerial landscape photography across India, flown between 30 and 299 metres above ground level by drone pilot Kshitiz Bathwal.',
+                  publisher: {
+                    '@id': 'https://www.skyscapephoto.com/#person',
+                  },
+                },
+                {
+                  '@type': 'Person',
+                  '@id': 'https://www.skyscapephoto.com/#person',
+                  name: 'Kshitiz Bathwal',
+                  jobTitle: ['Aerial Landscape Photographer', 'Licensed Drone Pilot', 'Software Engineer'],
+                  url: 'https://www.skyscapephoto.com',
+                  image: 'https://www.skyscapephoto.com/images/skyscape-drone-pilot-profile.jpg',
+                  sameAs: ['https://www.instagram.com/skyscape_photography/'],
+                  description:
+                    'Aerial landscape photographer and licensed UAS pilot capturing unseen natural topographies across 14+ Indian states and global coastal frontiers.',
+                },
+                {
+                  '@type': 'ProfessionalService',
+                  '@id': 'https://www.skyscapephoto.com/#service',
+                  name: 'Skyscape Photography',
+                  url: 'https://www.skyscapephoto.com',
+                  logo: 'https://www.skyscapephoto.com/skyscape-aerial-photography-logo-white.png',
+                  image: 'https://www.skyscapephoto.com/og/og_homepage.jpg',
+                  priceRange: '$$',
+                  founder: {
+                    '@id': 'https://www.skyscapephoto.com/#person',
+                  },
+                  areaServed: {
+                    '@type': 'Country',
+                    name: 'India',
+                  },
+                  serviceType: [
+                    'Aerial Landscape Photography',
+                    'Fine Art Drone Prints',
+                    'Commercial Drone Cinematography',
+                    'Visual Land & Topography Surveys',
+                  ],
+                },
+                {
+                  '@type': 'ImageGallery',
+                  name: 'Skyscape Photography Portfolio — Descent from 299m AGL',
+                  description:
+                    'Telemetric aerial landscape portfolio curated by elevation above ground level (AGL).',
+                  author: {
+                    '@id': 'https://www.skyscapephoto.com/#person',
+                  },
+                  hasPart: [
+                    {
+                      '@type': 'Photograph',
+                      name: 'Where Volcanic Ridge Meets Sapphire Lagoon (Macondé Peak)',
+                      caption: 'Macondé Peak hairpin ridge and turquoise lagoon in Mauritius from 168m AGL',
+                      contentUrl: 'https://www.skyscapephoto.com/images/hero/mauritius-coastal-drone-photography-skyscape.jpg',
+                      creator: { '@id': 'https://www.skyscapephoto.com/#person' },
+                      copyrightHolder: { '@id': 'https://www.skyscapephoto.com/#person' },
+                      copyrightNotice: '© 2026 Kshitiz Bathwal · All rights reserved',
+                      license: 'https://www.skyscapephoto.com/#contact',
+                      acquireLicensePage: 'https://www.skyscapephoto.com/#contact',
+                    },
+                    {
+                      '@type': 'Photograph',
+                      name: 'Volcanic Sea Stacks & Azure Surf of Nusa Penida',
+                      caption: 'Volcanic sea stacks and azure ocean surf in Nusa Penida, Bali from 198m AGL',
+                      contentUrl: 'https://www.skyscapephoto.com/images/nusa-penida-featured.jpeg',
+                      creator: { '@id': 'https://www.skyscapephoto.com/#person' },
+                      copyrightHolder: { '@id': 'https://www.skyscapephoto.com/#person' },
+                      copyrightNotice: '© 2026 Kshitiz Bathwal · All rights reserved',
+                      license: 'https://www.skyscapephoto.com/#contact',
+                      acquireLicensePage: 'https://www.skyscapephoto.com/#contact',
+                    },
+                  ],
+                },
+                {
+                  '@type': 'FAQPage',
+                  mainEntity: [
+                    {
+                      '@type': 'Question',
+                      name: 'What altitude range does Skyscape Photography operate at?',
+                      acceptedAnswer: {
+                        '@type': 'Answer',
+                        text: 'Skyscape Photography captures aerial landscapes between 30 and 299 metres above ground level (AGL), adhering strictly to aviation regulations and DGCA airspace laws.',
+                      },
+                    },
+                    {
+                      '@type': 'Question',
+                      name: 'Are fine art prints available for purchase?',
+                      acceptedAnswer: {
+                        '@type': 'Answer',
+                        text: 'Yes, museum-grade fine art archival prints are available in custom dimensions on premium cotton rag paper. Inquiries can be placed via the contact section.',
+                      },
+                    },
+                    {
+                      '@type': 'Question',
+                      name: 'Are commercial and editorial licensing available?',
+                      acceptedAnswer: {
+                        '@type': 'Answer',
+                        text: 'Yes, high-resolution imagery and 4K D-Log aerial video assets are available for commercial advertising, editorial features, tourism campaigns, and architectural showcases.',
+                      },
+                    },
+                  ],
+                },
+              ],
+            }),
+          }}
         />
       </head>
       <body suppressHydrationWarning>

@@ -131,7 +131,7 @@ export default function AmbientSoundtrack() {
         id="audioBtn"
         type="button"
         onClick={toggleSound}
-        aria-label="Toggle ambient soundtrack"
+        aria-label={`Toggle ambient soundtrack - ${isPlaying ? 'AUDIO' : 'MUTED'}`}
         title="Skyscape Aerial Photography Ambient Soundtrack"
       >
         <span className="audio-eq" aria-hidden="true">
@@ -163,7 +163,7 @@ export default function AmbientSoundtrack() {
         src="/audio/skyscape-aerial-photography-ambient-soundtrack.mp3"
         loop
         autoPlay
-        preload="auto"
+        preload="none"
         playsInline
       />
     </div>

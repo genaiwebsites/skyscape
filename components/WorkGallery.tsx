@@ -250,7 +250,7 @@ export default function WorkGallery() {
                     key={`${activeCategory}-${currentPage}-${f.id}`}
                     role="button"
                     tabIndex={0}
-                    aria-label={`Open photograph: ${f.t}`}
+                    aria-label={`${f.categoryLabel} ${f.alt} M AGL ${f.t} ${f.l} - Open photograph`}
                     className={`bento-card card-${f.orientation}`}
                     onClick={(e) => openLightbox(f.id, e)}
                     onKeyDown={(e) => {
@@ -294,7 +294,7 @@ export default function WorkGallery() {
                 className="page-btn"
                 disabled={currentPage === 1}
                 onClick={(e) => handlePageChange(currentPage - 1, e)}
-                aria-label="Previous page"
+                aria-label="PREV - Previous page"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width={14} height={14}>
                   <polyline points="15 18 9 12 15 6" />
@@ -322,7 +322,7 @@ export default function WorkGallery() {
                 className="page-btn"
                 disabled={currentPage === totalPages}
                 onClick={(e) => handlePageChange(currentPage + 1, e)}
-                aria-label="Next page"
+                aria-label="NEXT - Next page"
               >
                 NEXT
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width={14} height={14}>

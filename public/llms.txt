@@ -1,0 +1,36 @@
+# Skyscape Photography — Aerial Landscape Photography by Kshitiz Bathwal
+> Fine art aerial landscape photography across India and global coastlines, flown between 30 and 299 metres above ground level (AGL).
+
+## Artist & Pilot Overview
+- **Photographer & Pilot:** Kshitiz Bathwal
+- **Role:** Founder & Lead UAS Cinematographer, Software Engineer
+- **Specialization:** Aerial Landscape Photography, Fine Art Archival Prints, Commercial Drone Cinematography
+- **Territory:** India (14+ states documented) and global coastal/island geography (Mauritius, Bali)
+- **Official Domain:** https://www.skyscapephoto.com
+- **Instagram:** https://www.instagram.com/skyscape_photography/
+- **Contact:** contact@skyscapephoto.com
+
+## Technical & Telemetric Flight Specs
+- **Flight Ceiling:** Flown strictly within DGCA regulations, holding up to 299 metres AGL
+- **Primary Aircraft:** DJI Air 2S with 1-inch CMOS sensor
+- **Optics & Recording:** 4K 60FPS in 10-bit D-Log colour profile
+- **Flight Volume:** 342+ completed flight missions, 118+ flight hours, 1,624+ km flown over ground
+
+## Core Portfolio Highlights
+1. **Macondé Peak & Emerald Lagoon (Baie du Cap, Mauritius):** Volcanic basalt hairpin ridge meeting turquoise coral reef from 168m AGL.
+2. **Kelingking T-Rex Cliff (Nusa Penida, Bali):** Limestone headland towering 200m over turquoise surf from 299m AGL.
+3. **Mount Ijen Acidic Crater Lake (East Java):** World's largest acidic volcanic caldera lake with steaming solfataras from 212m AGL.
+4. **Angel's Billabong (Nusa Penida):** Natural tidal infinity pool carved by ocean spindrift from 114m AGL.
+5. **Om Beach & Sea Cliffs (Gokarna, Karnataka):** Sacred Om-shaped coastal coves and granite cliffs from 72m AGL.
+6. **Manipal End Point (Karnataka):** Swarna river estuary channels and coastal plateau from 38m AGL.
+
+## Commercial Licensing & Prints
+- **Archival Fine Art Prints:** Available in limited editions on 100% cotton rag museum paper.
+- **Commercial Licensing:** Available for editorial, tourism, architectural, and commercial advertising.
+- **Licensing Requests:** Submit inquiries via https://www.skyscapephoto.com/#contact or contact@skyscapephoto.com
+
+## Key Links & Documentation
+- [Homepage & Aerial Showcase](https://www.skyscapephoto.com): Interactive flight telemetry and curated photographic plates.
+- [Commercial Licensing & Pricing](https://www.skyscapephoto.com/pricing.md): Complete rights-managed tiers, resolution specs, and terms.
+- [XML Sitemap](https://www.skyscapephoto.com/sitemap.xml): Canonical index for search engines and web crawlers.
+- [Pilot Inquiries & Commissions](https://www.skyscapephoto.com/#contact): Commission custom UAS aerial missions across India.

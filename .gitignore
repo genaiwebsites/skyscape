@@ -42,4 +42,5 @@ next-env.d.ts
 
 # local scratch / analysis
 scratch/
+*.original.*
 

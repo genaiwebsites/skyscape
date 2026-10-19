@@ -331,8 +331,16 @@ export default function Home() {
                 My flights have spanned diverse Indian states, anchored by strict discipline, airspace legalities, and deep advocacy for responsible drone aviation. As my lens continues to ascend, I carry a lingering dream: to journey into the sacred, mist-veiled frontiers of <strong>North East India</strong> and unveil its untouched wonder to the world.
               </p>
               <blockquote className="quote" data-anim="fade">
+                <div className="quote-badge" aria-hidden="true">
+                  <span className="quote-pip" />
+                  <span className="quote-datum">Flight Philosophy</span>
+                </div>
                 <p>&ldquo;Long before the propellers turn, I am already flying in my head, searching for the symmetries the earth only whispers to the sky.&rdquo;</p>
-                <footer>Kshitiz Bathwal · Aerial Photographer &amp; Software Engineer</footer>
+                <footer>
+                  <span className="quote-author">Kshitiz Bathwal</span>
+                  <span className="quote-sep">·</span>
+                  <span className="quote-role">Aerial Photographer &amp; Software Engineer</span>
+                </footer>
               </blockquote>
             </div>
             <div className="col-side portrait">
@@ -471,6 +479,7 @@ export default function Home() {
             data-par="0.22"
             src="/images/nusa-penida-featured.jpeg"
             alt="Volcanic sea stacks and azure ocean surf in Nusa Penida, Bali, Indonesia seen from 198 metres above ground level"
+            loading="lazy"
             decoding="async"
           />
           <div className="veil" />

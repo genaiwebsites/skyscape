@@ -2355,8 +2355,20 @@ main{position:relative;z-index:1}
 .mail::after{content:"";position:absolute;left:0;bottom:-1px;height:1px;width:100%;background:var(--amber);transform:scaleX(0);transform-origin:right;transition:transform .6s var(--ease)}
 .mail:hover::after{transform:scaleX(1);transform-origin:left}
 .mail svg{width:19px;height:19px;stroke:var(--amber);flex:none;transition:transform .6s var(--ease)}
-.mail:hover svg{transform:translate(4px,-4px)}
-.c-meta{margin-top:clamp(40px,6vh,76px);display:flex;gap:clamp(26px,5vw,76px);flex-wrap:wrap}
+.c-meta {
+  margin-top: clamp(40px, 6vh, 76px);
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  column-gap: clamp(36px, 5.5vw, 76px);
+  row-gap: clamp(20px, 3vh, 28px);
+  justify-content: flex-start;
+}
+@media (max-width: 600px) {
+  .c-meta {
+    grid-template-columns: 1fr;
+    row-gap: 22px;
+  }
+}
 
 /* Contact Section Pilot Profile Card (Right Column) */
 .contact-pilot-card {
